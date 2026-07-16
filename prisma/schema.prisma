@@ -1,0 +1,237 @@
+// Murlidhar Offset — Prisma schema
+// Full e-commerce + admin panel for a Gujarati printing press.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Auth ───────────────────────────────────────────────────────────────────
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  role         String   @default("admin") // admin | superadmin
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ─── Catalog ─────────────────────────────────────────────────────────────────
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  image       String?
+  icon        String? // lucide icon name
+  order       Int       @default(0)
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Product {
+  id              String         @id @default(cuid())
+  name            String
+  slug            String         @unique
+  shortDesc       String?
+  description     String?
+  categoryId      String
+  category        Category       @relation(fields: [categoryId], references: [id])
+  basePrice       Float          @default(0) // starting price (lowest variant)
+  rating          Float          @default(5)
+  reviewCount     Int            @default(0)
+  featured        Boolean        @default(false)
+  active          Boolean        @default(true)
+  turnaroundNote  String? // e.g. "Delivered in 3-4 working days"
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  images          ProductImage[]
+  attributes      VariantAttribute[]
+  variants        ProductVariant[]
+  orderItems      OrderItem[]
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String?
+  order     Int     @default(0)
+}
+
+// Variant system: two-level (attribute → option), each Variant is a combination w/ its own price
+model VariantAttribute {
+  id        String          @id @default(cuid())
+  productId String
+  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String // e.g. "Card Type", "Quantity"
+  order     Int             @default(0)
+  options   VariantOption[]
+}
+
+model VariantOption {
+  id         String           @id @default(cuid())
+  attributeId String
+  attribute  VariantAttribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+  value      String // e.g. "Gold Foil 350 GSM", "100 pcs"
+  order      Int              @default(0)
+  variants   ProductVariantOption[]
+}
+
+model ProductVariant {
+  id        String                  @id @default(cuid())
+  productId String
+  product   Product                 @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku       String?
+  price     Float
+  stock     Int                     @default(0)
+  options   ProductVariantOption[]
+  orderItems OrderItem[]
+}
+
+model ProductVariantOption {
+  id        String         @id @default(cuid())
+  variantId String
+  variant   ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  optionId  String
+  option    VariantOption  @relation(fields: [optionId], references: [id], onDelete: Cascade)
+}
+
+// ─── Banners / Hero ──────────────────────────────────────────────────────────
+model Banner {
+  id        String   @id @default(cuid())
+  title     String?
+  subtitle  String?
+  imageUrl  String
+  link      String?
+  position  String   @default("hero") // hero | promo | sidebar
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Blog ─────────────────────────────────────────────────────────────────────
+model BlogPost {
+  id           String   @id @default(cuid())
+  title        String
+  slug        String   @unique
+  excerpt      String?
+  content      String // HTML or markdown
+  featuredImage String?
+  tags         String? // comma separated
+  published    Boolean  @default(false)
+  author       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ─── Testimonials ─────────────────────────────────────────────────────────────
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  location  String?
+  rating    Int      @default(5)
+  text      String
+  avatar    String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// ─── Orders ───────────────────────────────────────────────────────────────────
+model Order {
+  id             String      @id @default(cuid())
+  orderNumber    String      @unique
+  customerName   String
+  phone          String
+  email          String?
+  address        String?
+  city           String?
+  state          String?
+  pincode        String?
+  remarks        String?
+  subtotal       Float       @default(0)
+  shipping       Float       @default(0)
+  total          Float       @default(0)
+  paymentMethod  String      @default("cod") // cod | online | payatshop
+  paymentStatus  String      @default("pending") // pending | paid | failed | refunded
+  paymentRef     String? // gateway reference id
+  orderStatus    String      @default("pending") // pending | production | ready | dispatched | delivered | cancelled
+  statusNote     String? // optional note sent to customer on status update
+  items          OrderItem[]
+  files          OrderFile[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([orderStatus])
+  @@index([paymentStatus])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId  String?
+  product    Product? @relation(fields: [productId], references: [id])
+  productName String
+  variantInfo String? // human-readable variant summary
+  variantId  String?
+  variant    ProductVariant? @relation(fields: [variantId], references: [id])
+  qty        Int      @default(1)
+  unitPrice  Float
+  total      Float
+}
+
+model OrderFile {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fileName  String
+  filePath  String
+  fileSize  Int      @default(0)
+  fileType  String?
+  createdAt DateTime @default(now())
+}
+
+// ─── Site Settings (singleton row, id = "default") ─────────────────────────────
+model SiteSettings {
+  id              String   @id @default("default")
+  businessName    String   @default("Murlidhar Offset")
+  tagline         String   @default("We Print Your Dreams on Paper")
+  aboutText       String?
+  phone           String   @default("9510737852")
+  altPhone        String?
+  email           String   @default("murlidharoffset84@gmail.com")
+  address         String   @default("Shreeji Super Market, 7, Unjha, Gujarat 384170")
+  hours           String   @default("Open 24 hours")
+  mapEmbedUrl     String?
+  whatsapp        String?
+  instagram       String?
+  facebook        String?
+  // Email config
+  emailFrom       String?
+  emailEnabled    Boolean  @default(false)
+  // Payment config
+  razorpayKeyId   String?
+  razorpayKeySecret String?
+  razorpayMode    String   @default("test") // test | live
+  codEnabled      Boolean  @default(true)
+  onlineEnabled   Boolean  @default(true)
+  payAtShopEnabled Boolean @default(true)
+  // Email templates (basic)
+  templateOrderConfirm    String?
+  templateStatusUpdate    String?
+  // SEO
+  metaTitle       String?
+  metaDescription String?
+  updatedAt       DateTime @updatedAt
+}
