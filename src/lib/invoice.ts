@@ -1,5 +1,5 @@
 // Invoice PDF generator — builds a branded Murlidhar Offset invoice client-side using jsPDF.
-// Brand colours: navy #0F1B33, gold #D4A017, cream #FAF6ED
+// Brand colours: navy #0F1B33, gold #0d9488, cream #FAF6ED
 import jsPDF from 'jspdf'
 
 export interface InvoiceItem {

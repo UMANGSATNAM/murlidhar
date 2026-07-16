@@ -117,8 +117,8 @@ export function AnalyticsCharts() {
             <AreaChart data={data.revenueByDay} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="revGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#d4a017" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#d4a017" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#0d9488" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="#0d9488" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c2" vertical={false} />
@@ -136,22 +136,22 @@ export function AnalyticsCharts() {
               <Tooltip
                 contentStyle={{
                   background: '#0f1b33',
-                  border: '1px solid #d4a017',
+                  border: '1px solid #0d9488',
                   borderRadius: '8px',
                   color: '#faf6ed',
                   fontSize: '12px',
                 }}
-                labelStyle={{ color: '#d4a017', fontWeight: 600 }}
+                labelStyle={{ color: '#0d9488', fontWeight: 600 }}
                 formatter={(v: any) => [formatINR(v as number), 'Revenue']}
               />
               <Area
                 type="monotone"
                 dataKey="revenue"
-                stroke="#d4a017"
+                stroke="#0d9488"
                 strokeWidth={2}
                 fill="url(#revGradient)"
                 dot={false}
-                activeDot={{ r: 5, fill: '#d4a017', stroke: '#fff', strokeWidth: 2 }}
+                activeDot={{ r: 5, fill: '#0d9488', stroke: '#fff', strokeWidth: 2 }}
               />
             </AreaChart>
           </ResponsiveContainer>
@@ -185,7 +185,7 @@ export function AnalyticsCharts() {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: '#0f1b33', border: '1px solid #d4a017', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
+                  contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -216,7 +216,7 @@ export function AnalyticsCharts() {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: '#0f1b33', border: '1px solid #d4a017', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
+                  contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -243,7 +243,7 @@ export function AnalyticsCharts() {
                 axisLine={{ stroke: '#e3d9c2' }}
               />
               <Tooltip
-                contentStyle={{ background: '#0f1b33', border: '1px solid #d4a017', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
+                contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
                 formatter={(v: any, n: any) => [v, n === 'orders' ? 'Orders' : 'Revenue (₹)']}
               />
               <Bar dataKey="orders" fill="#0f1b33" radius={[0, 4, 4, 0]} barSize={18} />

@@ -14,16 +14,16 @@ export function MandalaLogo({ className = '', size = 48 }: { className?: string;
     >
       {/* Outer navy disc */}
       <circle cx="50" cy="50" r="48" fill="#0f1b33" />
-      <circle cx="50" cy="50" r="47" fill="none" stroke="#d4a017" strokeWidth="0.8" />
+      <circle cx="50" cy="50" r="47" fill="none" stroke="#0d9488" strokeWidth="0.8" />
 
       {/* Mandala petals — 16 fold */}
-      <g stroke="#d4a017" strokeWidth="0.6" fill="none" opacity="0.85">
+      <g stroke="#0d9488" strokeWidth="0.6" fill="none" opacity="0.85">
         {Array.from({ length: 16 }).map((_, i) => {
           const a = (i * 360) / 16
           return (
             <g key={i} transform={`rotate(${a} 50 50)`}>
               <path d="M50 14 C54 24, 54 30, 50 36 C46 30, 46 24, 50 14 Z" />
-              <circle cx="50" cy="20" r="0.8" fill="#d4a017" stroke="none" />
+              <circle cx="50" cy="20" r="0.8" fill="#0d9488" stroke="none" />
             </g>
           )
         })}
@@ -44,7 +44,7 @@ export function MandalaLogo({ className = '', size = 48 }: { className?: string;
       </g>
 
       {/* Inner concentric rings */}
-      <g fill="none" stroke="#d4a017" opacity="0.7">
+      <g fill="none" stroke="#0d9488" opacity="0.7">
         <circle cx="50" cy="50" r="32" strokeWidth="0.5" strokeDasharray="1 2" />
         <circle cx="50" cy="50" r="26" strokeWidth="0.6" />
         <circle cx="50" cy="50" r="20" strokeWidth="0.4" strokeDasharray="1.5 1.5" />
@@ -53,7 +53,7 @@ export function MandalaLogo({ className = '', size = 48 }: { className?: string;
       {/* Center — Krishna flute (bansuri) vertical */}
       <g>
         {/* Flute body */}
-        <rect x="48" y="38" width="4" height="24" rx="2" fill="#d4a017" />
+        <rect x="48" y="38" width="4" height="24" rx="2" fill="#0d9488" />
         {/* Mouth hole */}
         <ellipse cx="50" cy="42" rx="1.2" ry="0.8" fill="#0f1b33" />
         {/* Finger holes */}
@@ -61,12 +61,12 @@ export function MandalaLogo({ className = '', size = 48 }: { className?: string;
         <circle cx="50" cy="52" r="0.7" fill="#0f1b33" />
         <circle cx="50" cy="56" r="0.7" fill="#0f1b33" />
         {/* End caps */}
-        <circle cx="50" cy="38" r="1.6" fill="#e6c068" />
-        <circle cx="50" cy="62" r="1.6" fill="#e6c068" />
+        <circle cx="50" cy="38" r="1.6" fill="#2dd4bf" />
+        <circle cx="50" cy="62" r="1.6" fill="#2dd4bf" />
       </g>
 
       {/* Tiny gold dot accents around */}
-      <g fill="#d4a017">
+      <g fill="#0d9488">
         {Array.from({ length: 8 }).map((_, i) => {
           const a = (i * 360) / 8
           const r = 44

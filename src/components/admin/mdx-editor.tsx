@@ -88,7 +88,7 @@ export function MdxEditor({
           background: #e3d9c2 !important;
         }
         .mo-mdx-editor .mdxeditor-toolbar button.active {
-          background: #d4a017 !important;
+          background: #0d9488 !important;
           color: #0f1b33 !important;
         }
         .mo-mdx-editor [role="separator"] {
@@ -107,11 +107,11 @@ export function MdxEditor({
           font-family: var(--font-display) !important;
         }
         .mo-mdx-editor .mdxeditor-content-editable a {
-          color: #a87d0f !important;
+          color: #0f766e !important;
           text-decoration: underline !important;
         }
         .mo-mdx-editor .mdxeditor-content-editable blockquote {
-          border-left-color: #d4a017 !important;
+          border-left-color: #0d9488 !important;
           background: #faf6ed !important;
           padding: 8px 12px !important;
           border-radius: 0 6px 6px 0 !important;
