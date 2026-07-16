@@ -21,11 +21,17 @@ import {
   CheckCircle2,
   Loader2,
   ArrowLeft,
+  Heart,
+  Share2,
+  MessageCircle,
+  ZoomIn,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
@@ -36,6 +42,7 @@ import {
 import { StorefrontShell, StarRating } from '@/components/storefront/storefront-shell'
 import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
 import { useCart } from '@/lib/cart-store'
+import { useWishlist } from '@/lib/wishlist-store'
 import { formatINR } from '@/lib/format'
 import { useToast } from '@/hooks/use-toast'
 import { toast as sonnerToast } from 'sonner'
@@ -68,6 +75,10 @@ interface Related {
   id: string; name: string; slug: string; basePrice: number; rating: number; reviewCount: number
   images: { url: string }[]
 }
+interface ProductReview {
+  id: string; name: string; email?: string | null; rating: number
+  title?: string | null; comment: string; createdAt: string
+}
 
 export default function ProductDetailPage() {
   return (
@@ -82,6 +93,8 @@ function ProductDetailContent() {
   const router = useRouter()
   const { toast } = useToast()
   const addItem = useCart((s) => s.addItem)
+  const wishlistHas = useWishlist((s) => s.has)
+  const wishlistToggle = useWishlist((s) => s.toggle)
 
   const [product, setProduct] = React.useState<Product | null>(null)
   const [related, setRelated] = React.useState<Related[]>([])
@@ -94,6 +107,26 @@ function ProductDetailContent() {
   const [remarks, setRemarks] = React.useState('')
   const [files, setFiles] = React.useState<{ name: string; url: string; size: number }[]>([])
   const [uploading, setUploading] = React.useState(false)
+
+  // Reviews
+  const [reviews, setReviews] = React.useState<ProductReview[]>([])
+  const [reviewsAvg, setReviewsAvg] = React.useState(0)
+  const [reviewsCount, setReviewsCount] = React.useState(0)
+  const [reviewOpen, setReviewOpen] = React.useState(false)
+  const [reviewForm, setReviewForm] = React.useState({ name: '', email: '', rating: 5, title: '', comment: '' })
+  const [submittingReview, setSubmittingReview] = React.useState(false)
+
+  // Hover-zoom
+  const [zoom, setZoom] = React.useState({ active: false, x: 50, y: 50 })
+  const imgRef = React.useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imgRef.current) return
+    const rect = imgRef.current.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    setZoom({ active: true, x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) })
+  }
 
   React.useEffect(() => {
     if (!slug) return
@@ -112,6 +145,19 @@ function ProductDetailContent() {
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false))
   }, [slug])
+
+  // Fetch reviews when product id is available
+  React.useEffect(() => {
+    if (!product) return
+    fetch(`/api/reviews?productId=${product.id}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setReviews(d.items || [])
+        setReviewsAvg(d.average || 0)
+        setReviewsCount(d.count || 0)
+      })
+      .catch(() => {})
+  }, [product])
 
   // Find matching variant for current selection
   const matchedVariant = React.useMemo(() => {
@@ -192,6 +238,55 @@ function ProductDetailContent() {
     router.push('/checkout')
   }
 
+  // ─── Wishlist ──────────────────────────────────────────────────────────────
+  const handleToggleWishlist = () => {
+    if (!product) return
+    wishlistToggle({
+      productId: product.id,
+      name: product.name,
+      slug: product.slug,
+      image: product.images[0]?.url,
+      basePrice: currentPrice,
+    })
+    sonnerToast.success(
+      wishlistHas(product.id) ? 'Removed from wishlist' : 'Added to wishlist'
+    )
+  }
+
+  // ─── WhatsApp share ────────────────────────────────────────────────────────
+  const handleWhatsAppShare = () => {
+    if (!product) return
+    const text = `Hi Murlidhar Offset, I'm interested in *${product.name}* (${formatINR(currentPrice)}). Please share more details.`
+    window.open(`https://wa.me/919510737852?text=${encodeURIComponent(text)}`, '_blank')
+  }
+
+  // ─── Submit review ─────────────────────────────────────────────────────────
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!product) return
+    if (!reviewForm.name || !reviewForm.comment) {
+      sonnerToast.error('Please fill your name and review')
+      return
+    }
+    setSubmittingReview(true)
+    try {
+      const res = await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...reviewForm, productId: product.id }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      sonnerToast.success('Review submitted! It will appear after admin approval.')
+      setReviewOpen(false)
+      setReviewForm({ name: '', email: '', rating: 5, title: '', comment: '' })
+    } catch (err: any) {
+      sonnerToast.error(err.message || 'Failed to submit review')
+    } finally {
+      setSubmittingReview(false)
+    }
+  }
+
   // ─── Loading / Not Found ──────────────────────────────────────────────────
   if (loading) {
     return (
@@ -248,13 +343,27 @@ function ProductDetailContent() {
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="group relative aspect-square overflow-hidden rounded-2xl border-2 border-border bg-white shadow-sm">
               {product.images[activeImage] ? (
-                <div className="relative h-full w-full overflow-hidden">
-                  { }
+                <div
+                  ref={imgRef}
+                  className="relative h-full w-full overflow-hidden cursor-zoom-in"
+                  onMouseEnter={() => setZoom((z) => ({ ...z, active: true }))}
+                  onMouseLeave={() => setZoom((z) => ({ ...z, active: false }))}
+                  onMouseMove={handleMouseMove}
+                >
                   <img
                     src={product.images[activeImage].url}
                     alt={product.images[activeImage].alt || product.name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="h-full w-full object-cover transition-transform duration-200"
+                    style={
+                      zoom.active
+                        ? { transform: 'scale(2)', transformOrigin: `${zoom.x}% ${zoom.y}%` }
+                        : { transform: 'scale(1)' }
+                    }
                   />
+                  {/* Zoom hint */}
+                  <div className={`pointer-events-none absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-navy/80 px-3 py-1.5 text-xs text-cream backdrop-blur transition-opacity ${zoom.active ? 'opacity-0' : 'opacity-100'}`}>
+                    <ZoomIn className="h-3 w-3 text-gold" /> Hover to zoom
+                  </div>
                 </div>
               ) : (
                 <div className="flex h-full items-center justify-center">
@@ -266,6 +375,27 @@ function ProductDetailContent() {
                   {product.category.name}
                 </span>
               )}
+              {/* Wishlist + share buttons overlay */}
+              <div className="absolute right-4 top-4 flex flex-col gap-2">
+                <button
+                  onClick={handleToggleWishlist}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full backdrop-blur transition-all ${
+                    wishlistHas(product.id)
+                      ? 'bg-gold text-navy shadow-gold'
+                      : 'bg-white/90 text-navy hover:bg-gold hover:text-navy'
+                  }`}
+                  aria-label={wishlistHas(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+                >
+                  <Heart className={`h-4 w-4 ${wishlistHas(product.id) ? 'fill-current' : ''}`} />
+                </button>
+                <button
+                  onClick={handleWhatsAppShare}
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-green-600 backdrop-blur transition hover:bg-green-500 hover:text-white"
+                  aria-label="Share on WhatsApp"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </button>
+              </div>
             </div>
             {product.images.length > 1 && (
               <div className="mt-3 flex gap-2 overflow-x-auto scroll-elegant pb-2">
@@ -274,10 +404,9 @@ function ProductDetailContent() {
                     key={i}
                     onClick={() => setActiveImage(i)}
                     className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border-2 transition ${
-                      i === activeImage ? 'border-gold' : 'border-border hover:border-gold/50'
+                      i === activeImage ? 'border-gold shadow-gold' : 'border-border hover:border-gold/50'
                     }`}
                   >
-                    { }
                     <img src={img.url} alt={img.alt || `Image ${i + 1}`} className="h-full w-full object-cover" />
                   </button>
                 ))}
@@ -407,6 +536,15 @@ function ProductDetailContent() {
               >
                 <Zap className="mr-2 h-4 w-4" /> Order Now
               </Button>
+              <Button
+                onClick={handleToggleWishlist}
+                size="lg"
+                variant="outline"
+                className={`shrink-0 border-navy ${wishlistHas(product.id) ? 'bg-gold text-navy' : 'text-navy hover:bg-navy hover:text-cream'}`}
+                aria-label="Toggle wishlist"
+              >
+                <Heart className={`h-4 w-4 ${wishlistHas(product.id) ? 'fill-current' : ''}`} />
+              </Button>
             </div>
 
             {/* File upload */}
@@ -527,7 +665,6 @@ function ProductDetailContent() {
                 >
                   <div className="relative aspect-square overflow-hidden bg-secondary">
                     {p.images[0]?.url ? (
-                       
                       <img src={p.images[0].url} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     ) : (
                       <div className="flex h-full items-center justify-center">
@@ -545,6 +682,116 @@ function ProductDetailContent() {
             </div>
           </section>
         )}
+
+        {/* ─── Customer Reviews ───────────────────────────────────────────────── */}
+        <section className="mt-16">
+          <MandalaDivider className="mb-10" />
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <SectionHeader
+              eyebrow="Customer Reviews"
+              title="What Buyers Say"
+              center={false}
+            />
+            <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-navy text-cream hover:bg-navy-soft">
+                  <Star className="mr-2 h-4 w-4" /> Write a Review
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Write a Review — {product.name}</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmitReview} className="space-y-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div>
+                      <Label htmlFor="rv-name">Your Name *</Label>
+                      <Input id="rv-name" required value={reviewForm.name} onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })} className="mt-1 border-border" />
+                    </div>
+                    <div>
+                      <Label htmlFor="rv-email">Email (optional)</Label>
+                      <Input id="rv-email" type="email" value={reviewForm.email} onChange={(e) => setReviewForm({ ...reviewForm, email: e.target.value })} className="mt-1 border-border" />
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Rating *</Label>
+                    <div className="mt-1 flex gap-1">
+                      {[1, 2, 3, 4, 5].map((r) => (
+                        <button key={r} type="button" onClick={() => setReviewForm({ ...reviewForm, rating: r })} className="p-1">
+                          <Star className={`h-7 w-7 transition ${r <= reviewForm.rating ? 'fill-gold text-gold' : 'text-muted-foreground/30 hover:text-gold/60'}`} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="rv-title">Title</Label>
+                    <Input id="rv-title" value={reviewForm.title} onChange={(e) => setReviewForm({ ...reviewForm, title: e.target.value })} className="mt-1 border-border" placeholder="A short summary" />
+                  </div>
+                  <div>
+                    <Label htmlFor="rv-comment">Your Review *</Label>
+                    <Textarea id="rv-comment" required value={reviewForm.comment} onChange={(e) => setReviewForm({ ...reviewForm, comment: e.target.value })} rows={4} className="mt-1 resize-none border-border" placeholder="Tell us about your experience with this product..." />
+                  </div>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button type="button" variant="outline" onClick={() => setReviewOpen(false)}>Cancel</Button>
+                    <Button type="submit" className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={submittingReview}>
+                      {submittingReview ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Submit Review
+                    </Button>
+                  </div>
+                  <p className="text-center text-[11px] text-muted-foreground">Reviews are moderated and will appear after admin approval.</p>
+                </form>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          {/* Aggregate */}
+          <div className="mt-6 grid gap-4 sm:grid-cols-[200px_1fr]">
+            <Card className="card-premium p-6 text-center">
+              <p className="font-display text-5xl font-bold text-navy">{reviewsAvg.toFixed(1)}</p>
+              <div className="mt-2 flex justify-center">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className={`h-4 w-4 ${i < Math.round(reviewsAvg) ? 'fill-gold text-gold' : 'text-muted-foreground/30'}`} />
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">{reviewsCount} {reviewsCount === 1 ? 'review' : 'reviews'}</p>
+            </Card>
+
+            <div className="space-y-3">
+              {reviews.length === 0 ? (
+                <Card className="p-8 text-center">
+                  <Star className="mx-auto h-10 w-10 text-muted-foreground/30" />
+                  <p className="mt-2 font-display text-base font-bold text-navy">No reviews yet</p>
+                  <p className="text-sm text-muted-foreground">Be the first to share your experience with this product.</p>
+                </Card>
+              ) : (
+                reviews.map((r) => (
+                  <Card key={r.id} className="p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy font-display font-bold text-gold">
+                          {r.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-navy">{r.name}</p>
+                          <div className="flex">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Star key={i} className={`h-3 w-3 ${i < r.rating ? 'fill-gold text-gold' : 'text-muted-foreground/30'}`} />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </span>
+                    </div>
+                    {r.title && <p className="mt-2 font-semibold text-navy">{r.title}</p>}
+                    <p className="mt-1 text-sm text-foreground/80">{r.comment}</p>
+                  </Card>
+                ))
+              )}
+            </div>
+          </div>
+        </section>
       </section>
     </>
   )

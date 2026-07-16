@@ -10,12 +10,16 @@ import {
   Phone,
   Search,
   ChevronDown,
+  Heart,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { LogoWordmark, MandalaLogo } from './mandala-logo'
 import { useCart } from '@/lib/cart-store'
+import { useWishlist } from '@/lib/wishlist-store'
 import { CartDrawer } from './cart-drawer'
+import { WishlistDrawer } from './wishlist-drawer'
+import { SearchAutocomplete } from './search-autocomplete'
 
 const NAV = [
   { href: '/about', label: 'About Us' },
@@ -28,7 +32,9 @@ const NAV = [
 export function Header() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = React.useState(false)
-  const count = useCart((s) => s.items.reduce((a, i) => a + i.qty, 0))
+  const [searchOpen, setSearchOpen] = React.useState(false)
+  const cartCount = useCart((s) => s.items.reduce((a, i) => a + i.qty, 0))
+  const wishlistCount = useWishlist((s) => s.items.length)
   const [scrolled, setScrolled] = React.useState(false)
 
   React.useEffect(() => {
@@ -50,6 +56,8 @@ export function Header() {
             <span className="hidden sm:inline">Open 24 hours · Unjha, Gujarat</span>
           </div>
           <div className="hidden md:flex items-center gap-3 text-[11px] tracking-wide">
+            <Link href="/track" className="hover:text-gold transition-colors">Track Order</Link>
+            <span className="text-cream/30">·</span>
             <span className="text-gold">Quality Printing · Lasting Impression</span>
           </div>
         </div>
@@ -76,38 +84,57 @@ export function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative px-4 py-2 text-sm font-medium transition-colors rounded-md ${
+                  className={`relative px-4 py-2 text-sm font-medium transition-colors rounded-md group ${
                     active ? 'text-navy' : 'text-foreground/70 hover:text-navy'
                   }`}
                 >
                   {item.label}
-                  {active && (
-                    <span className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-gold" />
-                  )}
+                  <span className={`absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-gold transition-transform duration-300 ${active ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'}`} />
                 </Link>
               )
             })}
           </nav>
 
+          {/* Desktop search */}
+          <div className="hidden xl:block w-64">
+            <SearchAutocomplete />
+          </div>
+
           {/* Right actions */}
           <div className="flex items-center gap-2">
-            <Link
-              href="/shop"
-              className="hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/70 hover:bg-secondary hover:text-navy transition-colors"
+            {/* Mobile search trigger */}
+            <button
+              onClick={() => setSearchOpen((s) => !s)}
+              className="xl:hidden inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/70 hover:bg-secondary hover:text-navy transition-colors"
               aria-label="Search products"
             >
               <Search className="h-4 w-4" />
-            </Link>
+            </button>
+
+            {/* Wishlist */}
+            <WishlistDrawer>
+              <button
+                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-navy hover:bg-secondary transition-colors"
+                aria-label={`Wishlist with ${wishlistCount} items`}
+              >
+                <Heart className="h-5 w-5" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-navy px-1 text-[10px] font-bold text-gold">
+                    {wishlistCount}
+                  </span>
+                )}
+              </button>
+            </WishlistDrawer>
 
             <CartDrawer>
               <button
                 className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-navy hover:bg-secondary transition-colors"
-                aria-label={`Cart with ${count} items`}
+                aria-label={`Cart with ${cartCount} items`}
               >
                 <ShoppingBag className="h-5 w-5" />
-                {count > 0 && (
+                {cartCount > 0 && (
                   <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-bold text-navy">
-                    {count}
+                    {cartCount}
                   </span>
                 )}
               </button>
@@ -134,6 +161,10 @@ export function Header() {
                     <span className="font-display text-xl">Murlidhar Offset</span>
                   </SheetTitle>
                 </SheetHeader>
+                {/* Mobile search */}
+                <div className="border-b border-border p-3">
+                  <SearchAutocomplete />
+                </div>
                 <nav className="flex flex-col p-2">
                   {NAV.map((item) => {
                     const active = pathname === item.href || pathname.startsWith(item.href + '/')
@@ -151,6 +182,14 @@ export function Header() {
                       </Link>
                     )
                   })}
+                  <Link
+                    href="/track"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-between rounded-md px-4 py-3 text-sm font-medium text-foreground/80 hover:bg-secondary/60"
+                  >
+                    Track Order
+                    <ChevronDown className="h-4 w-4 -rotate-90 opacity-50" />
+                  </Link>
                   <div className="mt-3 border-t border-border pt-3">
                     <Button asChild className="w-full bg-navy text-cream hover:bg-navy-soft">
                       <Link href="/shop" onClick={() => setMobileOpen(false)}>
@@ -169,6 +208,13 @@ export function Header() {
             </Sheet>
           </div>
         </div>
+
+        {/* Mobile search dropdown */}
+        {searchOpen && (
+          <div className="xl:hidden border-t border-border bg-cream px-4 py-3 animate-in slide-in-from-top-2 duration-200">
+            <SearchAutocomplete />
+          </div>
+        )}
       </div>
     </header>
   )

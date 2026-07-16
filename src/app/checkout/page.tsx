@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import {
   ShoppingCart, ArrowRight, ArrowLeft, Upload, X, FileCheck2, Loader2,
   ShieldCheck, CreditCard, Banknote, Store, MessageSquare, CheckCircle2, Phone, Mail, MapPin, Printer,
+  Package, MessageCircle,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -158,8 +159,17 @@ function CheckoutContent() {
                 <Link href="/shop">Continue Shopping <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <Button asChild variant="outline" className="flex-1 border-navy text-navy">
-                <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer">
-                  WhatsApp Us
+                <Link href={`/track?o=${placedOrder.orderNumber}`}>
+                  <Package className="mr-2 h-4 w-4" /> Track Order
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="flex-1 border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
+                <a
+                  href={`https://wa.me/919510737852?text=${encodeURIComponent(`Hi Murlidhar Offset, I just placed order *${placedOrder.orderNumber}* for ${formatINR(placedOrder.total)}. Please confirm receipt.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MessageCircle className="mr-2 h-4 w-4" /> WhatsApp
                 </a>
               </Button>
             </div>

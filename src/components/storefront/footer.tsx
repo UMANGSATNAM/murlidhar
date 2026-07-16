@@ -22,6 +22,7 @@ const QUICK = [
   { href: '/shop', label: 'Shop' },
   { href: '/services', label: 'Services' },
   { href: '/blog', label: 'Blog' },
+  { href: '/track', label: 'Track Order' },
   { href: '/contact', label: 'Contact Us' },
   { href: '/admin', label: 'Admin Login' },
 ]

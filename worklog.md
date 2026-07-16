@@ -126,3 +126,60 @@ Stage Summary:
 - ✅ All admin changes (products, banners, settings, etc.) reflect on storefront instantly via shared DB.
 - ✅ Lint clean, dev server stable, no runtime errors.
 - ⏭️ Next: set up 15-minute cron job for ongoing QA + feature expansion.
+
+---
+Task ID: 12 (Phase 2)
+Agent: main (cron webDevReview round 1)
+Task: QA the existing site, fix any bugs, and implement new features from the recommended next-phase work list. Mandatory: improve styling + add more features.
+
+Work Log:
+- **QA pass via agent-browser**: All storefront + admin routes verified HTTP 200. No console errors. Lint clean (0 errors, 0 warnings). Dev server stable.
+- **Schema extension**: Added `ProductReview` model (id, productId, name, email, rating 1-5, title, comment, active, createdAt) with back-relation on Product. Pushed to DB + regenerated Prisma client. (Note: dev server needed restart after Prisma regen — the running Next.js process was caching the old client.)
+- **New Feature 1 — Order Tracking Page (`/track`)**: Customer-facing page where users enter their order number to see real-time status. Includes a 5-step visual progress tracker (Order Placed → In Production → Ready → Dispatched → Delivered), cancelled state handling, customer/delivery details, payment info, items list, design files (downloadable), customer remarks, and help CTA. Auto-searches when `?o=ORDER_NUMBER` query is present (e.g. from checkout confirmation link).
+- **New Feature 2 — Search Autocomplete**: Built `SearchAutocomplete` component with debounced (200ms) API calls to new `/api/search` endpoint. Shows matching products (with image, name, category, price) and categories in a dropdown. Added to header (desktop inline + mobile expandable). Pressing Enter navigates to /shop?q=... for full results.
+- **New Feature 3 — Product Image Hover-Zoom**: On product detail page, hovering over the main image zooms to 2x with the zoom following the cursor position (transform-origin based on mouse X/Y). Added "Hover to zoom" hint badge that fades on hover. Thumbnails now have gold shadow when active.
+- **New Feature 4 — Wishlist Functionality**: Created `wishlist-store.ts` (Zustand + persist to localStorage). Built `WishlistDrawer` (slide-out from right) showing saved items with "Add to Cart" and "Remove" actions, plus "Clear wishlist". Added wishlist heart icon to header (with count badge). Added wishlist toggle button on product page (both as overlay on image gallery AND as a button next to Add to Cart). Wishlist items carry product info + current variant price.
+- **New Feature 5 — Product Reviews**: Built full review system:
+  - Public API: `GET /api/reviews?productId=` (returns approved reviews + average + count), `POST /api/reviews` (submit new review, defaults to active=false for moderation).
+  - Admin API: `GET /api/admin/reviews?status=` (list with pending/approved/all filter), `PATCH /api/admin/reviews/[id]` (approve/unpublish — auto-recomputes product aggregate rating), `DELETE /api/admin/reviews/[id]`.
+  - Product page: "What Buyers Say" section with aggregate rating card + individual review cards (avatar initial, name, stars, date, title, comment). "Write a Review" dialog with name/email/rating (interactive stars)/title/comment form. Submitted reviews show toast "will appear after admin approval".
+  - Admin page (`/admin/reviews`): Filter tabs (Pending/Approved/All), review cards with product name, Approve/Unpublish + Delete buttons. Approving a review recalculates the product's average rating and review count.
+- **New Feature 6 — WhatsApp Integration**: 
+  - Product page: WhatsApp share button (overlay on image gallery) opens wa.me with pre-filled message "Hi Murlidhar Offset, I'm interested in *{product name}* ({price})..."
+  - Order confirmation: "WhatsApp" button with pre-filled message "Hi Murlidhar Offset, I just placed order *{orderNumber}* for {total}. Please confirm receipt."
+  - FloatingWhatsApp component: appears bottom-right after scrolling 400px, expandable chat card with "Start Chat" button. Added to StorefrontShell so it appears on all storefront pages.
+- **Styling Polish**: Added new CSS utilities in globals.css: `card-sheen` (hover light sweep), `link-underline` (animated gold underline), `animate-pulse-gold`, `animate-float`, `animate-fade-slide-up`, `animate-slow-spin` (60s mandala rotation), `text-gold-shimmer` (animated gradient text), `gold-dotted-divider`, `corner-ornament` (L-bracket gold corners), `hover-elevate`, `btn-shine`. Added page-transition animation on `main` and gold selection styling.
+- **Header enhancements**: Added "Track Order" link in utility bar + mobile menu. Nav links now have animated gold underline that scales in on hover. Search bar visible on desktop (xl: breakpoint); mobile gets expandable search trigger.
+- **Footer enhancement**: Added "Track Order" to Quick Links.
+- **Seed data**: Seeded sample reviews (Rajesh, Meera, Kiran) for products and recomputed product rating/reviewCount aggregates.
+- **Bug fix**: `/api/reviews?productId=test` (invalid ID) was returning 500 due to FK constraint — wrapped in try/catch to return empty array gracefully.
+
+Stage Summary:
+- ✅ All 6 new features implemented, tested end-to-end via agent-browser, and verified working.
+- ✅ Order tracking page renders with visual progress tracker + all order details.
+- ✅ Search autocomplete shows live results (categories + products with images/prices).
+- ✅ Product image hover-zoom follows cursor at 2x magnification.
+- ✅ Wishlist drawer opens, items can be added/removed/moved-to-cart, count badge updates in header.
+- ✅ Review submission works (saved as pending → admin approves → appears on product page + recalculates rating).
+- ✅ Admin reviews moderation page with filter tabs + approve/unpublish/delete actions.
+- ✅ WhatsApp share on product page, order confirmation, and floating button site-wide.
+- ✅ Styling polish: 12+ new animation/decoration utilities added.
+- ✅ Lint clean (0 errors, 0 warnings). All 14 routes tested return HTTP 200.
+- ✅ Dev server restarted once to pick up Prisma client regeneration for ProductReview model.
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout flow — real gateway integration requires live API keys (not available in sandbox). Admin settings UI exists for key configuration.
+2. **Email**: `sendEmail()` via z-ai-web-dev-sdk falls back to console.log if SDK email API unavailable — works in production but not visible in sandbox.
+3. **WYSIWYG blog editor**: Still a plain HTML textarea — @mdxeditor/editor is installed but not yet integrated.
+4. **Inventory/stock management**: All variants still have stock=9999 (effectively unlimited). No low-stock alerts.
+5. **Invoice PDF generation**: Not yet implemented.
+6. **SEO per-product/category meta**: Layout metadata not yet wired to dynamic product/category pages.
+
+Priority Recommendations for Next Phase:
+1. **WYSIWYG blog editor** — swap the HTML textarea for @mdxeditor/editor (already installed) for richer content creation.
+2. **Invoice PDF generation** — add a "Download Invoice" button on order confirmation + admin order detail using a PDF library.
+3. **Real Razorpay checkout** — implement server-side order creation + signature verification when live keys are available.
+4. **SEO metadata** — add `generateMetadata()` to `/product/[slug]` and `/category/[slug]` routes for per-page meta titles/descriptions.
+5. **Inventory management** — add stock field to variant editor, show low-stock badges, prevent checkout when out of stock.
+6. **Product image gallery lightbox** — click to open full-screen image viewer with keyboard navigation.
+7. **Related products algorithm** — currently shows same-category products; could improve with "frequently bought together" logic.
