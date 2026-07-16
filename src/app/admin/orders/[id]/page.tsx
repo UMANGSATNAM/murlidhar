@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft, Loader2, Phone, Mail, MapPin, FileText, Download, Save,
-  Package, MessageSquare, User, Calendar, IndianRupee,
+  Package, MessageSquare, User, Calendar, IndianRupee, Lock, Award,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -33,7 +33,8 @@ interface Order {
   address?: string; city?: string; state?: string; pincode?: string; remarks?: string
   subtotal: number; shipping: number; total: number
   paymentMethod: string; paymentStatus: string; paymentRef?: string | null
-  orderStatus: string; statusNote?: string | null
+  orderStatus: string; statusNote?: string | null; internalNotes?: string | null
+  loyaltyPoints?: number
   createdAt: string; updatedAt: string
   items: OrderItem[]; files: OrderFile[]
 }
@@ -48,7 +49,9 @@ export default function AdminOrderDetailPage() {
   const [orderStatus, setOrderStatus] = React.useState('')
   const [paymentStatus, setPaymentStatus] = React.useState('')
   const [statusNote, setStatusNote] = React.useState('')
+  const [internalNotes, setInternalNotes] = React.useState('')
   const [saving, setSaving] = React.useState(false)
+  const [savingNotes, setSavingNotes] = React.useState(false)
 
   React.useEffect(() => {
     if (!admin || !params.id) return
@@ -59,6 +62,7 @@ export default function AdminOrderDetailPage() {
         setOrderStatus(d.order.orderStatus)
         setPaymentStatus(d.order.paymentStatus)
         setStatusNote(d.order.statusNote || '')
+        setInternalNotes(d.order.internalNotes || '')
       })
       .finally(() => setFetching(false))
   }, [admin, params.id])
@@ -255,6 +259,66 @@ export default function AdminOrderDetailPage() {
               </div>
             </Card>
           )}
+
+          {/* Internal notes (admin only) */}
+          <Card className="overflow-hidden border-amber-300">
+            <div className="border-b border-amber-200 bg-amber-50 px-5 py-3">
+              <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
+                <Lock className="h-4 w-4 text-amber-600" /> Internal Notes
+                <span className="rounded-full bg-amber-200 px-2 py-0.5 text-[10px] font-bold text-amber-800">ADMIN ONLY</span>
+              </h3>
+              <p className="mt-0.5 text-xs text-amber-700">Private notes for staff. NOT visible to customer.</p>
+            </div>
+            <div className="p-5">
+              <Textarea
+                value={internalNotes}
+                onChange={(e) => setInternalNotes(e.target.value)}
+                rows={4}
+                className="resize-y border-border text-sm"
+                placeholder="Add private notes about this order — e.g. 'Customer wants rush delivery', 'Special paper requested', 'Called customer on 16th to confirm'..."
+              />
+              <Button
+                onClick={async () => {
+                  setSavingNotes(true)
+                  try {
+                    const res = await fetch(`/api/orders/${order.id}`, {
+                      method: 'PATCH',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include',
+                      body: JSON.stringify({ id: order.id, internalNotes }),
+                    })
+                    if (!res.ok) throw new Error('Failed')
+                    sonnerToast.success('Internal notes saved')
+                  } catch (err: any) {
+                    sonnerToast.error(err.message)
+                  } finally {
+                    setSavingNotes(false)
+                  }
+                }}
+                className="mt-3 bg-amber-500 text-white hover:bg-amber-600"
+                disabled={savingNotes}
+              >
+                {savingNotes ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+                Save Internal Notes
+              </Button>
+            </div>
+          </Card>
+
+          {/* Loyalty points earned (if any) */}
+          {order.loyaltyPoints && order.loyaltyPoints > 0 ? (
+            <Card className="overflow-hidden border-gold/30 bg-gold/5">
+              <div className="p-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold/20">
+                  <Award className="h-5 w-5 text-gold-deep" />
+                </div>
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Loyalty Points Earned</p>
+                  <p className="font-display text-lg font-bold text-gold-deep">+{order.loyaltyPoints} points</p>
+                  <p className="text-xs text-muted-foreground">Auto-awarded when order marked delivered (1 pt per ₹10)</p>
+                </div>
+              </div>
+            </Card>
+          ) : null}
         </div>
 
         {/* Right — customer info + status controls */}

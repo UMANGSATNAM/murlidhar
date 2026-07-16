@@ -43,7 +43,7 @@ export async function PATCH(request: NextRequest) {
   if (!admin) return unauthorized()
 
   const body = await request.json()
-  const { id, orderStatus, paymentStatus, paymentRef, statusNote } = body
+  const { id, orderStatus, paymentStatus, paymentRef, statusNote, internalNotes } = body
   if (!id) return Response.json({ error: 'id required' }, { status: 400 })
 
   const existing = await db.order.findUnique({ where: { id } })
@@ -54,6 +54,33 @@ export async function PATCH(request: NextRequest) {
   if (paymentStatus) data.paymentStatus = paymentStatus
   if (paymentRef !== undefined) data.paymentRef = paymentRef
   if (statusNote !== undefined) data.statusNote = statusNote
+  if (internalNotes !== undefined) data.internalNotes = internalNotes
+
+  // When order is marked 'delivered', award loyalty points (1 pt per ₹10)
+  // Only award once (check if points already awarded)
+  if (orderStatus === 'delivered' && existing.orderStatus !== 'delivered' && existing.loyaltyPoints === 0) {
+    const pointsToAward = Math.floor(existing.total / 10)
+    if (pointsToAward > 0) {
+      data.loyaltyPoints = pointsToAward
+      // Upsert loyalty account by phone
+      await db.loyaltyAccount.upsert({
+        where: { phone: existing.phone },
+        create: {
+          phone: existing.phone,
+          name: existing.customerName,
+          email: existing.email,
+          points: pointsToAward,
+          totalEarned: pointsToAward,
+        },
+        update: {
+          name: existing.customerName,
+          email: existing.email || undefined,
+          points: { increment: pointsToAward },
+          totalEarned: { increment: pointsToAward },
+        },
+      })
+    }
+  }
 
   const updated = await db.order.update({ where: { id }, data, include: { items: true } })
 

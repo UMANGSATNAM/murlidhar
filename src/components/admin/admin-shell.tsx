@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, Package, FolderTree, ShoppingCart, Image as ImageIcon,
-  FileText, Star, Settings, LogOut, Menu, ExternalLink, Bell, ChevronRight, MessageSquareQuote, Mail, TrendingDown,
+  FileText, Star, Settings, LogOut, Menu, ExternalLink, Bell, ChevronRight, MessageSquareQuote, Mail, TrendingDown, Award,
 } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
@@ -20,6 +20,7 @@ const NAV = [
   { href: '/admin/reviews', label: 'Reviews', icon: MessageSquareQuote },
   { href: '/admin/subscribers', label: 'Subscribers', icon: Mail },
   { href: '/admin/bulk-tiers', label: 'Bulk Discounts', icon: TrendingDown },
+  { href: '/admin/loyalty', label: 'Loyalty Program', icon: Award },
   { href: '/admin/banners', label: 'Banners & Hero', icon: ImageIcon },
   { href: '/admin/blog', label: 'Blog Posts', icon: FileText },
   { href: '/admin/testimonials', label: 'Testimonials', icon: Star },

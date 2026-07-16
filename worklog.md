@@ -389,3 +389,53 @@ Priority Recommendations for Next Phase:
 6. **Product bundle deals** — "buy visiting cards + letterheads together for X% off".
 7. **Loyalty points** — customers earn points per order, redeem for discounts.
 8. **Admin order notes (internal)** — private notes visible only to admin staff, not customer.
+
+---
+Task ID: 17 (Phase 6)
+Agent: main (cron webDevReview round 5)
+Task: Continue QA + implement loyalty points, admin internal notes, cookie consent, email subscription popup.
+
+Work Log:
+- **QA pass**: All routes verified HTTP 200. No console errors. Lint clean (0 errors, 0 warnings). Dev server needed one restart (sandbox inactivity).
+- **Schema changes**: Added `internalNotes` (String?) and `loyaltyPoints` (Int, default 0) fields to Order model. Added new `LoyaltyAccount` model (id, phone unique, name, email, points, totalEarned, totalRedeemed, timestamps). Pushed to DB + regenerated Prisma client.
+- **New Feature 1 — Loyalty Points System**:
+  - **Earning**: Orders API PATCH route auto-awards 1 point per ₹10 spent when an order is marked "delivered" (only once, checks `loyaltyPoints === 0`). Upserts a LoyaltyAccount by phone, incrementing points + totalEarned.
+  - **Public API** `/api/loyalty?phone=xxx` — flexible phone matching (digits only, last-7-digits). Returns account + recent 5 orders.
+  - **Customer page** `/loyalty` — 3-step "How it works" explainer (Earn/Accumulate/Redeem), phone lookup form, results showing: points balance card (navy gradient with gold number), lifetime earned/redeemed stats, account info, recent orders list with points earned per order, "How to Redeem" instructions.
+  - **Admin API** `/api/admin/loyalty` — searchable list of all loyalty accounts.
+  - **Admin page** `/admin/loyalty` — 3 stat cards (Total Members, Points In Circulation, Total Earned All Time), explanation banner, search, sortable table (customer, phone, current points with ₹ value, total earned, redeemed, member since). Added to admin nav as "Loyalty Program".
+  - Added "Loyalty Rewards" link to footer Quick Links.
+  - Added loyalty points display on admin order detail (shows "+N points" card if points were awarded).
+- **New Feature 2 — Admin Internal Notes**:
+  - Added `internalNotes` field to Order model (private, NOT visible to customer).
+  - Updated orders PATCH API to accept `internalNotes` parameter.
+  - Added Internal Notes section to admin order detail page — amber-themed card with "ADMIN ONLY" badge, textarea for private staff notes (e.g. "Customer wants rush delivery", "Special paper requested"), separate "Save Internal Notes" button (doesn't trigger customer email). Notes persist and load on page visit.
+- **New Feature 3 — Cookie Consent Banner**:
+  - Built `CookieConsent` component — appears 1.5s after page load (if not previously accepted). Gold-bordered card at bottom of screen with cookie icon, explanation text, "Learn more" link to FAQ, Accept All + Decline buttons. Stores choice in localStorage. Added to StorefrontShell (appears on all storefront pages).
+- **New Feature 4 — Email Subscription Popup**:
+  - Built `EmailSubscriptionPopup` component — appears 8 seconds after page load (if not subscribed or last shown >30 days ago). Navy gradient header with gift icon + "Get Printing Tips & Offers" title, 3 benefit bullets (seasonal discounts, new launches, expert tips), email input form. On submit: saves to newsletter subscribers with source="popup", shows success state with green checkmark. Stores "subscribed" or timestamp in localStorage to prevent re-showing. Close button + click-outside-to-close. Added to StorefrontShell.
+- **Styling**: Used existing navy/gold theme. Internal notes uses amber theme to visually distinguish from customer-facing content. Loyalty points card uses navy gradient with gold number for premium feel.
+
+Stage Summary:
+- ✅ Loyalty points: customer page shows 189 points = ₹189 discount for test customer Satnam Art Gallery. Admin page shows stats + search. Auto-award logic in place (triggers on delivered status).
+- ✅ Internal notes: saved "Test internal note - customer wants rush delivery" to order, verified in DB.
+- ✅ Cookie consent: appears on storefront pages, Accept/Decline persists in localStorage.
+- ✅ Email popup: appears after 8s on home page with "Get Printing Tips & Offers" form.
+- ✅ Lint clean (0 errors, 0 warnings). All routes HTTP 200.
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout — real gateway integration requires live API keys.
+2. **Email**: sendEmail() via SDK falls back to console.log in sandbox.
+3. **Next.js Image optimization**: Still using plain <img> tags.
+4. **Customer accounts**: No login system — loyalty + order lookup are by phone only.
+5. **Loyalty redemption**: Currently manual (customer mentions phone, admin verifies + applies discount). No automated redemption at checkout yet.
+
+Priority Recommendations for Next Phase:
+1. **Next.js Image optimization** — migrate <img> to next/image for better Core Web Vitals.
+2. **Real Razorpay checkout** — server-side order creation + signature verification.
+3. **Automated loyalty redemption** — let customers apply points at checkout (auto-deduct from total).
+4. **Customer accounts** — email/OTP login to save addresses + view order history + loyalty in one place.
+5. **Abandoned cart recovery** — email customers who didn't checkout.
+6. **Advanced shop filters** — filter by GSM, paper type, finish.
+7. **Product bundles** — "buy together, save" combo deals.
+8. **Admin order export** — CSV/Excel export of all orders with filters.

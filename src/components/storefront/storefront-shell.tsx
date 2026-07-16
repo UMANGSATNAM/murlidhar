@@ -4,15 +4,19 @@ import { Header } from './header'
 import { Footer } from './footer'
 import { FloatingWhatsApp } from './floating-whatsapp'
 import { BackToTop } from './back-to-top'
+import { CookieConsent } from './cookie-consent'
+import { EmailSubscriptionPopup } from './email-popup'
 
 export function StorefrontShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-cream">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
       <FloatingWhatsApp />
       <BackToTop />
+      <CookieConsent />
+      <EmailSubscriptionPopup />
     </div>
   )
 }

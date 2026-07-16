@@ -167,6 +167,8 @@ model Order {
   paymentRef     String? // gateway reference id
   orderStatus    String      @default("pending") // pending | production | ready | dispatched | delivered | cancelled
   statusNote     String? // optional note sent to customer on status update
+  internalNotes  String? // private admin-only notes, NOT visible to customer
+  loyaltyPoints  Int       @default(0) // loyalty points earned from this order
   items          OrderItem[]
   files          OrderFile[]
   createdAt      DateTime    @default(now())
@@ -275,4 +277,17 @@ model BulkDiscountTier {
   discountPct  Float    // discount percentage (e.g. 10 = 10% off)
   active       Boolean  @default(true)
   createdAt    DateTime @default(now())
+}
+
+// ─── Loyalty Points (1 point per ₹10 spent, redeemable for discount) ─────────
+model LoyaltyAccount {
+  id           String   @id @default(cuid())
+  phone        String   @unique // customer identified by phone
+  name         String?
+  email        String?
+  points       Int      @default(0) // current balance
+  totalEarned  Int      @default(0) // lifetime earned
+  totalRedeemed Int     @default(0) // lifetime redeemed
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
