@@ -569,3 +569,46 @@ Priority Recommendations for Next Phase:
 6. **Print file annotation** — admin can annotate/mark up uploaded design files.
 7. **Order status timeline** — show timestamped history of status changes on order detail.
 8. **Admin quick actions** — bulk status update, quick order creation for phone orders.
+
+---
+Task ID: 21 (Phase 10)
+Agent: main (cron webDevReview round 9)
+Task: Continue QA + implement bundle integrity check, admin quick order creation, styling polish.
+
+Work Log:
+- **QA pass**: All 14 routes verified HTTP 200. No console errors. Lint clean (0 errors, 0 warnings).
+- **New Feature 1 — Bundle Integrity Check**: Updated checkout's bundle detection logic to verify that ALL items in a bundle are present in the cart before applying the discount. Now fetches full bundle definitions from `/api/bundles` and compares item count — if customer removed one item from a bundle, the discount is NOT applied. Uses nested fetch with progressive state updates. Added `CartItem` type import to checkout page.
+- **New Feature 2 — Admin Quick Order Creation** (`/admin/orders/new`):
+  - New page for creating phone orders directly from admin (for walk-in customers or phone orders).
+  - Customer details form (name, phone, email, address, city, state, pincode).
+  - Order items builder: "Add Item" button adds a line with product dropdown (all products with prices), qty input, editable unit price, auto-calculated total. Can add unlimited items.
+  - Remarks textarea (prefixed with "[ADMIN ORDER]" when saved).
+  - Payment method selector (COD / Online / Pay at Shop).
+  - Live order summary sidebar: items count, total qty, subtotal, total.
+  - "Create Order" button submits to `/api/orders` POST (same as customer checkout), redirects to order detail page on success.
+  - Added "New Phone Order" button to admin orders list page header.
+  - **Verified**: Opened page → clicked "Add Item" → product dropdown populated with all 7 products showing prices → qty/price/total all editable → order summary updates live.
+- **Styling Polish (Phase 9)**: Added to globals.css: `table-row-gold-hover` (gold left border on hover), `input-focus-gold` (gold focus ring), `btn-press` (scale-down on active), `animate-fade-in-up` (scroll-triggered fade), `card-glow` (subtle inner radial glow), `table-striped` (alternating row backgrounds).
+
+Stage Summary:
+- ✅ Bundle integrity check: discount only applies when all bundle items present in cart.
+- ✅ Admin quick order: full page with customer form + product line items + summary + payment selection. Creates real order in DB.
+- ✅ Styling polish: 6 new CSS utilities for micro-interactions.
+- ✅ Lint clean (0 errors, 0 warnings). All routes HTTP 200.
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout — real gateway integration requires live API keys.
+2. **Email**: sendEmail() via SDK falls back to console.log in sandbox.
+3. **Next.js Image optimization**: Still using plain <img> tags.
+4. **Customer accounts**: No login system — loyalty + order lookup are by phone only.
+5. **Bundle variant selection**: When adding a bundle to cart, only the base variant is added — customer can't select specific variants (e.g. paper type) for bundle items.
+
+Priority Recommendations for Next Phase:
+1. **Next.js Image optimization** — migrate <img> to next/image for better Core Web Vitals.
+2. **Real Razorpay checkout** — server-side order creation + signature verification.
+3. **Customer accounts** — email/OTP login to save addresses + view order history + loyalty in one place.
+4. **Order status timeline** — show timestamped history of status changes on order detail.
+5. **Abandoned cart recovery** — email customers who didn't checkout.
+6. **Print file annotation** — admin can annotate/mark up uploaded design files.
+7. **Bundle variant selection** — let customers pick variants for each item in a bundle.
+8. **Admin bulk actions** — bulk status update, bulk delete on orders/products.

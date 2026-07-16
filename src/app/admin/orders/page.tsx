@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { Search, ShoppingCart, ChevronLeft, ChevronRight, Loader2, Filter, Download } from 'lucide-react'
+import { Search, ShoppingCart, ChevronLeft, ChevronRight, Loader2, Filter, Download, Plus } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -55,9 +55,14 @@ export default function AdminOrdersPage() {
 
   return (
     <AdminShell admin={admin}>
-      <div className="mb-5">
-        <h2 className="font-display text-2xl font-bold text-navy">Orders</h2>
-        <p className="text-sm text-muted-foreground">{total} total orders</p>
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="font-display text-2xl font-bold text-navy">Orders</h2>
+          <p className="text-sm text-muted-foreground">{total} total orders</p>
+        </div>
+        <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-white">
+          <Link href="/admin/orders/new"><Plus className="mr-2 h-4 w-4" /> New Phone Order</Link>
+        </Button>
       </div>
 
       {/* Filters */}

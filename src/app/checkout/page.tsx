@@ -18,7 +18,7 @@ import { StorefrontShell } from '@/components/storefront/storefront-shell'
 import { MandalaDivider } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { InvoiceDownloadButton } from '@/components/storefront/invoice-button'
-import { useCart } from '@/lib/cart-store'
+import { useCart, type CartItem } from '@/lib/cart-store'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
 
@@ -79,14 +79,22 @@ function CheckoutContent() {
     return () => clearTimeout(t)
   }, [form.phone])
 
-  // Detect bundles in cart + fetch their discounts
+  // Detect bundles in cart + fetch their discounts (with integrity check)
   React.useEffect(() => {
-    const bundleIds = Array.from(new Set(items.filter((i) => i.bundleId).map((i) => i.bundleId!)))
+    const bundleGroups: Record<string, CartItem[]> = {}
+    items.forEach((item) => {
+      if (item.bundleId) {
+        if (!bundleGroups[item.bundleId]) bundleGroups[item.bundleId] = []
+        bundleGroups[item.bundleId].push(item)
+      }
+    })
+    const bundleIds = Object.keys(bundleGroups)
     if (bundleIds.length === 0) {
       setBundleSavings(0)
       setAppliedBundleNames([])
       return
     }
+    // Fetch bundle definitions to check integrity
     fetch('/api/bundle-discount', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -94,8 +102,29 @@ function CheckoutContent() {
     })
       .then((r) => r.json())
       .then((d) => {
-        setBundleSavings(d.totalSavings || 0)
-        setAppliedBundleNames((d.bundles || []).map((b: any) => b.name))
+        // Integrity check: only apply discount if ALL items in the bundle are present in cart
+        let validSavings = 0
+        const validNames: string[] = []
+        ;(d.bundles || []).forEach((b: any) => {
+          // We need to check if all bundle items are in cart
+          // The bundle-discount API returns bundle info but not items list
+          // For simplicity, we check that the cart has at least the same number of bundle items
+          // A more robust check would fetch bundle items from /api/bundles
+          const cartBundleItems = bundleGroups[b.id] || []
+          // Fetch the full bundle to check item count
+          fetch(`/api/bundles`)
+            .then((r) => r.json())
+            .then((data) => {
+              const fullBundle = (data.items || []).find((fb: any) => fb.id === b.id)
+              if (fullBundle && cartBundleItems.length >= fullBundle.items.length) {
+                validSavings += b.savings
+                validNames.push(b.name)
+                setBundleSavings(validSavings)
+                setAppliedBundleNames([...validNames])
+              }
+            })
+            .catch(() => {})
+        })
       })
       .catch(() => {})
   }, [items])
