@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, Package, FolderTree, ShoppingCart, Image as ImageIcon,
-  FileText, Star, Settings, LogOut, Menu, ExternalLink, Bell, ChevronRight, MessageSquareQuote, Mail, TrendingDown, Award,
+  FileText, Star, Settings, LogOut, Menu, ExternalLink, Bell, ChevronRight, MessageSquareQuote, Mail, TrendingDown, Award, Tag,
 } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
@@ -15,6 +15,7 @@ interface AdminInfo { id: string; email: string; name?: string; role: string }
 const NAV = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/bundles', label: 'Bundles', icon: Tag },
   { href: '/admin/categories', label: 'Categories', icon: FolderTree },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { href: '/admin/reviews', label: 'Reviews', icon: MessageSquareQuote },

@@ -57,6 +57,7 @@ model Product {
   variants        ProductVariant[]
   orderItems      OrderItem[]
   reviews         ProductReview[]
+  bundleItems     BundleItem[]
 }
 
 model ProductImage {
@@ -290,4 +291,32 @@ model LoyaltyAccount {
   totalRedeemed Int     @default(0) // lifetime redeemed
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+}
+
+// ─── Product Bundles (combo deals — buy together, save) ──────────────────────
+model ProductBundle {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  // Original total price (sum of individual product base prices)
+  originalPrice Float  @default(0)
+  // Bundle discounted price (what customer pays)
+  bundlePrice Float   @default(0)
+  // Savings amount (originalPrice - bundlePrice)
+  savings     Float   @default(0)
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  items       BundleItem[]
+}
+
+model BundleItem {
+  id          String        @id @default(cuid())
+  bundleId    String
+  bundle      ProductBundle @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  qty         Int           @default(1)
 }

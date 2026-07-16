@@ -488,3 +488,46 @@ Priority Recommendations for Next Phase:
 6. **Product bundles** — "buy together, save" combo deals.
 7. **Print file annotation** — admin can annotate/ mark up uploaded design files.
 8. **Multi-currency** — support USD/EUR for international customers.
+
+---
+Task ID: 19 (Phase 8)
+Agent: main (cron webDevReview round 7)
+Task: Continue QA + implement auto-deduct loyalty points, product bundles/combo deals, styling polish.
+
+Work Log:
+- **QA pass**: All 16 routes verified HTTP 200. No console errors. Lint clean (0 errors, 0 warnings). Dev server needed restart after Prisma schema change (added ProductBundle + BundleItem models).
+- **New Feature 1 — Auto-deduct Loyalty Points on Order**:
+  - Updated orders POST API to detect loyalty redemption from order remarks (regex match: `[LOYALTY REDEMPTION: Applied N points...from phone XXX]`).
+  - When detected: finds the customer's LoyaltyAccount by phone (flexible matching — digits only, last-7-digits), verifies they have enough points, then decrements `points` and increments `totalRedeemed`.
+  - This means loyalty points are now automatically deducted when a customer places an order with loyalty redemption — no manual admin action needed.
+  - Error-safe: if deduction fails (e.g. account not found, insufficient points), the order still goes through — error is logged but doesn't block checkout.
+- **New Feature 2 — Product Bundles / Combo Deals**:
+  - **Schema**: Added `ProductBundle` model (name, slug, description, originalPrice, bundlePrice, savings, active, featured) + `BundleItem` model (bundleId, productId, qty) with cascade delete. Added back-relation on Product model.
+  - **Public API** `/api/bundles` — list active bundles (with `?featured=true` filter), includes product details + images for each item.
+  - **Admin API** `/api/admin/bundles` — GET (list all), POST (create with items), PUT (update), DELETE. Auto-calculates originalPrice from individual product prices + savings = originalPrice - bundlePrice.
+  - **Admin page** `/admin/bundles` — card grid showing all bundles with active/featured badges, items list, pricing (original strikethrough + bundle price + savings), edit/delete buttons. "Create Bundle" dialog with: name, description, product picker (dropdown of all products), qty per item, bundle price, auto-calculated original price + savings display, active/featured toggles.
+  - **Admin nav**: Added "Bundles" with Tag icon.
+  - **Storefront**: Built `FeaturedBundles` component — shows on home page (between Featured Products and Why Choose Us). Each bundle card: navy header with "COMBO DEAL" badge + "X% OFF" badge, bundle name + description, items list with thumbnails, pricing (original strikethrough, bundle price, "Save ₹X"), "Add Bundle to Cart" button (adds all items to cart at once).
+  - **Verified**: Created "Business Starter Kit" bundle (Business Cards + Envelopes + Letterheads, original ₹830, bundle ₹699, save ₹131 = 16% off). Marked as featured. Home page shows the bundle card with all details. "Add Bundle to Cart" adds all 3 items to cart.
+
+Stage Summary:
+- ✅ Auto-deduct loyalty: orders API now automatically deducts points from LoyaltyAccount when redemption is detected in order remarks.
+- ✅ Product bundles: full admin CRUD + storefront display. Created test bundle "Business Starter Kit" — visible on home page with 16% off badge, savings amount, and add-to-cart.
+- ✅ Lint clean (0 errors, 0 warnings). All routes HTTP 200.
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout — real gateway integration requires live API keys.
+2. **Email**: sendEmail() via SDK falls back to console.log in sandbox.
+3. **Next.js Image optimization**: Still using plain <img> tags.
+4. **Bundle discount at checkout**: When a bundle is added to cart, items are added at their individual prices — the bundle discount is NOT automatically applied at checkout. (Customer would need to mention the bundle in remarks, or admin applies manually.) Future improvement: apply bundle discount automatically.
+5. **Customer accounts**: No login system — loyalty + order lookup are by phone only.
+
+Priority Recommendations for Next Phase:
+1. **Bundle discount auto-apply** — when bundle items are in cart, automatically apply the bundle price at checkout.
+2. **Next.js Image optimization** — migrate <img> to next/image for better Core Web Vitals.
+3. **Real Razorpay checkout** — server-side order creation + signature verification.
+4. **Customer accounts** — email/OTP login to save addresses + view order history + loyalty in one place.
+5. **Abandoned cart recovery** — email customers who didn't checkout.
+6. **Print file annotation** — admin can annotate/mark up uploaded design files.
+7. **Multi-currency** — support USD/EUR for international customers.
+8. **Subscription products** — recurring orders for letterheads, business cards etc.

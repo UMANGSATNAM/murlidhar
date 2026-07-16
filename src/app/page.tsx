@@ -31,6 +31,7 @@ import { MandalaDivider, SectionHeader } from '@/components/storefront/section-b
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { RecentlyViewed } from '@/components/storefront/recently-viewed'
 import { NewsletterSignup } from '@/components/storefront/newsletter-signup'
+import { FeaturedBundles } from '@/components/storefront/featured-bundles'
 import { formatINR } from '@/lib/format'
 
 interface Banner {
@@ -401,6 +402,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ─── FEATURED BUNDLES ──────────────────────────────────────────────────── */}
+      <FeaturedBundles />
 
       {/* ─── WHY CHOOSE US ────────────────────────────────────────────────────── */}
       <section className="bg-navy-gradient py-16 sm:py-20 text-cream">

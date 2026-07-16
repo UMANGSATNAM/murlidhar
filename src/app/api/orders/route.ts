@@ -123,6 +123,37 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Auto-deduct loyalty points if redemption was applied
+    const loyaltyMatch = remarks?.match(/\[LOYALTY REDEMPTION: Applied (\d+) points.*from phone ([^\]]+)\]/)
+    if (loyaltyMatch) {
+      const pointsToDeduct = parseInt(loyaltyMatch[1], 10)
+      const redeemPhone = loyaltyMatch[2].trim()
+      if (pointsToDeduct > 0) {
+        try {
+          const normalizePhone = (p: string) => p.replace(/\D/g, '')
+          const targetDigits = normalizePhone(redeemPhone)
+          const last7 = targetDigits.slice(-7)
+          // Find matching account
+          const allAccounts = await db.loyaltyAccount.findMany({ take: 1000 })
+          const account = allAccounts.find((a) => {
+            const aDigits = normalizePhone(a.phone)
+            return aDigits === targetDigits || aDigits.includes(targetDigits) || targetDigits.includes(aDigits) || (aDigits.length >= 7 && last7 && aDigits.slice(-7) === last7)
+          })
+          if (account && account.points >= pointsToDeduct) {
+            await db.loyaltyAccount.update({
+              where: { id: account.id },
+              data: {
+                points: { decrement: pointsToDeduct },
+                totalRedeemed: { increment: pointsToDeduct },
+              },
+            })
+          }
+        } catch (e) {
+          console.error('[loyalty:deduct]', e)
+        }
+      }
+    }
+
     return Response.json({ ok: true, order })
   } catch (err: any) {
     console.error('[orders:create]', err)
