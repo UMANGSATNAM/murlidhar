@@ -121,6 +121,14 @@ export default function AdminSettingsPage() {
                 <Label>About Text</Label>
                 <Textarea value={form.aboutText || ''} onChange={(e) => update('aboutText', e.target.value)} rows={6} className="mt-1 resize-none border-border" />
               </div>
+              <div className="sm:col-span-2 border-t border-border pt-4">
+                <Label>Announcement Bar</Label>
+                <p className="mb-2 text-xs text-muted-foreground">A promotional banner shown above the site header. Leave empty to hide.</p>
+                <AnnouncementBarEditor
+                  value={form.announcementBar || ''}
+                  onChange={(v) => update('announcementBar', v)}
+                />
+              </div>
             </div>
           </Card>
         </TabsContent>
@@ -310,6 +318,60 @@ function FaqEditor({ value, onChange }: { value: string; onChange: (v: string) =
       <Button type="button" onClick={add} variant="outline" className="border-navy text-navy">
         <Plus className="mr-2 h-4 w-4" /> Add Question
       </Button>
+    </div>
+  )
+}
+
+// ─── Announcement Bar Editor (inline) ────────────────────────────────────────
+function AnnouncementBarEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [data, setData] = React.useState<{ text: string; link?: string; active: boolean }>({
+    text: '', link: '', active: false,
+  })
+
+  React.useEffect(() => {
+    try {
+      const parsed = JSON.parse(value)
+      setData({ text: parsed.text || '', link: parsed.link || '', active: parsed.active ?? false })
+    } catch {
+      setData({ text: '', link: '', active: false })
+    }
+  }, [value])
+
+  const update = (field: 'text' | 'link' | 'active', val: string | boolean) => {
+    const next = { ...data, [field]: val }
+    setData(next)
+    onChange(JSON.stringify(next))
+  }
+
+  return (
+    <div className="space-y-3 rounded-lg border border-border bg-cream/40 p-3">
+      <div>
+        <Label className="text-xs">Announcement Text</Label>
+        <Input
+          value={data.text}
+          onChange={(e) => update('text', e.target.value)}
+          placeholder="e.g. Free delivery on orders above ₹2,000!"
+          className="mt-1 border-border"
+        />
+      </div>
+      <div>
+        <Label className="text-xs">Link (optional)</Label>
+        <Input
+          value={data.link || ''}
+          onChange={(e) => update('link', e.target.value)}
+          placeholder="/shop or /faq"
+          className="mt-1 border-border"
+        />
+      </div>
+      <div className="flex items-center justify-between rounded-md border border-border bg-white p-2">
+        <Label className="text-xs">Active (show on storefront)</Label>
+        <Switch checked={data.active} onCheckedChange={(c) => update('active', c)} />
+      </div>
+      {data.active && data.text && (
+        <div className="rounded-md bg-gold-gradient px-3 py-2 text-center text-xs font-semibold text-navy">
+          Preview: {data.text}
+        </div>
+      )}
     </div>
   )
 }

@@ -244,3 +244,70 @@ Priority Recommendations for Next Phase:
 6. **Customer accounts** — optional customer login (email/OTP) to save addresses + view order history.
 7. **Abandoned cart recovery** — email customers who added to cart but didn't checkout.
 8. **Admin analytics dashboard** — charts for revenue over time, top products, order status distribution (recharts is installed).
+
+---
+Task ID: 14 (Phase 4)
+Agent: main (cron webDevReview round 3)
+Task: Continue QA + implement next-phase features (analytics dashboard, WYSIWYG editor, customer order lookup, announcement bar, newsletter, server-side FAQ). Mandatory: more styling + more features.
+
+Work Log:
+- **QA pass**: All routes verified HTTP 200. No console errors. Lint clean (0 errors, 0 warnings). Dev server needed one restart (sandbox inactivity).
+- **New Feature 1 — Admin Analytics Dashboard with Charts**: 
+  - Created `/api/admin/analytics` endpoint — returns: revenue by day (last 30 days), order status distribution, payment status distribution, top products by order count, items sold, AOV, conversion rate, total/pending revenue.
+  - Built `AnalyticsCharts` component using recharts with: 4 KPI cards (Total Revenue with week-over-week trend, Total Orders, Avg Order Value, Conversion Rate), Area chart for 30-day revenue (gold gradient fill, custom tooltip), two Pie charts (order status + payment status with brand colors), horizontal Bar chart for top products. All charts use navy/gold theme with custom tooltips.
+  - Replaced the old static stat cards on admin dashboard with the new analytics section.
+- **New Feature 2 — WYSIWYG Blog Editor**: 
+  - Created `MdxEditor` component using @mdxeditor/editor with toolbar (Undo/Redo, Bold/Italic/Underline, Block type select, Lists toggle, Create link, Insert table, Insert thematic break). Custom-styled toolbar and content area to match navy/gold brand theme.
+  - Replaced the plain HTML textarea in admin blog editor with the WYSIWYG editor. Content is now saved as Markdown.
+  - Created `BlogContent` renderer component using react-markdown — auto-detects if content is HTML (legacy posts) or Markdown (new posts) and renders accordingly. Custom component mapping for headings, paragraphs, links, blockquotes, lists, tables with brand styling.
+  - Updated blog detail page to use `BlogContent` instead of `dangerouslySetInnerHTML`.
+  - **Bug fixed**: `toolbarComponent` export doesn't exist in @mdxeditor/editor v3 — changed to `toolbarPlugin`.
+- **New Feature 3 — Customer Order Lookup (`/my-orders`)**: 
+  - Created `/api/orders-by-customer` endpoint — public lookup by phone or email. Fetches all orders and filters in JS (SQLite `contains` is literal and won't match "8849866193" against " 884 986 6193" in DB). Normalizes phone by stripping non-digits, matches on contains or last-7-digits.
+  - Built `/my-orders` page with Phone/Email toggle, search form, results list showing order cards (order number, date, items count, files count, total, payment status, order status, Track link).
+  - Added "My Orders" link to footer Quick Links.
+- **New Feature 4 — Announcement/Promo Bar**: 
+  - Added `announcementBar` JSON field to SiteSettings (text, link, active).
+  - Created `AnnouncementBar` component — gold gradient bar above header, dismissible (sessionStorage), clickable link. Fetches from public settings API.
+  - Seeded default: "Free delivery on orders above ₹2,000 · Same-day printing in Unjha!"
+  - Added `AnnouncementBarEditor` to admin settings Business tab — text input, link input, active toggle, live preview.
+- **New Feature 5 — Newsletter Signup System**: 
+  - Added `NewsletterSubscriber` model to schema (email unique, name, active, source, createdAt).
+  - Created `/api/newsletter` POST endpoint — validates email, upserts (reactivates if exists).
+  - Built `NewsletterSignup` component with two variants: `footer` (compact, dark theme for footer) and `inline` (larger, bordered card for home page). Shows success state after subscribe.
+  - Added newsletter signup to footer (5th column) and home page (inline section before contact CTA).
+  - Created admin Subscribers page (`/admin/subscribers`) — searchable list with email/name/source/date, delete action, CSV export. Added to admin nav.
+  - Created `/api/admin/subscribers` GET/DELETE endpoints.
+- **New Feature 6 — Server-Side FAQ Rendering**: 
+  - Converted `/faq` from client component to server component wrapping client component. FAQs now fetched server-side and passed as initial props → FAQ content + JSON-LD structured data appear in initial HTML (better for SEO crawlers that don't execute JS).
+  - Added per-page metadata (title, description, keywords, canonical, OG) for FAQ page.
+  - Client component still refetches on mount to ensure latest data.
+- **Styling Polish (Phase 4)**: Added to globals.css: `product-card-skeleton` + `skel-img`/`skel-line` skeleton utilities, `stagger-item` animation, `animate-hero-reveal` with delay variants (0.15s/0.3s/0.45s), `badge-premium` gradient badge, `card-img-zoom` smooth image zoom on hover, `gold-corners` decorative L-bracket accents, `tabular-nums` for price alignment, `bg-gold-gradient` animated shimmer background, improved focus-visible styling, smooth scroll padding for anchors.
+
+Stage Summary:
+- ✅ All 6 new features implemented and verified via agent-browser.
+- ✅ Analytics dashboard: 4 KPI cards + 4 charts (area/pie/pie/bar) all render with real data.
+- ✅ WYSIWYG editor: full toolbar with formatting options, content saved as Markdown, blog detail renders both Markdown and legacy HTML.
+- ✅ Customer order lookup: search by phone OR email, finds orders with flexible phone matching, results link to track page.
+- ✅ Announcement bar: gold gradient, dismissible, admin-editable with live preview.
+- ✅ Newsletter: footer + inline variants, saves to DB, admin subscribers page with CSV export.
+- ✅ Server-side FAQ: content + JSON-LD now in initial HTML (verified via curl).
+- ✅ Styling polish: 12+ new CSS utilities + skeleton loaders + hero animations.
+- ✅ Lint clean (0 errors, 0 warnings). All 25 routes tested return expected codes (200 for pages, 405/400/401 for APIs without proper params/auth).
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout — real gateway integration requires live API keys (not available in sandbox).
+2. **Email**: sendEmail() via SDK falls back to console.log in sandbox — newsletter welcome email not sent automatically.
+3. **Next.js Image optimization**: Still using plain <img> tags — migration to next/image with lazy loading would improve Core Web Vitals.
+4. **Customer accounts**: No login system yet — order lookup is by phone/email only (no saved account).
+5. **Abandoned cart recovery**: Not implemented — would require email integration + scheduled job.
+
+Priority Recommendations for Next Phase:
+1. **Next.js Image optimization** — migrate <img> to next/image with lazy loading, responsive sizes, and blur placeholder for better LCP.
+2. **Real Razorpay checkout** — server-side order creation + signature verification when live keys available.
+3. **Customer accounts** — optional email/OTP login to save addresses + view order history without entering phone each time.
+4. **Abandoned cart recovery** — email customers who added to cart but didn't checkout (requires email integration + cron).
+5. **Product comparison** — side-by-side comparison of up to 3 products.
+6. **Advanced search filters** — filter by price range, GSM, paper type, finish on shop page.
+7. **Print file preview** — admin can preview uploaded design files (CDR/PS/PDF) inline in order detail.
+8. **Bulk order discounts** — automatic tiered pricing for large quantities (e.g. 10% off 500+ pcs).

@@ -164,6 +164,13 @@
     -webkit-text-fill-color: transparent;
   }
 
+  /* Gold gradient background (for bars/buttons) */
+  .bg-gold-gradient {
+    background: linear-gradient(90deg, #d4a017 0%, #e6c068 50%, #d4a017 100%);
+    background-size: 200% auto;
+    animation: shimmer 6s linear infinite;
+  }
+
   /* Navy gradient */
   .bg-navy-gradient {
     background: linear-gradient(135deg, #0a1325 0%, #0f1b33 50%, #1b2b4a 100%);
@@ -492,4 +499,125 @@ input[type=number] { -moz-appearance: textfield; }
 @media print {
   .no-print { display: none !important; }
   body { background: white !important; color: black !important; }
+}
+
+/* ─── Phase 4 styling additions ────────────────────────────────────────────── */
+
+@layer utilities {
+  /* Product card skeleton */
+  .product-card-skeleton {
+    @apply overflow-hidden rounded-xl border border-border bg-white;
+  }
+  .product-card-skeleton .skel-img {
+    @apply aspect-square skeleton;
+  }
+  .product-card-skeleton .skel-line {
+    @apply h-3 skeleton rounded;
+  }
+
+  /* Stagger animation entrance */
+  @keyframes stagger-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .stagger-item {
+    opacity: 0;
+    animation: stagger-in 0.5s ease-out forwards;
+  }
+
+  /* Hero text reveal */
+  @keyframes hero-reveal {
+    0% { opacity: 0; transform: translateY(30px); filter: blur(8px); }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  .animate-hero-reveal {
+    animation: hero-reveal 0.8s ease-out forwards;
+  }
+  .animate-hero-reveal-delay-1 { animation: hero-reveal 0.8s ease-out 0.15s forwards; opacity: 0; }
+  .animate-hero-reveal-delay-2 { animation: hero-reveal 0.8s ease-out 0.3s forwards; opacity: 0; }
+  .animate-hero-reveal-delay-3 { animation: hero-reveal 0.8s ease-out 0.45s forwards; opacity: 0; }
+
+  /* Premium badge */
+  .badge-premium {
+    @apply inline-flex items-center gap-1 rounded-full;
+    background: linear-gradient(135deg, #d4a017, #e6c068);
+    color: #0f1b33;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Tooltip arrow */
+  .tooltip-arrow::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background: inherit;
+  }
+
+  /* Smooth image zoom on hover for cards */
+  .card-img-zoom {
+    overflow: hidden;
+  }
+  .card-img-zoom img {
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .card-img-zoom:hover img {
+    transform: scale(1.08);
+  }
+
+  /* Decorative gold corner accents for premium cards */
+  .gold-corners {
+    position: relative;
+  }
+  .gold-corners::before,
+  .gold-corners::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gold);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .gold-corners::before {
+    top: 8px;
+    left: 8px;
+    border-right: 0;
+    border-bottom: 0;
+  }
+  .gold-corners::after {
+    bottom: 8px;
+    right: 8px;
+    border-left: 0;
+    border-top: 0;
+  }
+
+  /* Tabular numbers for prices */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Smooth scroll for in-page anchors */
+html {
+  scroll-padding-top: 100px;
+}
+
+/* Better focus visible */
+*:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove focus outline on mouse click for buttons */
+button:focus:not(:focus-visible) {
+  outline: none;
 }

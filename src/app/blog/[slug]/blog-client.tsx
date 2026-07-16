@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
 import { MandalaDivider } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
+import { BlogContent } from '@/components/storefront/blog-content'
 
 interface Post {
   id: string; title: string; slug: string; excerpt?: string; content: string
@@ -99,10 +100,7 @@ function BlogPostContent() {
         )}
 
         {/* Content */}
-        <div
-          className="prose prose-lg max-w-none prose-headings:font-display prose-headings:text-navy prose-a:text-gold-deep prose-strong:text-navy prose-headings:mt-6"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+        <BlogContent content={post.content} />
 
         <MandalaDivider className="my-10" />
 

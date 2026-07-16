@@ -3,13 +3,14 @@
 import * as React from 'react'
 import Link from 'next/link'
 import {
-  ShoppingCart, IndianRupee, Clock, CheckCircle2, ArrowRight, TrendingUp,
-  Package, AlertCircle, Phone, Mail, FileText,
+  ShoppingCart, ArrowRight, TrendingUp,
+  Package, AlertCircle, FileText,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AdminShell, useAdmin } from '@/components/admin/admin-shell'
 import { useAdminRedirect } from '@/components/admin/use-admin-redirect'
+import { AnalyticsCharts } from '@/components/admin/analytics-charts'
 import { formatINR } from '@/lib/format'
 
 interface Order {
@@ -20,9 +21,6 @@ interface Order {
 
 export default function DashboardPage() {
   const { admin, loading } = useAdmin()
-  const [stats, setStats] = React.useState({
-    totalOrders: 0, pendingOrders: 0, revenue: 0, totalProducts: 0,
-  })
   const [recentOrders, setRecentOrders] = React.useState<Order[]>([])
 
   React.useEffect(() => {
@@ -30,16 +28,7 @@ export default function DashboardPage() {
       .then((r) => r.json())
       .then((d) => {
         setRecentOrders(d.items || [])
-        setStats((s) => ({
-          ...s,
-          totalOrders: d.total || 0,
-          pendingOrders: (d.items || []).filter((o: Order) => o.orderStatus === 'pending').length,
-          revenue: (d.items || []).reduce((a: number, o: Order) => a + (o.paymentStatus === 'paid' ? o.total : 0), 0),
-        }))
       })
-    fetch('/api/admin/products?page=1&pageSize=1', { credentials: 'include' })
-      .then((r) => r.json())
-      .then((d) => setStats((s) => ({ ...s, totalProducts: d.total || 0 })))
   }, [])
 
   useAdminRedirect(admin, loading)
@@ -47,13 +36,6 @@ export default function DashboardPage() {
     return <div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-2 border-gold border-t-transparent" /></div>
   }
   if (!admin) return null
-
-  const statCards = [
-    { label: 'Total Orders', value: stats.totalOrders, icon: ShoppingCart, color: 'bg-navy', accent: 'text-gold' },
-    { label: 'Pending Orders', value: stats.pendingOrders, icon: Clock, color: 'bg-amber-500', accent: 'text-white' },
-    { label: 'Revenue (Paid)', value: formatINR(stats.revenue), icon: IndianRupee, color: 'bg-green-600', accent: 'text-white' },
-    { label: 'Total Products', value: stats.totalProducts, icon: Package, color: 'bg-gold', accent: 'text-navy' },
-  ]
 
   return (
     <AdminShell admin={admin}>
@@ -78,22 +60,8 @@ export default function DashboardPage() {
         </div>
       </Card>
 
-      {/* Stats grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((s) => (
-          <Card key={s.label} className="p-5">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">{s.label}</p>
-                <p className="mt-1 font-display text-2xl font-bold text-navy">{s.value}</p>
-              </div>
-              <div className={`flex h-11 w-11 items-center justify-center rounded-lg ${s.color}`}>
-                <s.icon className={`h-5 w-5 ${s.accent}`} />
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+      {/* Stats grid — now replaced by AnalyticsCharts with KPIs + graphs */}
+      <AnalyticsCharts />
 
       {/* Recent orders */}
       <Card className="mt-6 overflow-hidden">

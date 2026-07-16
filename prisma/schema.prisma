@@ -236,6 +236,8 @@ model SiteSettings {
   metaDescription String?
   // FAQ (JSON array of {q, a} pairs)
   faq             String?
+  // Announcement bar (JSON: { text, link, active })
+  announcementBar String?
   updatedAt       DateTime @updatedAt
 }
 
@@ -254,4 +256,14 @@ model ProductReview {
 
   @@index([productId])
   @@index([active])
+}
+
+// ─── Newsletter Subscribers ───────────────────────────────────────────────────
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  active    Boolean  @default(true)
+  source    String   @default("footer") // footer | popup | checkout
+  createdAt DateTime @default(now())
 }

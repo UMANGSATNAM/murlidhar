@@ -4,6 +4,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { Phone, Mail, MapPin, Clock, Instagram, Facebook, MessageCircle, ArrowUpRight } from 'lucide-react'
 import { MandalaLogo } from './mandala-logo'
+import { NewsletterSignup } from './newsletter-signup'
 
 const SERVICES = [
   'Visiting Cards',
@@ -24,6 +25,7 @@ const QUICK = [
   { href: '/blog', label: 'Blog' },
   { href: '/faq', label: 'FAQ' },
   { href: '/track', label: 'Track Order' },
+  { href: '/my-orders', label: 'My Orders' },
   { href: '/contact', label: 'Contact Us' },
   { href: '/admin', label: 'Admin Login' },
 ]
@@ -61,7 +63,7 @@ export function Footer() {
       </div>
 
       {/* Main footer */}
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-2 lg:grid-cols-5">
         {/* Brand */}
         <div>
           <div className="flex items-center gap-3">
@@ -138,6 +140,11 @@ export function Footer() {
               <span>Open 24 hours · All days</span>
             </li>
           </ul>
+        </div>
+
+        {/* Newsletter */}
+        <div>
+          <NewsletterSignup variant="footer" />
         </div>
       </div>
 

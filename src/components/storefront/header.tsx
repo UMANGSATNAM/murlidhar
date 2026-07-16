@@ -20,6 +20,7 @@ import { useWishlist } from '@/lib/wishlist-store'
 import { CartDrawer } from './cart-drawer'
 import { WishlistDrawer } from './wishlist-drawer'
 import { SearchAutocomplete } from './search-autocomplete'
+import { AnnouncementBar } from './announcement-bar'
 
 const NAV = [
   { href: '/about', label: 'About Us' },
@@ -46,6 +47,9 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
+      {/* Announcement bar (top) */}
+      <AnnouncementBar />
+
       {/* Top utility bar */}
       <div className="bg-navy-deep text-cream/80 text-xs">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-1.5">

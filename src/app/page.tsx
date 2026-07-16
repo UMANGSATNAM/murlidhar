@@ -30,6 +30,7 @@ import { StorefrontShell, StarRating } from '@/components/storefront/storefront-
 import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { RecentlyViewed } from '@/components/storefront/recently-viewed'
+import { NewsletterSignup } from '@/components/storefront/newsletter-signup'
 import { formatINR } from '@/lib/format'
 
 interface Banner {
@@ -503,6 +504,13 @@ export default function HomePage() {
               </Card>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ─── NEWSLETTER CTA ──────────────────────────────────────────────────── */}
+      <section className="py-16">
+        <div className="mx-auto max-w-3xl px-4">
+          <NewsletterSignup variant="inline" />
         </div>
       </section>
 

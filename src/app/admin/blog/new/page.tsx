@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { AdminShell, useAdmin } from '@/components/admin/admin-shell'
 import { useAdminRedirect } from '@/components/admin/use-admin-redirect'
+import { MdxEditor } from '@/components/admin/mdx-editor'
 import { toast as sonnerToast } from 'sonner'
 
 export default function AdminBlogEditorPage() {
@@ -114,9 +115,13 @@ export default function AdminBlogEditorPage() {
                 <Textarea value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} rows={2} className="mt-1 resize-none border-border" placeholder="Short summary shown on blog list..." />
               </div>
               <div>
-                <Label>Content (HTML supported)</Label>
-                <Textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={14} className="mt-1 resize-y border-border font-mono text-sm" placeholder="<p>Your article content...</p>" />
-                <p className="mt-1 text-xs text-muted-foreground">You can use HTML tags like &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;.</p>
+                <Label>Content</Label>
+                <p className="mb-2 text-xs text-muted-foreground">Write using the rich text editor. Supports headings, bold/italic, lists, links, tables, and more.</p>
+                <MdxEditor
+                  value={form.content}
+                  onChange={(md) => setForm({ ...form, content: md })}
+                  placeholder="Start writing your blog post..."
+                />
               </div>
             </div>
           </Card>
