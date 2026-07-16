@@ -35,7 +35,6 @@ function CheckoutContent() {
   const items = useCart((s) => s.items)
   const clear = useCart((s) => s.clear)
   const subtotal = useCart((s) => s.items.reduce((a, i) => a + i.qty * i.unitPrice, 0))
-  const total = subtotal
 
   const [form, setForm] = React.useState({
     customerName: '', phone: '', email: '', address: '', city: '', state: 'Gujarat', pincode: '',
@@ -46,6 +45,38 @@ function CheckoutContent() {
   const [uploading, setUploading] = React.useState(false)
   const [submitting, setSubmitting] = React.useState(false)
   const [placedOrder, setPlacedOrder] = React.useState<{ orderNumber: string; total: number; fullOrder?: any } | null>(null)
+
+  // Loyalty
+  const [loyaltyAccount, setLoyaltyAccount] = React.useState<{ points: number; name?: string | null } | null>(null)
+  const [loyaltyLookupLoading, setLoyaltyLookupLoading] = React.useState(false)
+  const [loyaltyLookedUp, setLoyaltyLookedUp] = React.useState(false)
+  const [applyLoyalty, setApplyLoyalty] = React.useState(false)
+
+  // Lookup loyalty when phone changes (debounced)
+  React.useEffect(() => {
+    const phone = form.phone.trim()
+    if (phone.length < 7) {
+      setLoyaltyAccount(null)
+      setLoyaltyLookedUp(false)
+      setApplyLoyalty(false)
+      return
+    }
+    const t = setTimeout(() => {
+      setLoyaltyLookupLoading(true)
+      fetch(`/api/loyalty?phone=${encodeURIComponent(phone)}`)
+        .then((r) => r.json())
+        .then((d) => {
+          setLoyaltyAccount(d.account || null)
+          setLoyaltyLookedUp(true)
+        })
+        .catch(() => {})
+        .finally(() => setLoyaltyLookupLoading(false))
+    }, 800)
+    return () => clearTimeout(t)
+  }, [form.phone])
+
+  const loyaltyDiscount = applyLoyalty && loyaltyAccount ? Math.min(loyaltyAccount.points, subtotal) : 0
+  const total = Math.max(0, subtotal - loyaltyDiscount)
 
   // Settings for payment options
   const [settings, setSettings] = React.useState<any>(null)
@@ -99,7 +130,9 @@ function CheckoutContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          remarks,
+          remarks: remarks + (loyaltyDiscount > 0
+            ? `\n\n[LOYALTY REDEMPTION: Applied ${loyaltyDiscount} points (₹${loyaltyDiscount} discount) from phone ${form.phone}]`
+            : ''),
           items: orderItems,
           paymentMethod,
           files: files.map((f) => ({ name: f.name, url: f.url, size: f.size })),
@@ -412,6 +445,45 @@ function CheckoutContent() {
                   <span className="text-muted-foreground">Subtotal</span>
                   <span className="font-semibold text-navy">{formatINR(subtotal)}</span>
                 </div>
+
+                {/* Loyalty redemption */}
+                {loyaltyLookupLoading && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Loader2 className="h-3 w-3 animate-spin" /> Checking loyalty points...
+                  </div>
+                )}
+                {loyaltyLookedUp && !loyaltyLookupLoading && loyaltyAccount && loyaltyAccount.points > 0 && (
+                  <div className="rounded-lg border border-gold/30 bg-gold/5 p-3">
+                    <label className="flex cursor-pointer items-start gap-2">
+                      <input
+                        type="checkbox"
+                        checked={applyLoyalty}
+                        onChange={(e) => setApplyLoyalty(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 accent-gold"
+                      />
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-navy">
+                          🎉 You have {loyaltyAccount.points} loyalty points (₹{loyaltyAccount.points})
+                        </p>
+                        <p className="text-[11px] text-muted-foreground">
+                          Apply {Math.min(loyaltyAccount.points, subtotal)} points as ₹{Math.min(loyaltyAccount.points, subtotal)} discount
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                )}
+                {loyaltyLookedUp && !loyaltyLookupLoading && loyaltyAccount && loyaltyAccount.points === 0 && (
+                  <p className="text-[11px] text-muted-foreground">
+                    You have 0 loyalty points. Earn 1 point per ₹10 on delivered orders.
+                  </p>
+                )}
+
+                {loyaltyDiscount > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gold-deep">Loyalty Discount</span>
+                    <span className="font-semibold text-green-600">-{formatINR(loyaltyDiscount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Shipping</span>
                   <span className="font-semibold text-green-600">FREE</span>
@@ -420,6 +492,11 @@ function CheckoutContent() {
                   <span className="font-display text-base font-bold text-navy">Total</span>
                   <span className="font-display text-2xl font-bold text-navy">{formatINR(total)}</span>
                 </div>
+                {loyaltyDiscount > 0 && (
+                  <p className="text-center text-[11px] text-green-600">
+                    You saved {formatINR(loyaltyDiscount)} with loyalty points!
+                  </p>
+                )}
                 <Button type="submit" size="lg" className="mt-2 w-full bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={submitting}>
                   {submitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Placing Order...</>) : (<>Place Order <ArrowRight className="ml-2 h-4 w-4" /></>)}
                 </Button>

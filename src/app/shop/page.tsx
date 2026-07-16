@@ -112,6 +112,8 @@ function ShopContent() {
               onCategoryChange={(slug) => setParam('category', slug)}
               priceRange={priceRange}
               onPriceChange={setPriceRange}
+              sort={sort}
+              onSortChange={(s) => setParam('sort', s)}
             />
           </aside>
 
@@ -145,6 +147,8 @@ function ShopContent() {
                         onCategoryChange={(slug) => setParam('category', slug)}
                         priceRange={priceRange}
                         onPriceChange={setPriceRange}
+                        sort={sort}
+                        onSortChange={(s) => setParam('sort', s)}
                       />
                     </div>
                   </SheetContent>
@@ -278,13 +282,24 @@ function FilterPanel({
   onCategoryChange,
   priceRange,
   onPriceChange,
+  sort,
+  onSortChange,
 }: {
   categories: Category[]
   selectedCategory: string
   onCategoryChange: (slug: string) => void
   priceRange: [number, number]
   onPriceChange: (r: [number, number]) => void
+  sort: string
+  onSortChange: (s: string) => void
 }) {
+  const pricePresets = [
+    { label: 'Under ₹500', min: 0, max: 500 },
+    { label: '₹500–₹1,000', min: 500, max: 1000 },
+    { label: '₹1,000–₹5,000', min: 1000, max: 5000 },
+    { label: '₹5,000+', min: 5000, max: 25000 },
+  ]
+
   return (
     <div className="space-y-6">
       <div>
@@ -334,6 +349,48 @@ function FilterPanel({
             <span className="text-muted-foreground">to</span>
             <span className="rounded bg-secondary px-2 py-1 font-medium text-navy">{formatINR(priceRange[1])}</span>
           </div>
+          {/* Quick price presets */}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {pricePresets.map((p) => {
+              const active = priceRange[0] === p.min && priceRange[1] === p.max
+              return (
+                <button
+                  key={p.label}
+                  onClick={() => onPriceChange([p.min, p.max])}
+                  className={`rounded-full border px-2.5 py-0.5 text-[10px] font-medium transition ${
+                    active
+                      ? 'border-gold bg-gold text-navy'
+                      : 'border-border bg-white text-muted-foreground hover:border-gold/50 hover:text-navy'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-6">
+        <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wide text-navy">Sort By</h3>
+        <div className="space-y-1">
+          {[
+            { value: 'newest', label: 'Newest First' },
+            { value: 'name', label: 'Name (A–Z)' },
+            { value: 'price-asc', label: 'Price: Low to High' },
+            { value: 'price-desc', label: 'Price: High to Low' },
+          ].map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => onSortChange(opt.value)}
+              className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition ${
+                sort === opt.value ? 'bg-secondary font-semibold text-navy' : 'text-foreground/70 hover:bg-secondary'
+              }`}
+            >
+              {sort === opt.value && <span className="h-1.5 w-1.5 rounded-full bg-gold" />}
+              {opt.label}
+            </button>
+          ))}
         </div>
       </div>
 

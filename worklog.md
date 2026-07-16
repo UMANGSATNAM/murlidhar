@@ -439,3 +439,52 @@ Priority Recommendations for Next Phase:
 6. **Advanced shop filters** — filter by GSM, paper type, finish.
 7. **Product bundles** — "buy together, save" combo deals.
 8. **Admin order export** — CSV/Excel export of all orders with filters.
+
+---
+Task ID: 18 (Phase 7)
+Agent: main (cron webDevReview round 6)
+Task: Continue QA + implement admin order CSV export, automated loyalty redemption at checkout, advanced shop filters.
+
+Work Log:
+- **QA pass**: All 15 routes verified HTTP 200. No console errors. Lint clean (0 errors, 0 warnings).
+- **New Feature 1 — Admin Order CSV Export**:
+  - Created `/api/admin/orders/export` endpoint — accepts same filters as orders list (status, payment, q, from, to date range). Returns a CSV file with 20 columns: Order Number, Date, Customer Name, Phone, Email, Address, City, State, Pincode, Items (summary with variant + qty + price), Subtotal, Shipping, Total, Payment Method, Payment Status, Order Status, Loyalty Points, Files Count, Remarks, Internal Notes. Proper CSV escaping (quotes, newlines). Up to 1000 orders per export.
+  - Added "Export CSV" button to admin orders list page (next to filter dropdowns). Downloads with current filters applied. Filename includes date.
+  - **Verified**: curl test returned proper CSV with all order data including items summary and internal notes.
+- **New Feature 2 — Automated Loyalty Redemption at Checkout**:
+  - Checkout page now auto-looks up loyalty account when customer enters phone number (debounced 800ms). Shows "Checking loyalty points..." loader while looking up.
+  - If customer has points > 0: shows gold-bordered card with "🎉 You have N loyalty points (₹N)" and a checkbox to "Apply N points as ₹N discount". Checkbox toggles `applyLoyalty` state.
+  - When applied: order summary shows "Loyalty Discount -₹N" line (green), total recalculates to subtotal minus discount, "You saved ₹N with loyalty points!" message appears.
+  - On order submission: loyalty redemption info is appended to order remarks as "[LOYALTY REDEMPTION: Applied N points (₹N discount) from phone XXX]" so admin can verify and manually deduct points from the customer's loyalty account.
+  - **Verified**: Added product to cart → went to checkout → entered phone "8849866193" → loyalty lookup found 189 points → checked "Apply" box → order summary showed "Loyalty Discount -₹189", "Total ₹261" (down from ₹450), "You saved ₹189 with loyalty points!".
+  - **Bug fixed**: `const total` was declared twice (once as `subtotal`, once with loyalty deduction) — removed the duplicate.
+- **New Feature 3 — Advanced Shop Filters**:
+  - Enhanced `FilterPanel` with:
+    1. **Quick price presets** — 4 one-click buttons: "Under ₹500", "₹500–₹1,000", "₹1,000–₹5,000", "₹5,000+". Active preset shows gold background.
+    2. **Sort By section** — 4 radio-style buttons: Newest First, Name (A–Z), Price: Low to High, Price: High to Low. Active sort shows gold dot indicator + secondary background.
+  - Updated both desktop sidebar and mobile sheet filter panels to include sort controls.
+  - Removed the duplicate sort dropdown from the toolbar (now in sidebar) for cleaner UX.
+  - **Verified**: Shop page shows Categories, Price Range with presets, and Sort By sections in sidebar.
+
+Stage Summary:
+- ✅ CSV export: admin orders page has "Export CSV" button, API returns proper CSV with 20 columns + all order data.
+- ✅ Loyalty redemption: checkout auto-looks up points by phone, shows checkbox to apply, recalculates total, records redemption in order remarks.
+- ✅ Advanced shop filters: price presets + sort options in sidebar (both desktop + mobile).
+- ✅ Lint clean (0 errors, 0 warnings). All routes HTTP 200.
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout — real gateway integration requires live API keys.
+2. **Email**: sendEmail() via SDK falls back to console.log in sandbox.
+3. **Next.js Image optimization**: Still using plain <img> tags.
+4. **Loyalty deduction**: When customer redeems points at checkout, the points are NOT automatically deducted from their LoyaltyAccount — admin must manually verify and deduct. (The redemption is recorded in order remarks for admin to process.)
+5. **Customer accounts**: No login system — loyalty + order lookup are by phone only.
+
+Priority Recommendations for Next Phase:
+1. **Auto-deduct loyalty points** — when order with loyalty redemption is placed, automatically deduct points from LoyaltyAccount (currently manual).
+2. **Next.js Image optimization** — migrate <img> to next/image for better Core Web Vitals.
+3. **Real Razorpay checkout** — server-side order creation + signature verification.
+4. **Customer accounts** — email/OTP login to save addresses + view order history + loyalty in one place.
+5. **Abandoned cart recovery** — email customers who didn't checkout.
+6. **Product bundles** — "buy together, save" combo deals.
+7. **Print file annotation** — admin can annotate/ mark up uploaded design files.
+8. **Multi-currency** — support USD/EUR for international customers.

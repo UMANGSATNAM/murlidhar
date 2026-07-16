@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { Search, ShoppingCart, ChevronLeft, ChevronRight, Loader2, Filter } from 'lucide-react'
+import { Search, ShoppingCart, ChevronLeft, ChevronRight, Loader2, Filter, Download } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -87,6 +87,19 @@ export default function AdminOrdersPage() {
           <option value="">All Payments</option>
           {PAYMENT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
+        <Button
+          asChild
+          variant="outline"
+          className="border-navy text-navy hover:bg-navy hover:text-white"
+        >
+          <a
+            href={`/api/admin/orders/export?status=${statusFilter}&payment=${paymentFilter}&q=${encodeURIComponent(q)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Download className="mr-2 h-4 w-4" /> Export CSV
+          </a>
+        </Button>
       </div>
 
       <Card className="overflow-hidden">
