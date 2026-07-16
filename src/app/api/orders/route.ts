@@ -30,7 +30,25 @@ export async function POST(request: NextRequest) {
 
     const subtotal = items.reduce((s: number, i: any) => s + i.qty * i.unitPrice, 0)
     const shipping = 0 // free shipping for now
-    const total = subtotal + shipping
+
+    // Apply bulk discount based on total quantity across all items
+    const totalQty = items.reduce((s: number, i: any) => s + i.qty, 0)
+    const bulkTiers = await db.bulkDiscountTier.findMany({ where: { active: true } })
+    let bulkDiscount = 0
+    let appliedTier: { minQty: number; discountPct: number } | null = null
+    if (bulkTiers.length > 0) {
+      for (const t of bulkTiers) {
+        if (totalQty >= t.minQty) {
+          if (!appliedTier || t.discountPct > appliedTier.discountPct) {
+            appliedTier = { minQty: t.minQty, discountPct: t.discountPct }
+          }
+        }
+      }
+      if (appliedTier) {
+        bulkDiscount = Math.round(subtotal * (appliedTier.discountPct / 100) * 100) / 100
+      }
+    }
+    const total = Math.max(0, subtotal - bulkDiscount + shipping)
 
     const order = await db.order.create({
       data: {
@@ -42,7 +60,11 @@ export async function POST(request: NextRequest) {
         city,
         state,
         pincode,
-        remarks,
+        remarks: remarks
+          ? `${remarks}${appliedTier ? `\n\n[Bulk Discount Applied: ${appliedTier.discountPct}% off for ordering ${totalQty}+ units — You saved ₹${bulkDiscount.toFixed(2)}]` : ''}`
+          : appliedTier
+          ? `[Bulk Discount Applied: ${appliedTier.discountPct}% off for ordering ${totalQty}+ units — You saved ₹${bulkDiscount.toFixed(2)}]`
+          : null,
         subtotal,
         shipping,
         total,

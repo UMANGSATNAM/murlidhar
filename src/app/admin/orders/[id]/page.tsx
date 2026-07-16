@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label'
 import { AdminShell, useAdmin } from '@/components/admin/admin-shell'
 import { useAdminRedirect } from '@/components/admin/use-admin-redirect'
 import { InvoiceDownloadButton } from '@/components/storefront/invoice-button'
+import { FilePreviewButton } from '@/components/admin/file-preview-button'
 import { StatusBadge } from '@/app/admin/dashboard/page'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
@@ -202,27 +203,40 @@ export default function AdminOrderDetailPage() {
               {order.files.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No files uploaded with this order.</p>
               ) : (
-                <ul className="space-y-2">
-                  {order.files.map((f) => (
-                    <li key={f.id} className="flex items-center justify-between gap-2 rounded-md border border-border bg-secondary/30 p-3">
-                      <div className="flex min-w-0 items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-navy text-cream">
-                          <FileText className="h-4 w-4" />
+                <ul className="space-y-3">
+                  {order.files.map((f) => {
+                    const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f.fileName)
+                    const isPdf = /\.pdf$/i.test(f.fileName)
+                    return (
+                      <li key={f.id} className="rounded-md border border-border bg-secondary/30 p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex min-w-0 items-center gap-3">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-navy text-cream">
+                              <FileText className="h-4 w-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-semibold text-navy">{f.fileName}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {(f.fileSize / 1024).toFixed(0)} KB · {f.fileType || (isImage ? 'image' : isPdf ? 'PDF' : 'file')}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex shrink-0 gap-1">
+                            {(isImage || isPdf) && (
+                              <FilePreviewButton file={f} />
+                            )}
+                            <a
+                              href={f.filePath}
+                              download={f.fileName}
+                              className="inline-flex items-center gap-1.5 rounded-md bg-gold px-3 py-1.5 text-xs font-bold text-navy hover:bg-gold-deep hover:text-white"
+                            >
+                              <Download className="h-3.5 w-3.5" /> Download
+                            </a>
+                          </div>
                         </div>
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-navy">{f.fileName}</p>
-                          <p className="text-xs text-muted-foreground">{(f.fileSize / 1024).toFixed(0)} KB · {f.fileType || 'file'}</p>
-                        </div>
-                      </div>
-                      <a
-                        href={f.filePath}
-                        download={f.fileName}
-                        className="inline-flex items-center gap-1.5 rounded-md bg-gold px-3 py-1.5 text-xs font-bold text-navy hover:bg-gold-deep hover:text-cream"
-                      >
-                        <Download className="h-3.5 w-3.5" /> Download
-                      </a>
-                    </li>
-                  ))}
+                      </li>
+                    )
+                  })}
                 </ul>
               )}
             </div>

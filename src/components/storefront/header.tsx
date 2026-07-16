@@ -11,14 +11,17 @@ import {
   Search,
   ChevronDown,
   Heart,
+  GitCompare,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { LogoWordmark, MandalaLogo } from './mandala-logo'
 import { useCart } from '@/lib/cart-store'
 import { useWishlist } from '@/lib/wishlist-store'
+import { useCompare } from '@/lib/compare-store'
 import { CartDrawer } from './cart-drawer'
 import { WishlistDrawer } from './wishlist-drawer'
+import { CompareDrawer } from './compare-drawer'
 import { SearchAutocomplete } from './search-autocomplete'
 import { AnnouncementBar } from './announcement-bar'
 
@@ -36,6 +39,7 @@ export function Header() {
   const [searchOpen, setSearchOpen] = React.useState(false)
   const cartCount = useCart((s) => s.items.reduce((a, i) => a + i.qty, 0))
   const wishlistCount = useWishlist((s) => s.items.length)
+  const compareCount = useCompare((s) => s.items.length)
   const [scrolled, setScrolled] = React.useState(false)
 
   React.useEffect(() => {
@@ -129,6 +133,21 @@ export function Header() {
                 )}
               </button>
             </WishlistDrawer>
+
+            {/* Compare */}
+            <CompareDrawer>
+              <button
+                className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-navy hover:bg-secondary transition-colors"
+                aria-label={`Compare ${compareCount} products`}
+              >
+                <GitCompare className="h-5 w-5" />
+                {compareCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-bold text-navy">
+                    {compareCount}
+                  </span>
+                )}
+              </button>
+            </CompareDrawer>
 
             <CartDrawer>
               <button

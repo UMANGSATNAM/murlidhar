@@ -267,3 +267,12 @@ model NewsletterSubscriber {
   source    String   @default("footer") // footer | popup | checkout
   createdAt DateTime @default(now())
 }
+
+// ─── Bulk Order Discount Tiers (site-wide) ────────────────────────────────────
+model BulkDiscountTier {
+  id           String   @id @default(cuid())
+  minQty       Int      // minimum quantity to trigger this tier
+  discountPct  Float    // discount percentage (e.g. 10 = 10% off)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+}

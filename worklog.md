@@ -338,3 +338,54 @@ Stage Summary:
 - ✅ Admin product editor completely rebuilt with smooth UX: templates, auto-slug, quick buttons, sticky save bar, image reordering.
 - ✅ Tested via agent-browser: login → dashboard (white theme) → product editor → clicked "Visiting Cards" template → verified name/slug/description/variants auto-filled → typed custom name → verified auto-slug generated.
 - ✅ Lint clean (0 errors, 0 warnings). All routes HTTP 200.
+
+---
+Task ID: 16 (Phase 5)
+Agent: main (cron webDevReview round 4)
+Task: Continue QA + implement product comparison, bulk order discounts, print file preview, styling polish.
+
+Work Log:
+- **QA pass**: All 24 routes verified HTTP 200. No console errors. Lint clean (0 errors, 0 warnings). Dev server needed restart after Prisma schema change (added BulkDiscountTier model).
+- **New Feature 1 — Product Comparison**:
+  - Created `compare-store.ts` (Zustand + persist, max 3 items) storing product snapshot (id, name, slug, image, basePrice, rating, reviewCount, category, shortDesc, turnaroundNote).
+  - Built `CompareDrawer` (slide-out from right) showing saved items with remove + clear actions, links to compare page.
+  - Built `/compare` page with side-by-side comparison table (sticky first column with row labels, product columns with image/name/price/rating/category/turnaround/description/actions). Horizontal scroll on mobile. Add-to-cart + view-details buttons per product.
+  - Added Compare icon to header (with count badge, gold when items present).
+  - Added Compare toggle button on product page image overlay (between wishlist and WhatsApp share). Shows navy/gold when active. Caps at 3 items with toast warning.
+  - Added "Add to compare" on product image hover overlay.
+- **New Feature 2 — Bulk Order Discounts**:
+  - Added `BulkDiscountTier` model to schema (minQty, discountPct, active).
+  - Seeded 4 default tiers: 10+ units → 5% off, 25+ → 10%, 50+ → 15%, 100+ → 20%.
+  - Created `/api/bulk-tiers` (public GET) and `/api/admin/bulk-tiers` (admin GET/POST/PUT/DELETE) endpoints.
+  - Updated `/api/orders` POST to apply bulk discount automatically: calculates total quantity across all items, finds highest applicable tier, applies discount to subtotal, records the discount in order remarks (e.g. "[Bulk Discount Applied: 10% off for ordering 25+ units — You saved ₹X]"), sets the discounted total.
+  - Built `BulkDiscountBanner` component for cart page — shows: current unlocked tier (with savings amount), OR "Add X more to unlock Y% off" message, animated progress bar to next tier, all tier badges (color-coded: green=current, light green=reached, gray=not reached).
+  - Created admin `/admin/bulk-tiers` page — explanation banner, add new tier form (min qty + discount %), editable table of existing tiers (inline edit + active toggle + delete). Added to admin nav as "Bulk Discounts".
+  - Created `bulk-discount.ts` helper with `getActiveBulkTiers()`, `getApplicableTier()`, `applyBulkDiscount()`.
+- **New Feature 3 — Print File Preview in Admin**:
+  - Built `FilePreviewButton` component — opens a dialog modal with inline preview of image files (with zoom in/out controls, 0.5x–4x) and PDF files (iframe embed). Download button included. Non-previewable files show a download prompt.
+  - Updated admin order detail page to show "Preview" button next to "Download" for image/PDF files. Files are auto-detected by extension (.jpg/.jpeg/.png/.gif/.webp/.svg for images, .pdf for PDFs).
+- **Styling Polish (Phase 5)**: Added to globals.css: `product-card` (premium hover with elevation + gold border), `nav-link` (animated gold underline that draws on hover), `img-overlay-hover` (gradient overlay), `badge-shine` (gold badge with light sweep), `pulse-attention` (attention-grabbing pulse), `icon-btn` (smooth scale on hover/active), `table-row-hover` (gold tint on hover), `dotted-divider-gold` (alternative decorative divider).
+
+Stage Summary:
+- ✅ Product comparison: full flow tested (add 2 products from product pages → open /compare → side-by-side table renders with all attributes → remove items works → "Add more from shop" hint when < 3 items).
+- ✅ Bulk discounts: 4 tiers seeded, banner shows on cart with progress bar + tier badges, admin page allows full CRUD, checkout API applies discount automatically and records in order remarks.
+- ✅ Print file preview: Preview button appears for image/PDF files in admin order detail, opens dialog with zoom controls for images and iframe for PDFs.
+- ✅ Styling polish: 9 new CSS utilities for micro-interactions.
+- ✅ Lint clean (0 errors, 0 warnings). All 22 routes tested return HTTP 200.
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout — real gateway integration requires live API keys.
+2. **Email**: sendEmail() via SDK falls back to console.log in sandbox.
+3. **Next.js Image optimization**: Still using plain <img> tags — migration to next/image would improve Core Web Vitals.
+4. **Customer accounts**: No login system — order lookup is by phone/email only.
+5. **Abandoned cart recovery**: Not implemented.
+
+Priority Recommendations for Next Phase:
+1. **Next.js Image optimization** — migrate <img> to next/image with lazy loading + responsive sizes.
+2. **Real Razorpay checkout** — server-side order creation + signature verification.
+3. **Customer accounts** — email/OTP login to save addresses + view order history.
+4. **Abandoned cart recovery** — email customers who didn't checkout.
+5. **Advanced shop filters** — filter by GSM, paper type, finish (faceted search).
+6. **Product bundle deals** — "buy visiting cards + letterheads together for X% off".
+7. **Loyalty points** — customers earn points per order, redeem for discounts.
+8. **Admin order notes (internal)** — private notes visible only to admin staff, not customer.

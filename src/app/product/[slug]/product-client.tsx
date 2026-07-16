@@ -25,6 +25,7 @@ import {
   Share2,
   MessageCircle,
   ZoomIn,
+  GitCompare,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -46,6 +47,7 @@ import { RecentlyViewed } from '@/components/storefront/recently-viewed'
 import { ProductFAQ } from '@/components/storefront/product-faq'
 import { useCart } from '@/lib/cart-store'
 import { useWishlist } from '@/lib/wishlist-store'
+import { useCompare } from '@/lib/compare-store'
 import { useRecentlyViewed } from '@/lib/recently-viewed-store'
 import { formatINR } from '@/lib/format'
 import { useToast } from '@/hooks/use-toast'
@@ -99,6 +101,8 @@ function ProductDetailContent() {
   const addItem = useCart((s) => s.addItem)
   const wishlistHas = useWishlist((s) => s.has)
   const wishlistToggle = useWishlist((s) => s.toggle)
+  const compareHas = useCompare((s) => s.has)
+  const compareToggle = useCompare((s) => s.toggle)
   const addRecentlyViewed = useRecentlyViewed((s) => s.add)
 
   const [product, setProduct] = React.useState<Product | null>(null)
@@ -281,6 +285,34 @@ function ProductDetailContent() {
     window.open(`https://wa.me/919510737852?text=${encodeURIComponent(text)}`, '_blank')
   }
 
+  // ─── Compare ───────────────────────────────────────────────────────────────
+  const handleToggleCompare = () => {
+    if (!product) return
+    if (compareHas(product.id)) {
+      compareToggle({
+        productId: product.id, name: product.name, slug: product.slug,
+        image: product.images[0]?.url, basePrice: currentPrice,
+        rating: product.rating, reviewCount: product.reviewCount,
+        category: product.category?.name, shortDesc: product.shortDesc,
+        turnaroundNote: product.turnaroundNote,
+      })
+      sonnerToast.success('Removed from compare')
+      return
+    }
+    if (useCompare.getState().items.length >= 3) {
+      sonnerToast.error('Compare is full (max 3). Remove one first.')
+      return
+    }
+    compareToggle({
+      productId: product.id, name: product.name, slug: product.slug,
+      image: product.images[0]?.url, basePrice: currentPrice,
+      rating: product.rating, reviewCount: product.reviewCount,
+      category: product.category?.name, shortDesc: product.shortDesc,
+      turnaroundNote: product.turnaroundNote,
+    })
+    sonnerToast.success('Added to compare')
+  }
+
   // ─── Submit review ─────────────────────────────────────────────────────────
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -401,7 +433,7 @@ function ProductDetailContent() {
                   {product.category.name}
                 </span>
               )}
-              {/* Wishlist + share buttons overlay */}
+              {/* Wishlist + share + compare buttons overlay */}
               <div className="absolute right-4 top-4 flex flex-col gap-2">
                 <button
                   onClick={handleToggleWishlist}
@@ -413,6 +445,17 @@ function ProductDetailContent() {
                   aria-label={wishlistHas(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
                 >
                   <Heart className={`h-4 w-4 ${wishlistHas(product.id) ? 'fill-current' : ''}`} />
+                </button>
+                <button
+                  onClick={handleToggleCompare}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full backdrop-blur transition-all ${
+                    compareHas(product.id)
+                      ? 'bg-navy text-gold shadow-navy'
+                      : 'bg-white/90 text-navy hover:bg-navy hover:text-gold'
+                  }`}
+                  aria-label={compareHas(product.id) ? 'Remove from compare' : 'Add to compare'}
+                >
+                  <GitCompare className="h-4 w-4" />
                 </button>
                 <button
                   onClick={handleWhatsAppShare}

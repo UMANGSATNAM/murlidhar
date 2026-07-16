@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
 import { MandalaDivider } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
+import { BulkDiscountBanner } from '@/components/storefront/bulk-discount-banner'
 import { useCart } from '@/lib/cart-store'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
@@ -233,7 +234,10 @@ function CartContent() {
           </div>
 
           {/* Summary */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
+          <div className="lg:sticky lg:top-24 lg:self-start space-y-4">
+            {/* Bulk discount progress */}
+            <BulkDiscountBanner />
+
             <Card className="card-premium overflow-hidden">
               <div className="bg-navy-gradient p-5 text-cream">
                 <h2 className="font-display text-lg font-bold">Order Summary</h2>
