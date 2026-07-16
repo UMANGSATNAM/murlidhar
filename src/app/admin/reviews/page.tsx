@@ -96,7 +96,7 @@ export default function AdminReviewsPage() {
           {reviews.map((r) => (
             <Card key={r.id} className={`overflow-hidden ${!r.active ? 'border-amber-300 bg-amber-50/30' : ''}`}>
               <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy font-display font-bold text-gold">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy font-display font-bold text-teal">
                   {r.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -104,7 +104,7 @@ export default function AdminReviewsPage() {
                     <p className="font-semibold text-navy">{r.name}</p>
                     <div className="flex">
                       {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} className={`h-3.5 w-3.5 ${i < r.rating ? 'fill-gold text-gold' : 'text-muted-foreground/30'}`} />
+                        <Star key={i} className={`h-3.5 w-3.5 ${i < r.rating ? 'fill-teal text-teal' : 'text-muted-foreground/30'}`} />
                       ))}
                     </div>
                     <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${

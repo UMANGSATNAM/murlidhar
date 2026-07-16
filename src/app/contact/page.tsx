@@ -102,7 +102,7 @@ export default function ContactPage() {
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">Our Shop</p>
                 <p className="font-display text-base font-bold text-navy">Shreeji Super Market, 7, Unjha, Gujarat 384170</p>
                 <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-                  <Star className="h-3.5 w-3.5 fill-gold text-gold" /> 5.0 Google Rating
+                  <Star className="h-3.5 w-3.5 fill-teal text-teal" /> 5.0 Google Rating
                 </p>
               </div>
             </Card>

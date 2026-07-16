@@ -65,7 +65,7 @@ export default function AboutPage() {
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {TRUST.map((b, i) => (
               <Card key={b.title} className="card-premium p-6 text-center">
-                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-navy text-gold">
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-navy text-teal">
                   <b.icon className="h-7 w-7" />
                 </div>
                 <h3 className="font-display text-base font-bold text-navy">{b.title}</h3>
@@ -103,9 +103,9 @@ export default function AboutPage() {
                 The AccurioPress C4065 is a colour production printing system that redefines print quality, productivity and media flexibility — enabling us to deliver print-shop-grade results on every single job.
               </p>
               <div className="mt-6 grid grid-cols-3 gap-4 border-t border-cream/10 pt-4 text-center">
-                <div><p className="font-display text-2xl font-bold text-gold">65</p><p className="text-xs text-cream/60">ppm speed</p></div>
-                <div><p className="font-display text-2xl font-bold text-gold">400</p><p className="text-xs text-cream/60">GSM max</p></div>
-                <div><p className="font-display text-2xl font-bold text-gold">1200</p><p className="text-xs text-cream/60">dpi</p></div>
+                <div><p className="font-display text-2xl font-bold text-teal">65</p><p className="text-xs text-cream/60">ppm speed</p></div>
+                <div><p className="font-display text-2xl font-bold text-teal">400</p><p className="text-xs text-cream/60">GSM max</p></div>
+                <div><p className="font-display text-2xl font-bold text-teal">1200</p><p className="text-xs text-cream/60">dpi</p></div>
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@ export default function AboutPage() {
                 <Phone className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
                   <p className="text-xs uppercase tracking-wide text-cream/60">Call us</p>
-                  <a href="tel:9510737852" className="font-display text-base font-bold text-cream hover:text-gold">9510737852</a>
+                  <a href="tel:9510737852" className="font-display text-base font-bold text-cream hover:text-teal">9510737852</a>
                   <span className="text-cream/40"> · </span>
                   <span className="text-sm text-cream/80">079160 29127</span>
                 </div>
@@ -156,7 +156,7 @@ export default function AboutPage() {
                 <Mail className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
                   <p className="text-xs uppercase tracking-wide text-cream/60">Email</p>
-                  <a href="mailto:murlidharoffset84@gmail.com" className="font-display text-base font-bold text-cream hover:text-gold">murlidharoffset84@gmail.com</a>
+                  <a href="mailto:murlidharoffset84@gmail.com" className="font-display text-base font-bold text-cream hover:text-teal">murlidharoffset84@gmail.com</a>
                 </div>
               </div>
               <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">

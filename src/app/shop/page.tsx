@@ -88,7 +88,7 @@ function ShopContent() {
       <section className="bg-navy-gradient py-12 text-cream">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex items-center gap-2 text-xs text-cream/60">
-            <Link href="/" className="hover:text-gold">Home</Link>
+            <Link href="/" className="hover:text-teal">Home</Link>
             <span>/</span>
             <span className="text-gold">Shop</span>
           </div>

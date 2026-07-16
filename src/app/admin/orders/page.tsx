@@ -134,7 +134,7 @@ export default function AdminOrdersPage() {
                 {orders.map((o) => (
                   <tr key={o.id} className="hover:bg-secondary/30">
                     <td className="px-4 py-3">
-                      <Link href={`/admin/orders/${o.id}`} className="font-semibold text-navy hover:text-gold-deep">{o.orderNumber}</Link>
+                      <Link href={`/admin/orders/${o.id}`} className="font-semibold text-navy hover:text-teal">{o.orderNumber}</Link>
                       {(o._count?.files ?? 0) > 0 && <span className="ml-1 text-[10px] text-gold-deep">📎 {o._count?.files}</span>}
                     </td>
                     <td className="px-4 py-3">

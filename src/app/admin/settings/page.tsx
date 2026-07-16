@@ -295,7 +295,7 @@ function FaqEditor({ value, onChange }: { value: string; onChange: (v: string) =
       {items.map((item, i) => (
         <div key={i} className="rounded-lg border border-border bg-secondary/30 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs font-bold text-gold">{i + 1}</span>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs font-bold text-teal">{i + 1}</span>
             <button type="button" onClick={() => remove(i)} className="text-muted-foreground hover:text-destructive">
               <Trash2 className="h-4 w-4" />
             </button>

@@ -54,7 +54,7 @@ export default function ServicesPage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {SERVICES.map((s) => (
               <Card key={s.name} className="group card-premium flex flex-col p-6 transition hover:-translate-y-1 hover:shadow-navy">
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-navy text-gold transition group-hover:bg-gold group-hover:text-navy">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-navy text-teal transition group-hover:bg-gold group-hover:text-navy">
                   <s.icon className="h-7 w-7" />
                 </div>
                 <h3 className="font-display text-lg font-bold text-navy">{s.name}</h3>
@@ -64,7 +64,7 @@ export default function ServicesPage() {
                     <span key={t} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium text-navy">{t}</span>
                   ))}
                 </div>
-                <Button asChild variant="link" className="mt-3 justify-start p-0 text-gold-deep hover:text-gold">
+                <Button asChild variant="link" className="mt-3 justify-start p-0 text-gold-deep hover:text-teal">
                   <Link href={s.link}>Order Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
               </Card>

@@ -47,7 +47,7 @@ export function StarRating({
               width={size}
               height={size}
               viewBox="0 0 24 24"
-              className={isFull || isHalf ? 'text-gold' : 'text-muted-foreground/30'}
+              className={isFull || isHalf ? 'text-teal' : 'text-muted-foreground/30'}
               fill="currentColor"
             >
               {isHalf ? (

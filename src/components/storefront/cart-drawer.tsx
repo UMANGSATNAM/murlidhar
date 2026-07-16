@@ -69,7 +69,7 @@ export function CartDrawer({ children }: { children: React.ReactNode }) {
                       <Link
                         href={`/product/${item.slug}`}
                         onClick={() => setOpen(false)}
-                        className="line-clamp-1 text-sm font-semibold text-navy hover:text-gold-deep"
+                        className="line-clamp-1 text-sm font-semibold text-navy hover:text-teal"
                       >
                         {item.productName}
                       </Link>

@@ -298,11 +298,11 @@ function CheckoutContent() {
       <section className="bg-navy-gradient py-10 text-cream">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex items-center gap-2 text-xs text-cream/60">
-            <Link href="/" className="hover:text-gold">Home</Link>
+            <Link href="/" className="hover:text-teal">Home</Link>
             <span>/</span>
-            <Link href="/cart" className="hover:text-gold">Cart</Link>
+            <Link href="/cart" className="hover:text-teal">Cart</Link>
             <span>/</span>
-            <span className="text-gold">Checkout</span>
+            <span className="text-teal">Checkout</span>
           </div>
           <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>
             Secure Checkout

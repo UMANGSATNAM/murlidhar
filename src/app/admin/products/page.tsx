@@ -148,7 +148,7 @@ export default function AdminProductsPage() {
                           )}
                         </div>
                         <div>
-                          <Link href={`/admin/products/${p.id}`} className="font-semibold text-navy hover:text-gold-deep">{p.name}</Link>
+                          <Link href={`/admin/products/${p.id}`} className="font-semibold text-navy hover:text-teal">{p.name}</Link>
                           <p className="text-xs text-muted-foreground">/{p.slug}</p>
                         </div>
                       </div>

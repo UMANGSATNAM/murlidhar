@@ -209,7 +209,7 @@ function LoyaltyContent() {
                   {recentOrders.map((o) => (
                     <li key={o.orderNumber} className="flex items-center justify-between gap-3 p-4">
                       <div>
-                        <Link href={`/track?o=${o.orderNumber}`} className="font-semibold text-navy hover:text-gold-deep">
+                        <Link href={`/track?o=${o.orderNumber}`} className="font-semibold text-navy hover:text-teal">
                           {o.orderNumber}
                         </Link>
                         <p className="text-xs text-muted-foreground">

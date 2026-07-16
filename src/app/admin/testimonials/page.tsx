@@ -81,7 +81,7 @@ export default function AdminTestimonialsPage() {
           <Card key={t.id} className="p-5">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-navy font-display font-bold text-gold">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-navy font-display font-bold text-teal">
                   {t.name.charAt(0)}
                 </div>
                 <div>
@@ -95,7 +95,7 @@ export default function AdminTestimonialsPage() {
               </div>
             </div>
             <div className="mt-2 flex">
-              {Array.from({ length: t.rating }).map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-gold text-gold" />)}
+              {Array.from({ length: t.rating }).map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-teal text-teal" />)}
             </div>
             <p className="mt-2 text-sm text-foreground/80 line-clamp-3">"{t.text}"</p>
             <div className="mt-3 flex items-center justify-between border-t border-border pt-2 text-xs">
@@ -130,7 +130,7 @@ function TestimonialForm({ item, onSave, onCancel }: { item: Testimonial; onSave
         <div className="mt-1 flex gap-1">
           {[1, 2, 3, 4, 5].map((r) => (
             <button key={r} type="button" onClick={() => setForm({ ...form, rating: r })} className="p-1">
-              <Star className={`h-6 w-6 ${r <= form.rating ? 'fill-gold text-gold' : 'text-muted-foreground/30'}`} />
+              <Star className={`h-6 w-6 ${r <= form.rating ? 'fill-teal text-teal' : 'text-muted-foreground/30'}`} />
             </button>
           ))}
         </div>

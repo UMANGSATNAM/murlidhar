@@ -82,9 +82,9 @@ function CartContent() {
       <section className="bg-navy-gradient py-10 text-cream">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex items-center gap-2 text-xs text-cream/60">
-            <Link href="/" className="hover:text-gold">Home</Link>
+            <Link href="/" className="hover:text-teal">Home</Link>
             <span>/</span>
-            <span className="text-gold">Cart</span>
+            <span className="text-teal">Cart</span>
           </div>
           <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>
             Your Cart ({items.length} {items.length === 1 ? 'item' : 'items'})
@@ -117,7 +117,7 @@ function CartContent() {
                   <div className="flex-1">
                     <div className="flex flex-wrap items-start justify-between gap-2">
                       <div>
-                        <Link href={`/product/${item.slug}`} className="font-display text-base font-bold text-navy hover:text-gold-deep">
+                        <Link href={`/product/${item.slug}`} className="font-display text-base font-bold text-navy hover:text-teal">
                           {item.productName}
                         </Link>
                         {item.bundleName && (

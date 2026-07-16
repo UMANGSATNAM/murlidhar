@@ -96,7 +96,7 @@ export function Footer() {
           <ul className="grid gap-1.5 text-sm text-cream/75">
             {SERVICES.map((s) => (
               <li key={s}>
-                <Link href="/services" className="hover:text-gold transition-colors">
+                <Link href="/services" className="hover:text-teal transition-colors">
                   {s}
                 </Link>
               </li>
@@ -110,7 +110,7 @@ export function Footer() {
           <ul className="grid gap-1.5 text-sm text-cream/75">
             {QUICK.map((q) => (
               <li key={q.href}>
-                <Link href={q.href} className="inline-flex items-center gap-1 hover:text-gold transition-colors">
+                <Link href={q.href} className="inline-flex items-center gap-1 hover:text-teal transition-colors">
                   {q.label} <ArrowUpRight className="h-3 w-3 opacity-50" />
                 </Link>
               </li>
@@ -128,13 +128,13 @@ export function Footer() {
             </li>
             <li className="flex gap-2.5">
               <Phone className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-              <a href="tel:9510737852" className="hover:text-gold">9510737852</a>
+              <a href="tel:9510737852" className="hover:text-teal">9510737852</a>
               <span className="text-cream/40">·</span>
               <span>079160 29127</span>
             </li>
             <li className="flex gap-2.5">
               <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-              <a href="mailto:murlidharoffset84@gmail.com" className="break-all hover:text-gold">murlidharoffset84@gmail.com</a>
+              <a href="mailto:murlidharoffset84@gmail.com" className="break-all hover:text-teal">murlidharoffset84@gmail.com</a>
             </li>
             <li className="flex gap-2.5">
               <Clock className="mt-0.5 h-4 w-4 shrink-0 text-gold" />

@@ -143,7 +143,7 @@ export function SearchAutocomplete() {
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="line-clamp-1 text-sm font-medium text-navy group-hover:text-gold-deep">{p.name}</p>
+                      <p className="line-clamp-1 text-sm font-medium text-navy group-hover:text-teal">{p.name}</p>
                       {p.category && <p className="text-xs text-muted-foreground">{p.category.name}</p>}
                     </div>
                     <span className="shrink-0 text-sm font-bold text-navy">{formatINR(p.basePrice)}</span>

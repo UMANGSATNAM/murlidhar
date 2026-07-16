@@ -59,12 +59,12 @@ export function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-1.5">
           <div className="flex items-center gap-2">
             <Phone className="h-3 w-3 text-gold" />
-            <a href="tel:9510737852" className="hover:text-gold transition-colors">9510737852</a>
+            <a href="tel:9510737852" className="hover:text-teal transition-colors">9510737852</a>
             <span className="hidden sm:inline text-cream/40">·</span>
             <span className="hidden sm:inline">Open 24 hours · Unjha, Gujarat</span>
           </div>
           <div className="hidden md:flex items-center gap-3 text-[11px] tracking-wide">
-            <Link href="/track" className="hover:text-gold transition-colors">Track Order</Link>
+            <Link href="/track" className="hover:text-teal transition-colors">Track Order</Link>
             <span className="text-cream/30">·</span>
             <span className="text-gold">Quality Printing · Lasting Impression</span>
           </div>
@@ -127,7 +127,7 @@ export function Header() {
               >
                 <Heart className="h-5 w-5" />
                 {wishlistCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-navy px-1 text-[10px] font-bold text-gold">
+                  <span className="absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-navy px-1 text-[10px] font-bold text-teal">
                     {wishlistCount}
                   </span>
                 )}

@@ -27,7 +27,7 @@ export function BlogContent({ content }: { content: string }) {
           h2: ({ node, ...props }) => <h2 className="font-display text-2xl font-bold text-navy mt-6 mb-2" {...props} />,
           h3: ({ node, ...props }) => <h3 className="font-display text-xl font-bold text-navy mt-5 mb-2" {...props} />,
           p: ({ node, ...props }) => <p className="text-foreground/80 leading-relaxed my-3" {...props} />,
-          a: ({ node, ...props }) => <a className="text-gold-deep underline hover:text-gold" target="_blank" rel="noopener noreferrer" {...props} />,
+          a: ({ node, ...props }) => <a className="text-gold-deep underline hover:text-teal" target="_blank" rel="noopener noreferrer" {...props} />,
           strong: ({ node, ...props }) => <strong className="text-navy font-semibold" {...props} />,
           blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-gold bg-secondary/40 py-2 px-4 rounded-r-md my-4 italic text-foreground/70" {...props} />,
           ul: ({ node, ...props }) => <ul className="list-disc pl-6 my-3 space-y-1 text-foreground/80" {...props} />,

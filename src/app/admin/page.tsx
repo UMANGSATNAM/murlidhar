@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
           <h1 className="font-display text-2xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>
             Murlidhar Offset
           </h1>
-          <p className="mt-1 text-xs uppercase tracking-[0.25em] text-gold">Admin Panel</p>
+          <p className="mt-1 text-xs uppercase tracking-[0.25em] text-teal">Admin Panel</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 p-8">

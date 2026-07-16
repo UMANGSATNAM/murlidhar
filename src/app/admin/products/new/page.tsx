@@ -323,7 +323,7 @@ export default function AdminProductEditorPage() {
                 onClick={() => applyTemplate(tpl)}
                 className="group flex flex-col items-center gap-2 rounded-lg border border-border bg-white p-3 text-center transition hover:border-gold hover:shadow-sm"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-navy text-gold transition group-hover:bg-gold group-hover:text-navy">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-navy text-teal transition group-hover:bg-gold group-hover:text-navy">
                   <tpl.icon className="h-5 w-5" />
                 </div>
                 <span className="text-xs font-semibold text-navy">{tpl.label}</span>

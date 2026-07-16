@@ -181,7 +181,7 @@ function MyOrdersContent() {
                       <Package className="h-6 w-6" />
                     </div>
                     <div>
-                      <Link href={`/track?o=${order.orderNumber}`} className="font-display text-lg font-bold text-navy hover:text-gold-deep">
+                      <Link href={`/track?o=${order.orderNumber}`} className="font-display text-lg font-bold text-navy hover:text-teal">
                         {order.orderNumber}
                       </Link>
                       <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">

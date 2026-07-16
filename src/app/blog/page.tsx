@@ -81,7 +81,7 @@ export default function BlogPage() {
                       <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{new Date(featured.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                       {featured.author && <span className="flex items-center gap-1"><User className="h-3 w-3" />{featured.author}</span>}
                     </div>
-                    <h2 className="font-display text-2xl font-bold text-navy group-hover:text-gold-deep sm:text-3xl" style={{ fontFamily: 'var(--font-display)' }}>
+                    <h2 className="font-display text-2xl font-bold text-navy group-hover:text-teal sm:text-3xl" style={{ fontFamily: 'var(--font-display)' }}>
                       {featured.title}
                     </h2>
                     {featured.excerpt && <p className="mt-3 text-sm text-muted-foreground line-clamp-3">{featured.excerpt}</p>}
@@ -110,7 +110,7 @@ export default function BlogPage() {
                         {new Date(p.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                         {p.author && <><span>·</span><PenTool className="h-3 w-3" />{p.author}</>}
                       </div>
-                      <h3 className="font-display text-lg font-bold leading-snug text-navy group-hover:text-gold-deepline-clamp-2">
+                      <h3 className="font-display text-lg font-bold leading-snug text-navy group-hover:text-tealline-clamp-2">
                         {p.title}
                       </h3>
                       {p.excerpt && <p className="mt-2 flex-1 text-sm text-muted-foreground line-clamp-3">{p.excerpt}</p>}

@@ -49,9 +49,9 @@ function CompareContent() {
       <section className="bg-navy-gradient py-12 text-white">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex items-center gap-2 text-xs text-white/60">
-            <Link href="/" className="hover:text-gold">Home</Link>
+            <Link href="/" className="hover:text-teal">Home</Link>
             <span>/</span>
-            <span className="text-gold">Compare</span>
+            <span className="text-teal">Compare</span>
           </div>
           <h1 className="mt-2 flex items-center gap-3 font-display text-3xl font-bold sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>
             <GitCompare className="h-8 w-8 text-gold" />
@@ -124,7 +124,7 @@ function CompareContent() {
                                   </div>
                                 )}
                               </div>
-                              <h3 className="mt-3 font-display text-sm font-bold leading-snug text-navy group-hover:text-gold-deep line-clamp-2">
+                              <h3 className="mt-3 font-display text-sm font-bold leading-snug text-navy group-hover:text-teal line-clamp-2">
                                 {item.name}
                               </h3>
                             </Link>
@@ -151,7 +151,7 @@ function CompareContent() {
                     <tr className="border-t border-border">
                       <td className="sticky left-0 z-10 bg-secondary/40 p-4">
                         <span className="flex items-center gap-1.5 text-xs font-bold uppercase text-muted-foreground">
-                          <Star className="h-3 w-3 fill-gold text-gold" /> Rating
+                          <Star className="h-3 w-3 fill-teal text-teal" /> Rating
                         </span>
                       </td>
                       {items.map((item) => (

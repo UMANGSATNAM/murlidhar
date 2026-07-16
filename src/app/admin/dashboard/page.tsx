@@ -44,7 +44,7 @@ export default function DashboardPage() {
         <div className="bg-navy-gradient p-6 text-cream">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-gold">Welcome back</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-teal">Welcome back</p>
               <h2 className="mt-1 font-display text-2xl font-bold">{admin.name || admin.email}</h2>
               <p className="mt-1 text-sm text-cream/70">Here's what's happening at your print studio today.</p>
             </div>
@@ -97,7 +97,7 @@ export default function DashboardPage() {
                 {recentOrders.map((o) => (
                   <tr key={o.id} className="hover:bg-secondary/30">
                     <td className="px-5 py-3">
-                      <Link href={`/admin/orders/${o.id}`} className="font-semibold text-navy hover:text-gold-deep">
+                      <Link href={`/admin/orders/${o.id}`} className="font-semibold text-navy hover:text-teal">
                         {o.orderNumber}
                       </Link>
                     </td>

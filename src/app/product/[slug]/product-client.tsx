@@ -417,7 +417,7 @@ function ProductDetailContent() {
                   {/* Expand hint */}
                   <button
                     onClick={(e) => { e.stopPropagation(); setLightboxOpen(true) }}
-                    className={`pointer-events-auto absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-navy/80 px-3 py-1.5 text-xs text-cream backdrop-blur transition-opacity hover:bg-navy hover:text-gold ${zoom.active ? 'opacity-0' : 'opacity-100'}`}
+                    className={`pointer-events-auto absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-navy/80 px-3 py-1.5 text-xs text-cream backdrop-blur transition-opacity hover:bg-navy hover:text-teal ${zoom.active ? 'opacity-0' : 'opacity-100'}`}
                     aria-label="Open fullscreen view"
                   >
                     <ZoomIn className="h-3 w-3 text-gold" /> Click to expand
@@ -450,8 +450,8 @@ function ProductDetailContent() {
                   onClick={handleToggleCompare}
                   className={`flex h-10 w-10 items-center justify-center rounded-full backdrop-blur transition-all ${
                     compareHas(product.id)
-                      ? 'bg-navy text-gold shadow-navy'
-                      : 'bg-white/90 text-navy hover:bg-navy hover:text-gold'
+                      ? 'bg-navy text-teal shadow-navy'
+                      : 'bg-white/90 text-navy hover:bg-navy hover:text-teal'
                   }`}
                   aria-label={compareHas(product.id) ? 'Remove from compare' : 'Add to compare'}
                 >
@@ -807,7 +807,7 @@ function ProductDetailContent() {
                     <div className="mt-1 flex gap-1">
                       {[1, 2, 3, 4, 5].map((r) => (
                         <button key={r} type="button" onClick={() => setReviewForm({ ...reviewForm, rating: r })} className="p-1">
-                          <Star className={`h-7 w-7 transition ${r <= reviewForm.rating ? 'fill-gold text-gold' : 'text-muted-foreground/30 hover:text-gold/60'}`} />
+                          <Star className={`h-7 w-7 transition ${r <= reviewForm.rating ? 'fill-teal text-teal' : 'text-muted-foreground/30 hover:text-teal/60'}`} />
                         </button>
                       ))}
                     </div>
@@ -839,7 +839,7 @@ function ProductDetailContent() {
               <p className="font-display text-5xl font-bold text-navy">{reviewsAvg.toFixed(1)}</p>
               <div className="mt-2 flex justify-center">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className={`h-4 w-4 ${i < Math.round(reviewsAvg) ? 'fill-gold text-gold' : 'text-muted-foreground/30'}`} />
+                  <Star key={i} className={`h-4 w-4 ${i < Math.round(reviewsAvg) ? 'fill-teal text-teal' : 'text-muted-foreground/30'}`} />
                 ))}
               </div>
               <p className="mt-2 text-xs text-muted-foreground">{reviewsCount} {reviewsCount === 1 ? 'review' : 'reviews'}</p>
@@ -857,14 +857,14 @@ function ProductDetailContent() {
                   <Card key={r.id} className="p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy font-display font-bold text-gold">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy font-display font-bold text-teal">
                           {r.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
                           <p className="font-semibold text-navy">{r.name}</p>
                           <div className="flex">
                             {Array.from({ length: 5 }).map((_, i) => (
-                              <Star key={i} className={`h-3 w-3 ${i < r.rating ? 'fill-gold text-gold' : 'text-muted-foreground/30'}`} />
+                              <Star key={i} className={`h-3 w-3 ${i < r.rating ? 'fill-teal text-teal' : 'text-muted-foreground/30'}`} />
                             ))}
                           </div>
                         </div>

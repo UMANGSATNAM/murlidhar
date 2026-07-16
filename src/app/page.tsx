@@ -188,15 +188,15 @@ export default function HomePage() {
               {/* Mini trust stats */}
               <div className="mt-8 grid grid-cols-3 gap-4 border-t border-cream/10 pt-6">
                 <div>
-                  <p className="font-display text-2xl font-bold text-gold">5.0★</p>
+                  <p className="font-display text-2xl font-bold text-teal">5.0★</p>
                   <p className="text-xs text-cream/60">Google Rating</p>
                 </div>
                 <div>
-                  <p className="font-display text-2xl font-bold text-gold">30+</p>
+                  <p className="font-display text-2xl font-bold text-teal">30+</p>
                   <p className="text-xs text-cream/60">Years of Craft</p>
                 </div>
                 <div>
-                  <p className="font-display text-2xl font-bold text-gold">10k+</p>
+                  <p className="font-display text-2xl font-bold text-teal">10k+</p>
                   <p className="text-xs text-cream/60">Orders Delivered</p>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function HomePage() {
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {TRUST_BADGES.map((b) => (
                   <div key={b.title} className="flex gap-3 rounded-lg border border-border bg-white p-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-navy text-gold">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-navy text-teal">
                       <b.icon className="h-5 w-5" />
                     </div>
                     <div>
@@ -355,7 +355,7 @@ export default function HomePage() {
                 >
                   <div className="absolute right-0 top-0 h-24 w-24 -translate-y-8 translate-x-8 rounded-full bg-gold/10 transition-transform group-hover:scale-150" />
                   <div className="relative">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-navy text-gold transition-colors group-hover:bg-gold group-hover:text-navy">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-navy text-teal transition-colors group-hover:bg-gold group-hover:text-navy">
                       <Icon className="h-7 w-7" />
                     </div>
                     <h3 className="mt-4 font-display text-lg font-bold text-navy">{cat.name}</h3>
@@ -483,7 +483,7 @@ export default function HomePage() {
             <div className="inline-flex items-center gap-3 rounded-full border border-gold/30 bg-white px-6 py-3 shadow-sm">
               <div className="flex">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-gold text-gold" />
+                  <Star key={i} className="h-5 w-5 fill-teal text-teal" />
                 ))}
               </div>
               <span className="font-display text-2xl font-bold text-navy">5.0</span>
@@ -497,7 +497,7 @@ export default function HomePage() {
                 <StarRating rating={t.rating} size={16} showCount={false} />
                 <p className="mt-3 text-sm leading-relaxed text-foreground/80">"{t.text}"</p>
                 <div className="mt-4 flex items-center gap-3 border-t border-border pt-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy font-display font-bold text-gold">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy font-display font-bold text-teal">
                     {t.name.charAt(0)}
                   </div>
                   <div>
