@@ -15,6 +15,8 @@ export interface CartItem {
   unitPrice: number
   remarks?: string
   files?: { name: string; url: string; size: number }[]
+  bundleId?: string // if this item was added as part of a bundle
+  bundleName?: string // bundle name for display
 }
 
 interface CartState {

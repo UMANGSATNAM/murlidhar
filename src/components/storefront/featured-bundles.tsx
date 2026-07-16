@@ -36,13 +36,15 @@ export function FeaturedBundles() {
   const handleAddBundle = (bundle: Bundle) => {
     bundle.items.forEach((it) => {
       addItem({
-        key: `bundle-${bundle.id}-${it.productId}-${Date.now()}`,
+        key: `bundle-${bundle.id}-${it.productId}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
         productId: it.productId,
         productName: it.product.name,
         slug: it.product.slug,
         image: it.product.images[0]?.url,
         qty: it.qty,
-        unitPrice: it.product.basePrice, // individual price; discount applied at checkout via remarks
+        unitPrice: it.product.basePrice,
+        bundleId: bundle.id,
+        bundleName: bundle.name,
       })
     })
     sonnerToast.success(`Added "${bundle.name}" bundle to cart!`)

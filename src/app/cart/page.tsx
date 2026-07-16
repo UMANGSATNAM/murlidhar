@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, ArrowLeft, Upload, X, FileCheck2, MessageSquare, Loader2, ShieldCheck, Truck } from 'lucide-react'
+import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, ArrowLeft, Upload, X, FileCheck2, MessageSquare, Loader2, ShieldCheck, Truck, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
@@ -120,6 +120,11 @@ function CartContent() {
                         <Link href={`/product/${item.slug}`} className="font-display text-base font-bold text-navy hover:text-gold-deep">
                           {item.productName}
                         </Link>
+                        {item.bundleName && (
+                          <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-gold/20 px-2 py-0.5 text-[10px] font-bold text-gold-deep">
+                            <Tag className="h-2.5 w-2.5" /> {item.bundleName}
+                          </span>
+                        )}
                         {item.variantLabel && (
                           <p className="mt-0.5 text-xs text-muted-foreground">{item.variantLabel}</p>
                         )}

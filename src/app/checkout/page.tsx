@@ -52,6 +52,10 @@ function CheckoutContent() {
   const [loyaltyLookedUp, setLoyaltyLookedUp] = React.useState(false)
   const [applyLoyalty, setApplyLoyalty] = React.useState(false)
 
+  // Bundle discounts
+  const [bundleSavings, setBundleSavings] = React.useState(0)
+  const [appliedBundleNames, setAppliedBundleNames] = React.useState<string[]>([])
+
   // Lookup loyalty when phone changes (debounced)
   React.useEffect(() => {
     const phone = form.phone.trim()
@@ -75,8 +79,29 @@ function CheckoutContent() {
     return () => clearTimeout(t)
   }, [form.phone])
 
-  const loyaltyDiscount = applyLoyalty && loyaltyAccount ? Math.min(loyaltyAccount.points, subtotal) : 0
-  const total = Math.max(0, subtotal - loyaltyDiscount)
+  // Detect bundles in cart + fetch their discounts
+  React.useEffect(() => {
+    const bundleIds = Array.from(new Set(items.filter((i) => i.bundleId).map((i) => i.bundleId!)))
+    if (bundleIds.length === 0) {
+      setBundleSavings(0)
+      setAppliedBundleNames([])
+      return
+    }
+    fetch('/api/bundle-discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bundleIds }),
+    })
+      .then((r) => r.json())
+      .then((d) => {
+        setBundleSavings(d.totalSavings || 0)
+        setAppliedBundleNames((d.bundles || []).map((b: any) => b.name))
+      })
+      .catch(() => {})
+  }, [items])
+
+  const loyaltyDiscount = applyLoyalty && loyaltyAccount ? Math.min(loyaltyAccount.points, subtotal - bundleSavings) : 0
+  const total = Math.max(0, subtotal - bundleSavings - loyaltyDiscount)
 
   // Settings for payment options
   const [settings, setSettings] = React.useState<any>(null)
@@ -130,9 +155,11 @@ function CheckoutContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          remarks: remarks + (loyaltyDiscount > 0
-            ? `\n\n[LOYALTY REDEMPTION: Applied ${loyaltyDiscount} points (₹${loyaltyDiscount} discount) from phone ${form.phone}]`
-            : ''),
+          remarks: remarks
+            + (bundleSavings > 0 ? `\n\n[BUNDLE DISCOUNT: ${appliedBundleNames.join(', ')} — Saved ₹${bundleSavings}]` : '')
+            + (loyaltyDiscount > 0
+              ? `\n\n[LOYALTY REDEMPTION: Applied ${loyaltyDiscount} points (₹${loyaltyDiscount} discount) from phone ${form.phone}]`
+              : ''),
           items: orderItems,
           paymentMethod,
           files: files.map((f) => ({ name: f.name, url: f.url, size: f.size })),
@@ -445,6 +472,20 @@ function CheckoutContent() {
                   <span className="text-muted-foreground">Subtotal</span>
                   <span className="font-semibold text-navy">{formatINR(subtotal)}</span>
                 </div>
+
+                {/* Bundle savings */}
+                {bundleSavings > 0 && (
+                  <div className="rounded-lg border border-green-200 bg-green-50 p-3">
+                    <p className="text-xs font-bold text-green-700">🎁 Bundle Deal Applied!</p>
+                    {appliedBundleNames.map((name, i) => (
+                      <p key={i} className="mt-0.5 text-[11px] text-green-600">• {name}</p>
+                    ))}
+                    <div className="mt-2 flex justify-between text-sm">
+                      <span className="text-green-700">Bundle Savings</span>
+                      <span className="font-semibold text-green-600">-{formatINR(bundleSavings)}</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Loyalty redemption */}
                 {loyaltyLookupLoading && (
