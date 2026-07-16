@@ -43,7 +43,7 @@ export async function PATCH(request: NextRequest) {
   if (!admin) return unauthorized()
 
   const body = await request.json()
-  const { id, orderStatus, paymentStatus, paymentRef, statusNote, internalNotes } = body
+  const { id, orderStatus, paymentStatus, paymentRef, statusNote, internalNotes, fileNotes } = body
   if (!id) return Response.json({ error: 'id required' }, { status: 400 })
 
   const existing = await db.order.findUnique({ where: { id } })
@@ -55,6 +55,32 @@ export async function PATCH(request: NextRequest) {
   if (paymentRef !== undefined) data.paymentRef = paymentRef
   if (statusNote !== undefined) data.statusNote = statusNote
   if (internalNotes !== undefined) data.internalNotes = internalNotes
+
+  // Record status history when order status changes
+  if (orderStatus && orderStatus !== existing.orderStatus) {
+    let history: { status: string; note?: string; timestamp: string }[] = []
+    try {
+      history = existing.statusHistory ? JSON.parse(existing.statusHistory) : []
+    } catch {}
+    history.push({
+      status: orderStatus,
+      note: statusNote || undefined,
+      timestamp: new Date().toISOString(),
+    })
+    data.statusHistory = JSON.stringify(history)
+  }
+
+  // Update file admin notes if provided
+  if (fileNotes && Array.isArray(fileNotes)) {
+    for (const fn of fileNotes) {
+      if (fn.fileId && fn.note !== undefined) {
+        await db.orderFile.update({
+          where: { id: fn.fileId },
+          data: { adminNote: fn.note },
+        })
+      }
+    }
+  }
 
   // When order is marked 'delivered', award loyalty points (1 pt per ₹10)
   // Only award once (check if points already awarded)
@@ -82,7 +108,7 @@ export async function PATCH(request: NextRequest) {
     }
   }
 
-  const updated = await db.order.update({ where: { id }, data, include: { items: true } })
+  const updated = await db.order.update({ where: { id }, data, include: { items: true, files: true } })
 
   // Send status update email if order status changed and customer email exists
   if (orderStatus && orderStatus !== existing.orderStatus && existing.email) {

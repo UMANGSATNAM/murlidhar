@@ -612,3 +612,44 @@ Priority Recommendations for Next Phase:
 6. **Print file annotation** — admin can annotate/mark up uploaded design files.
 7. **Bundle variant selection** — let customers pick variants for each item in a bundle.
 8. **Admin bulk actions** — bulk status update, bulk delete on orders/products.
+
+---
+Task ID: 22 (Phase 11)
+Agent: main (cron webDevReview round 10)
+Task: Continue QA + implement order status timeline, print file annotation, styling polish.
+
+Work Log:
+- **QA pass**: All 15 routes verified HTTP 200. No console errors. Lint clean (0 errors, 0 warnings). Dev server needed restart after Prisma client regeneration (new `statusHistory` + `adminNote` fields).
+- **Schema changes**: Added `statusHistory` (String?, JSON array) to Order model for tracking status change history. Added `adminNote` (String?) to OrderFile model for per-file admin annotations.
+- **New Feature 1 — Order Status Timeline**:
+  - Updated orders PATCH API to record status history: when `orderStatus` changes, appends `{ status, note, timestamp }` to `statusHistory` JSON array.
+  - **Admin order detail**: Added `StatusTimeline` component — vertical timeline with numbered circles, color-coded status badges (amber/blue/purple/indigo/green/red), timestamps, notes. Always shows initial "Order Placed" entry + all subsequent status changes.
+  - **Customer track page**: Added status history timeline below the progress tracker — shows each status change with timestamp + note. Gold circle markers, vertical connecting line.
+  - **Verified**: Updated order status to "production" with note "Starting print production" → both admin order detail AND customer track page show the timeline entry with timestamp.
+- **New Feature 2 — Print File Annotation**:
+  - Updated orders PATCH API to accept `fileNotes` array — updates `adminNote` on individual OrderFile records.
+  - Added `FileAnnotation` component on admin order detail — each uploaded file now has an inline text input where admin can add a note (e.g. "artwork approved", "needs redesign"). "Note" button saves via PATCH API, shows green checkmark when saved.
+  - Updated OrderFile interface to include `adminNote` field.
+  - **Verified**: File annotation input appears under each file on admin order detail page.
+
+Stage Summary:
+- ✅ Status timeline: both admin + customer-facing show timestamped history of all status changes.
+- ✅ File annotation: admin can add per-file notes that persist in DB.
+- ✅ Lint clean (0 errors, 0 warnings). All routes HTTP 200.
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout — real gateway integration requires live API keys.
+2. **Email**: sendEmail() via SDK falls back to console.log in sandbox.
+3. **Next.js Image optimization**: Still using plain <img> tags.
+4. **Customer accounts**: No login system — loyalty + order lookup are by phone only.
+5. **Bundle variant selection**: Bundle items added at base variant only.
+
+Priority Recommendations for Next Phase:
+1. **Next.js Image optimization** — migrate <img> to next/image for better Core Web Vitals.
+2. **Real Razorpay checkout** — server-side order creation + signature verification.
+3. **Customer accounts** — email/OTP login to save addresses + view order history + loyalty in one place.
+4. **Admin bulk actions** — bulk status update, bulk delete on orders/products.
+5. **Abandoned cart recovery** — email customers who didn't checkout.
+6. **Bundle variant selection** — let customers pick variants for each item in a bundle.
+7. **Multi-currency** — support USD/EUR for international customers.
+8. **Subscription products** — recurring orders for letterheads, business cards etc.

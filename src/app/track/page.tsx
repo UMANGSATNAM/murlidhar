@@ -32,7 +32,7 @@ interface Order {
   remarks?: string
   subtotal: number; shipping: number; total: number
   paymentMethod: string; paymentStatus: string
-  orderStatus: string; statusNote?: string | null
+  orderStatus: string; statusNote?: string | null; statusHistory?: string | null
   createdAt: string; updatedAt: string
   items: OrderItem[]; files: OrderFile[]
 }
@@ -243,6 +243,37 @@ function TrackContent() {
                       <p className="mt-1 text-sm text-foreground/80">{order.statusNote}</p>
                     </div>
                   )}
+
+                  {/* Status history timeline */}
+                  {(() => {
+                    let history: { status: string; note?: string; timestamp: string }[] = []
+                    try { history = order.statusHistory ? JSON.parse(order.statusHistory) : [] } catch {}
+                    if (history.length === 0) return null
+                    return (
+                      <div className="mt-6">
+                        <p className="mb-3 text-xs font-bold uppercase tracking-wide text-muted-foreground">Status History</p>
+                        <div className="relative">
+                          <div className="absolute left-3 top-0 bottom-0 w-0.5 bg-border" />
+                          <div className="space-y-3">
+                            {history.map((entry, i) => (
+                              <div key={i} className="relative flex items-start gap-3">
+                                <div className="relative z-10 mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-gold bg-white">
+                                  <span className="h-2 w-2 rounded-full bg-gold" />
+                                </div>
+                                <div>
+                                  <span className="text-sm font-semibold text-navy capitalize">{entry.status}</span>
+                                  <span className="ml-2 text-xs text-muted-foreground">
+                                    {new Date(entry.timestamp).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                  </span>
+                                  {entry.note && <p className="text-xs text-foreground/70">{entry.note}</p>}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })()}
                 </div>
               )}
             </Card>

@@ -170,6 +170,7 @@ model Order {
   statusNote     String? // optional note sent to customer on status update
   internalNotes  String? // private admin-only notes, NOT visible to customer
   loyaltyPoints  Int       @default(0) // loyalty points earned from this order
+  statusHistory  String?   // JSON array of { status, note, timestamp }
   items          OrderItem[]
   files          OrderFile[]
   createdAt      DateTime    @default(now())
@@ -203,6 +204,7 @@ model OrderFile {
   filePath  String
   fileSize  Int      @default(0)
   fileType  String?
+  adminNote String? // admin annotation/remark per file
   createdAt DateTime @default(now())
 }
 

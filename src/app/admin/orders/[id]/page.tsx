@@ -6,9 +6,11 @@ import Link from 'next/link'
 import {
   ArrowLeft, Loader2, Phone, Mail, MapPin, FileText, Download, Save,
   Package, MessageSquare, User, Calendar, IndianRupee, Lock, Award,
+  Clock, StickyNote, CheckCircle2,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { AdminShell, useAdmin } from '@/components/admin/admin-shell'
@@ -27,14 +29,16 @@ interface OrderItem {
 }
 interface OrderFile {
   id: string; fileName: string; filePath: string; fileSize: number; fileType?: string | null
+  adminNote?: string | null
 }
+interface StatusHistoryEntry { status: string; note?: string; timestamp: string }
 interface Order {
   id: string; orderNumber: string; customerName: string; phone: string; email?: string
   address?: string; city?: string; state?: string; pincode?: string; remarks?: string
   subtotal: number; shipping: number; total: number
   paymentMethod: string; paymentStatus: string; paymentRef?: string | null
   orderStatus: string; statusNote?: string | null; internalNotes?: string | null
-  loyaltyPoints?: number
+  loyaltyPoints?: number; statusHistory?: string | null
   createdAt: string; updatedAt: string
   items: OrderItem[]; files: OrderFile[]
 }
@@ -238,6 +242,8 @@ export default function AdminOrderDetailPage() {
                             </a>
                           </div>
                         </div>
+                        {/* Admin annotation per file */}
+                        <FileAnnotation fileId={f.id} initialNote={f.adminNote} orderId={order.id} />
                       </li>
                     )
                   })}
@@ -319,6 +325,9 @@ export default function AdminOrderDetailPage() {
               </div>
             </Card>
           ) : null}
+
+          {/* Status Timeline */}
+          <StatusTimeline statusHistory={order.statusHistory} createdAt={order.createdAt} />
         </div>
 
         {/* Right — customer info + status controls */}
@@ -425,5 +434,122 @@ export default function AdminOrderDetailPage() {
         </div>
       </div>
     </AdminShell>
+  )
+}
+
+// ─── Status Timeline Component ────────────────────────────────────────────────
+const STATUS_ICONS: Record<string, string> = {
+  pending: 'clock',
+  production: 'package',
+  ready: 'check',
+  dispatched: 'truck',
+  delivered: 'check-check',
+  cancelled: 'x',
+}
+const STATUS_COLORS: Record<string, string> = {
+  pending: 'bg-amber-100 text-amber-700 border-amber-300',
+  production: 'bg-blue-100 text-blue-700 border-blue-300',
+  ready: 'bg-purple-100 text-purple-700 border-purple-300',
+  dispatched: 'bg-indigo-100 text-indigo-700 border-indigo-300',
+  delivered: 'bg-green-100 text-green-700 border-green-300',
+  cancelled: 'bg-red-100 text-red-700 border-red-300',
+}
+
+function StatusTimeline({ statusHistory, createdAt }: { statusHistory?: string | null; createdAt: string }) {
+  let history: StatusHistoryEntry[] = []
+  try {
+    history = statusHistory ? JSON.parse(statusHistory) : []
+  } catch {}
+
+  // Always show the initial "Order Placed" entry
+  const entries: { status: string; note?: string; timestamp: string }[] = [
+    { status: 'pending', note: 'Order placed', timestamp: createdAt },
+    ...history,
+  ]
+
+  return (
+    <Card className="overflow-hidden">
+      <div className="border-b border-border bg-secondary/40 px-5 py-3">
+        <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
+          <Clock className="h-4 w-4 text-gold" /> Status Timeline
+        </h3>
+      </div>
+      <div className="p-5">
+        <div className="relative">
+          {/* Vertical line */}
+          <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-border" />
+          <div className="space-y-4">
+            {entries.map((entry, i) => {
+              const colorClass = STATUS_COLORS[entry.status] || 'bg-secondary text-muted-foreground border-border'
+              const isLast = i === entries.length - 1
+              return (
+                <div key={i} className="relative flex items-start gap-3">
+                  <div className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 ${colorClass} ${isLast ? 'ring-2 ring-gold/30' : ''}`}>
+                    <span className="text-xs font-bold">{i + 1}</span>
+                  </div>
+                  <div className="flex-1 pt-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${colorClass}`}>
+                        {entry.status}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(entry.timestamp).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                    {entry.note && <p className="mt-1 text-xs text-foreground/70">{entry.note}</p>}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+// ─── File Annotation Component ────────────────────────────────────────────────
+function FileAnnotation({ fileId, initialNote, orderId }: { fileId: string; initialNote?: string | null; orderId: string }) {
+  const [note, setNote] = React.useState(initialNote || '')
+  const [saving, setSaving] = React.useState(false)
+  const [saved, setSaved] = React.useState(false)
+
+  const save = async () => {
+    setSaving(true)
+    try {
+      await fetch(`/api/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ id: orderId, fileNotes: [{ fileId, note }] }),
+      })
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    } catch {
+      sonnerToast.error('Failed to save note')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="mt-2 flex items-center gap-2">
+      <Input
+        value={note}
+        onChange={(e) => { setNote(e.target.value); setSaved(false) }}
+        placeholder="Add admin note for this file (e.g. ' artwork approved', 'needs redesign')..."
+        className="h-8 flex-1 text-xs border-border bg-white"
+      />
+      <Button
+        onClick={save}
+        size="sm"
+        variant="outline"
+        className="h-8 shrink-0 border-navy text-navy text-xs"
+        disabled={saving}
+      >
+        {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : saved ? <CheckCircle2 className="h-3 w-3 text-green-600" /> : <StickyNote className="h-3 w-3" />}
+        {saved ? 'Saved' : 'Note'}
+      </Button>
+    </div>
   )
 }
