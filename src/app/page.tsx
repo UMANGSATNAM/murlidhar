@@ -29,6 +29,7 @@ import { Card } from '@/components/ui/card'
 import { StorefrontShell, StarRating } from '@/components/storefront/storefront-shell'
 import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
+import { RecentlyViewed } from '@/components/storefront/recently-viewed'
 import { formatINR } from '@/lib/format'
 
 interface Banner {
@@ -461,6 +462,9 @@ export default function HomePage() {
       </section>
 
       <MandalaDivider />
+
+      {/* ─── RECENTLY VIEWED ──────────────────────────────────────────────────── */}
+      <RecentlyViewed />
 
       {/* ─── TESTIMONIALS ─────────────────────────────────────────────────────── */}
       <section className="cream-texture py-16 sm:py-20">

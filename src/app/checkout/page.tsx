@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import {
   ShoppingCart, ArrowRight, ArrowLeft, Upload, X, FileCheck2, Loader2,
   ShieldCheck, CreditCard, Banknote, Store, MessageSquare, CheckCircle2, Phone, Mail, MapPin, Printer,
-  Package, MessageCircle,
+  Package, MessageCircle, FileDown,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -17,6 +17,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
 import { MandalaDivider } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
+import { InvoiceDownloadButton } from '@/components/storefront/invoice-button'
 import { useCart } from '@/lib/cart-store'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
@@ -44,7 +45,7 @@ function CheckoutContent() {
   const [files, setFiles] = React.useState<{ name: string; url: string; size: number }[]>([])
   const [uploading, setUploading] = React.useState(false)
   const [submitting, setSubmitting] = React.useState(false)
-  const [placedOrder, setPlacedOrder] = React.useState<{ orderNumber: string; total: number } | null>(null)
+  const [placedOrder, setPlacedOrder] = React.useState<{ orderNumber: string; total: number; fullOrder?: any } | null>(null)
 
   // Settings for payment options
   const [settings, setSettings] = React.useState<any>(null)
@@ -106,7 +107,7 @@ function CheckoutContent() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Order failed')
-      setPlacedOrder({ orderNumber: data.order.orderNumber, total: data.order.total })
+      setPlacedOrder({ orderNumber: data.order.orderNumber, total: data.order.total, fullOrder: data.order })
       clear()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (err: any) {
@@ -154,7 +155,7 @@ function CheckoutContent() {
                 </li>
               </ul>
             </div>
-            <div className="mt-6 flex flex-col gap-2 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
               <Button asChild className="flex-1 bg-navy text-cream hover:bg-navy-soft">
                 <Link href="/shop">Continue Shopping <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
@@ -163,6 +164,12 @@ function CheckoutContent() {
                   <Package className="mr-2 h-4 w-4" /> Track Order
                 </Link>
               </Button>
+              <InvoiceDownloadButton
+                order={placedOrder.fullOrder}
+                variant="outline"
+                label="Download Invoice"
+                className="flex-1 border-gold text-gold-deep hover:bg-gold hover:text-navy"
+              />
               <Button asChild variant="outline" className="flex-1 border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
                 <a
                   href={`https://wa.me/919510737852?text=${encodeURIComponent(`Hi Murlidhar Offset, I just placed order *${placedOrder.orderNumber}* for ${formatINR(placedOrder.total)}. Please confirm receipt.`)}`}

@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
 import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
+import { InvoiceDownloadButton } from '@/components/storefront/invoice-button'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
 
@@ -379,6 +380,12 @@ function TrackContent() {
                 <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-cream hover:bg-cream/10">
                   <MessageCircle className="h-4 w-4" /> WhatsApp
                 </a>
+                <InvoiceDownloadButton
+                  order={order}
+                  variant="outline"
+                  label="Download Invoice"
+                  className="border-cream/30 bg-cream/10 text-cream hover:bg-cream hover:text-navy"
+                />
               </div>
             </Card>
 

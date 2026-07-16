@@ -3,6 +3,7 @@ import * as React from 'react'
 import { Header } from './header'
 import { Footer } from './footer'
 import { FloatingWhatsApp } from './floating-whatsapp'
+import { BackToTop } from './back-to-top'
 
 export function StorefrontShell({ children }: { children: React.ReactNode }) {
   return (
@@ -11,6 +12,7 @@ export function StorefrontShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <FloatingWhatsApp />
+      <BackToTop />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Save, Loader2, Store, Mail, CreditCard, FileText } from 'lucide-react'
+import { Save, Loader2, Store, Mail, CreditCard, FileText, HelpCircle, Plus, Trash2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -62,6 +62,7 @@ export default function AdminSettingsPage() {
           <TabsTrigger value="business"><Store className="mr-2 h-4 w-4" /> Business</TabsTrigger>
           <TabsTrigger value="email"><Mail className="mr-2 h-4 w-4" /> Email</TabsTrigger>
           <TabsTrigger value="payment"><CreditCard className="mr-2 h-4 w-4" /> Payment</TabsTrigger>
+          <TabsTrigger value="faq"><HelpCircle className="mr-2 h-4 w-4" /> FAQ</TabsTrigger>
           <TabsTrigger value="seo"><FileText className="mr-2 h-4 w-4" /> SEO</TabsTrigger>
         </TabsList>
 
@@ -201,6 +202,22 @@ export default function AdminSettingsPage() {
           </Card>
         </TabsContent>
 
+        {/* FAQ */}
+        <TabsContent value="faq">
+          <Card className="overflow-hidden">
+            <div className="border-b border-border bg-cream/60 px-5 py-3">
+              <h3 className="font-display text-base font-bold text-navy">Frequently Asked Questions</h3>
+              <p className="text-xs text-muted-foreground">Manage the Q&A shown on the public FAQ page. Changes go live instantly.</p>
+            </div>
+            <div className="space-y-4 p-5">
+              <FaqEditor
+                value={form.faq || '[]'}
+                onChange={(v) => update('faq', v)}
+              />
+            </div>
+          </Card>
+        </TabsContent>
+
         {/* SEO */}
         <TabsContent value="seo">
           <Card className="overflow-hidden">
@@ -228,5 +245,71 @@ export default function AdminSettingsPage() {
         </Button>
       </div>
     </AdminShell>
+  )
+}
+
+// ─── FAQ Editor (inline) ──────────────────────────────────────────────────────
+function FaqEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [items, setItems] = React.useState<{ q: string; a: string }[]>([])
+
+  React.useEffect(() => {
+    try {
+      setItems(JSON.parse(value) || [])
+    } catch {
+      setItems([])
+    }
+  }, [value])
+
+  const update = (idx: number, field: 'q' | 'a', val: string) => {
+    const next = [...items]
+    next[idx] = { ...next[idx], [field]: val }
+    setItems(next)
+    onChange(JSON.stringify(next))
+  }
+
+  const add = () => {
+    const next = [...items, { q: '', a: '' }]
+    setItems(next)
+    onChange(JSON.stringify(next))
+  }
+
+  const remove = (idx: number) => {
+    const next = items.filter((_, i) => i !== idx)
+    setItems(next)
+    onChange(JSON.stringify(next))
+  }
+
+  return (
+    <div className="space-y-3">
+      {items.length === 0 && (
+        <p className="text-sm text-muted-foreground">No FAQs yet. Click "Add Question" to create your first one.</p>
+      )}
+      {items.map((item, i) => (
+        <div key={i} className="rounded-lg border border-border bg-cream/40 p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs font-bold text-gold">{i + 1}</span>
+            <button type="button" onClick={() => remove(i)} className="text-muted-foreground hover:text-destructive">
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </div>
+          <Input
+            value={item.q}
+            onChange={(e) => update(i, 'q', e.target.value)}
+            placeholder="Question"
+            className="mb-2 border-border font-semibold"
+          />
+          <Textarea
+            value={item.a}
+            onChange={(e) => update(i, 'a', e.target.value)}
+            placeholder="Answer"
+            rows={2}
+            className="resize-none border-border text-sm"
+          />
+        </div>
+      ))}
+      <Button type="button" onClick={add} variant="outline" className="border-navy text-navy">
+        <Plus className="mr-2 h-4 w-4" /> Add Question
+      </Button>
+    </div>
   )
 }

@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
 
 export interface AttrDraft { name: string; options: string[] }
-export interface VariantDraft { options: Record<string, string>; price: number; sku?: string }
+export interface VariantDraft { options: Record<string, string>; price: number; sku?: string; stock?: number }
 
 export function VariantMatrixBuilder({
   attributes,
@@ -81,7 +81,7 @@ export function VariantMatrixBuilder({
     const next: VariantDraft[] = combos.map((c) => {
       const sig = Object.entries(c).sort().map(([k, val]) => `${k}=${val}`).join('|')
       const prev = prevMap.get(sig)
-      return { options: { ...c }, price: prev?.price ?? 0, sku: prev?.sku }
+      return { options: { ...c }, price: prev?.price ?? 0, sku: prev?.sku, stock: prev?.stock ?? 9999 }
     })
     setVariants(next)
      
@@ -90,6 +90,12 @@ export function VariantMatrixBuilder({
   const updateVariantPrice = (idx: number, price: number) => {
     const next = [...variants]
     next[idx] = { ...next[idx], price }
+    setVariants(next)
+  }
+
+  const updateVariantStock = (idx: number, stock: number) => {
+    const next = [...variants]
+    next[idx] = { ...next[idx], stock }
     setVariants(next)
   }
 
@@ -189,6 +195,7 @@ export function VariantMatrixBuilder({
                     <th key={i} className="px-3 py-2 text-left">{a.name}</th>
                   ))}
                   <th className="px-3 py-2 text-right">Price (₹)</th>
+                  <th className="px-3 py-2 text-right">Stock</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -205,6 +212,17 @@ export function VariantMatrixBuilder({
                         className="ml-auto h-8 w-28 border-border text-right text-sm"
                         placeholder="0"
                       />
+                    </td>
+                    <td className="px-3 py-2 text-right">
+                      <Input
+                        type="number"
+                        value={v.stock ?? 9999}
+                        onChange={(e) => updateVariantStock(i, parseInt(e.target.value) || 0)}
+                        className={`ml-auto h-8 w-24 border-border text-right text-sm ${(v.stock ?? 9999) === 0 ? 'border-red-400 bg-red-50' : (v.stock ?? 9999) < 10 ? 'border-amber-400 bg-amber-50' : ''}`}
+                        placeholder="9999"
+                      />
+                      {(v.stock ?? 9999) === 0 && <span className="ml-1 text-[10px] font-bold text-red-600">OUT</span>}
+                      {(v.stock ?? 9999) > 0 && (v.stock ?? 9999) < 10 && <span className="ml-1 text-[10px] font-bold text-amber-600">LOW</span>}
                     </td>
                   </tr>
                 ))}

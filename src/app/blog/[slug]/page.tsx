@@ -1,131 +1,57 @@
-'use client'
+import type { Metadata } from 'next'
+import { db } from '@/lib/db'
+import BlogPostClient from './blog-client'
 
-import * as React from 'react'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
-import { Calendar, User, ArrowLeft, ArrowRight, ChevronRight, PenTool } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider } from '@/components/storefront/section-bits'
-import { MandalaLogo } from '@/components/storefront/mandala-logo'
+export const dynamic = 'force-dynamic'
 
-interface Post {
-  id: string; title: string; slug: string; excerpt?: string; content: string
-  featuredImage?: string; tags?: string; author?: string; createdAt: string
-}
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const post = await db.blogPost.findUnique({ where: { slug } })
 
-export default function BlogPostPage() {
-  return (
-    <StorefrontShell>
-      <BlogPostContent />
-    </StorefrontShell>
-  )
-}
-
-function BlogPostContent() {
-  const { slug } = useParams<{ slug: string }>()
-  const [post, setPost] = React.useState<Post | null>(null)
-  const [loading, setLoading] = React.useState(true)
-  const [notFound, setNotFound] = React.useState(false)
-
-  React.useEffect(() => {
-    if (!slug) return
-    fetch(`/api/blog?slug=${slug}`)
-      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-      .then((d) => setPost(d.post))
-      .catch(() => setNotFound(true))
-      .finally(() => setLoading(false))
-  }, [slug])
-
-  if (loading) {
-    return (
-      <div className="mx-auto max-w-3xl px-4 py-20">
-        <div className="aspect-[16/9] animate-pulse rounded-xl bg-secondary" />
-        <div className="mt-6 space-y-3">
-          <div className="h-8 w-3/4 animate-pulse rounded bg-secondary" />
-          <div className="h-4 w-1/2 animate-pulse rounded bg-secondary" />
-          <div className="h-24 w-full animate-pulse rounded bg-secondary" />
-        </div>
-      </div>
-    )
-  }
-  if (notFound || !post) {
-    return (
-      <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-4 py-20 text-center">
-        <MandalaLogo size={96} />
-        <h1 className="font-display text-2xl font-bold text-navy">Article not found</h1>
-        <Button asChild className="bg-navy text-cream hover:bg-navy-soft">
-          <Link href="/blog">Back to Blog</Link>
-        </Button>
-      </div>
-    )
+  if (!post || !post.published) {
+    return {
+      title: 'Article Not Found — Murlidhar Offset',
+      description: 'The requested article could not be found.',
+      robots: { index: false, follow: false },
+    }
   }
 
-  return (
-    <>
-      <div className="border-b border-border bg-cream">
-        <div className="mx-auto flex max-w-3xl items-center gap-1.5 px-4 py-3 text-xs text-muted-foreground">
-          <Link href="/" className="hover:text-navy">Home</Link>
-          <ChevronRight className="h-3 w-3" />
-          <Link href="/blog" className="hover:text-navy">Blog</Link>
-          <ChevronRight className="h-3 w-3" />
-          <span className="line-clamp-1 text-navy">{post.title}</span>
-        </div>
-      </div>
+  const title = `${post.title} — Murlidhar Offset Blog`
+  const description = post.excerpt || `${post.title} — insights from Murlidhar Offset, a premium printing press in Unjha, Gujarat.`
+  const imageUrl = post.featuredImage
+    ? `${process.env.NEXT_PUBLIC_SITE_URL || ''}${post.featuredImage}`
+    : undefined
 
-      <article className="mx-auto max-w-3xl px-4 py-10">
-        {/* Header */}
-        <header className="mb-6">
-          <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{new Date(post.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-            {post.author && <span className="flex items-center gap-1"><User className="h-3 w-3" />{post.author}</span>}
-            {post.tags && post.tags.split(',').map((t) => (
-              <span key={t} className="rounded-full bg-secondary px-2 py-0.5 font-medium text-navy">{t.trim()}</span>
-            ))}
-          </div>
-          <h1 className="font-display text-3xl font-bold leading-tight text-navy sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>
-            {post.title}
-          </h1>
-          {post.excerpt && <p className="mt-3 text-lg text-muted-foreground">{post.excerpt}</p>}
-        </header>
+  return {
+    title,
+    description,
+    keywords: post.tags?.split(',').map((t) => t.trim()).filter(Boolean) || [],
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      locale: 'en_IN',
+      siteName: 'Murlidhar Offset',
+      url: `/blog/${post.slug}`,
+      images: imageUrl ? [{ url: imageUrl, alt: post.title }] : undefined,
+      publishedTime: post.createdAt.toISOString(),
+      authors: post.author ? [post.author] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
+    robots: { index: true, follow: true },
+  }
+}
 
-        {/* Featured image */}
-        {post.featuredImage && (
-          <div className="mb-8 overflow-hidden rounded-2xl border border-border shadow-sm">
-            { }
-            <img src={post.featuredImage} alt={post.title} className="aspect-[16/9] w-full object-cover" />
-          </div>
-        )}
-
-        {/* Content */}
-        <div
-          className="prose prose-lg max-w-none prose-headings:font-display prose-headings:text-navy prose-a:text-gold-deep prose-strong:text-navy prose-headings:mt-6"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
-
-        <MandalaDivider className="my-10" />
-
-        {/* Footer CTA */}
-        <Card className="bg-navy-gradient p-6 text-center text-cream">
-          <h3 className="font-display text-xl font-bold">Need help with your next print project?</h3>
-          <p className="mt-2 text-sm text-cream/70">Our team is just a call away — open 24 hours.</p>
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
-            <Button asChild className="bg-gold text-navy hover:bg-gold-soft">
-              <Link href="/shop">Browse Shop <ArrowRight className="ml-2 h-4 w-4" /></Link>
-            </Button>
-            <Button asChild variant="outline" className="border-gold/50 text-gold hover:bg-gold hover:text-navy">
-              <a href="tel:9510737852">Call Us</a>
-            </Button>
-          </div>
-        </Card>
-
-        <div className="mt-6 text-center">
-          <Button asChild variant="ghost" className="text-navy">
-            <Link href="/blog"><ArrowLeft className="mr-2 h-4 w-4" /> Back to all articles</Link>
-          </Button>
-        </div>
-      </article>
-    </>
-  )
+export default function Page() {
+  return <BlogPostClient />
 }

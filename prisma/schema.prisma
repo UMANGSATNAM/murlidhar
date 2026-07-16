@@ -234,6 +234,8 @@ model SiteSettings {
   // SEO
   metaTitle       String?
   metaDescription String?
+  // FAQ (JSON array of {q, a} pairs)
+  faq             String?
   updatedAt       DateTime @updatedAt
 }
 

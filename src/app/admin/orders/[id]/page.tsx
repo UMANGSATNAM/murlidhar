@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { AdminShell, useAdmin } from '@/components/admin/admin-shell'
 import { useAdminRedirect } from '@/components/admin/use-admin-redirect'
+import { InvoiceDownloadButton } from '@/components/storefront/invoice-button'
 import { StatusBadge } from '@/app/admin/dashboard/page'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
@@ -102,10 +103,42 @@ export default function AdminOrderDetailPage() {
           <h2 className="font-display text-2xl font-bold text-navy">{order.orderNumber}</h2>
           <StatusBadge status={order.orderStatus} />
         </div>
-        <Button onClick={handleSave} className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={saving}>
-          {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-          Save & Email Customer
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <InvoiceDownloadButton
+            order={{
+              orderNumber: order.orderNumber,
+              customerName: order.customerName,
+              phone: order.phone,
+              email: order.email,
+              address: order.address,
+              city: order.city,
+              state: order.state,
+              pincode: order.pincode,
+              remarks: order.remarks,
+              items: order.items.map((it: any) => ({
+                productName: it.productName,
+                variantInfo: it.variantInfo,
+                qty: it.qty,
+                unitPrice: it.unitPrice,
+                total: it.total,
+              })),
+              subtotal: order.subtotal,
+              shipping: order.shipping,
+              total: order.total,
+              paymentMethod: order.paymentMethod,
+              paymentStatus: order.paymentStatus,
+              orderStatus: order.orderStatus,
+              createdAt: order.createdAt,
+            }}
+            variant="outline"
+            label="Invoice"
+            className="border-navy text-navy"
+          />
+          <Button onClick={handleSave} className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={saving}>
+            {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+            Save & Email Customer
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_380px]">

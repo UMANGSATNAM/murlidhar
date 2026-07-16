@@ -183,3 +183,64 @@ Priority Recommendations for Next Phase:
 5. **Inventory management** — add stock field to variant editor, show low-stock badges, prevent checkout when out of stock.
 6. **Product image gallery lightbox** — click to open full-screen image viewer with keyboard navigation.
 7. **Related products algorithm** — currently shows same-category products; could improve with "frequently bought together" logic.
+
+---
+Task ID: 13 (Phase 3)
+Agent: main (cron webDevReview round 2)
+Task: Continue QA + implement next-phase features (invoice PDF, lightbox, SEO, inventory, recently-viewed, FAQ). Mandatory: more styling polish + more features.
+
+Work Log:
+- **QA pass**: All 13 routes verified HTTP 200. Lint clean (0 errors, 0 warnings). Dev server needed one restart (sandbox inactivity).
+- **New Feature 1 — Invoice PDF Generation**: Installed `jspdf`. Built `src/lib/invoice.ts` — a branded invoice PDF generator with navy/gold/cream theme, business header, BILL TO section, status box, items table with alternating rows, totals (subtotal/shipping/tax/total with gold band), customer remarks, and footer. Created `InvoiceDownloadButton` component (reusable, supports default/outline/gold variants). Wired into: order confirmation page, track page (after order found), admin order detail page.
+- **New Feature 2 — Image Lightbox**: Built `ImageLightbox` component with fullscreen viewer, keyboard navigation (←/→/Esc/+/-/R), zoom (1x–4x), rotate (90° increments), reset, thumbnail strip, and click-outside-to-close. Wired into product page — clicking the main image (or the "Click to expand" button) opens the lightbox.
+- **New Feature 3 — SEO Metadata + Structured Data**: 
+  - Refactored `/product/[slug]` and `/blog/[slug]` from pure client components to server components wrapping client components. Added `generateMetadata()` to both → generates per-page title, description, keywords, canonical URL, OpenGraph, Twitter card, and robots directives.
+  - Added JSON-LD `Product` structured data on product pages (name, image, brand, category, aggregateRating, offers with price/availability) for Google rich results.
+  - Added JSON-LD `FAQPage` structured data on FAQ page.
+  - Created dynamic `sitemap.ts` route — generates `/sitemap.xml` with all static pages + active products + published blog posts + active categories (with priorities and change frequencies).
+  - Updated `robots.txt` to disallow `/admin` and `/api/admin`, and reference sitemap.
+- **New Feature 4 — Inventory/Stock Management**: 
+  - Updated `VariantMatrixBuilder` to include a Stock column with editable input. Low-stock (<10) shows amber background + "LOW" badge. Out-of-stock (0) shows red background + "OUT" badge. Stock field is saved to DB via existing API.
+  - Product page now shows dynamic stock indicator: green "In stock · Ready to ship" (>10), amber "Only N left in stock!" (<10), red "Out of stock — contact us" (0). Add to Cart / Order Now buttons auto-disable when stock=0 and change label to "Out of Stock" / "Contact Us".
+- **New Feature 5 — Recently Viewed Products**: 
+  - Created `recently-viewed-store.ts` (Zustand + persist to localStorage, max 8 items).
+  - Built `RecentlyViewed` component — shows grid of recently viewed products with "time ago" badge, image, name, price. Includes clear button.
+  - Wired into product page (tracks on view, displays at bottom excluding current product) AND home page (displays between Why Choose Us and Testimonials).
+- **New Feature 6 — FAQ System**:
+  - Added `faq` JSON field to SiteSettings model (array of {q, a} pairs).
+  - Created `/api/faq` public endpoint + seeded 8 default FAQs (file formats, turnaround, delivery, payment, proofs, minimum qty, design services, refunds).
+  - Built dedicated `/faq` page with search filter, accordion Q&A display, numbered questions, and "Still have questions?" CTA with call/WhatsApp/contact links.
+  - Built `ProductFAQ` component — compact accordion showing top 4 FAQs on product page with "View all FAQs" link.
+  - Added FAQ management tab to admin settings (5th tab) with inline `FaqEditor` component — add/remove/edit questions, changes save with site settings.
+  - Added FAQ link to footer Quick Links.
+- **New Feature 7 — Back-to-Top Button**: Built `BackToTop` component — appears after scrolling 600px, smoothly scrolls to top. Added to StorefrontShell (appears on all storefront pages, positioned above WhatsApp button).
+- **Styling Polish (Phase 3)**: Added to globals.css: `skeleton` shimmer animation, `glass-navy`/`glass-cream` backdrop-blur utilities, badge variants (`badge-out-of-stock`/`badge-low-stock`/`badge-in-stock`), `mandala-watermark` decorative background, `border-gold-gradient`, `text-balance`, `focus-ring-gold`, `img-fade-in`. Added print styles (`@media print` hides non-essential elements).
+
+Stage Summary:
+- ✅ All 7 new features implemented and verified via agent-browser.
+- ✅ Invoice PDF: button appears on order confirmation, track page, and admin order detail — generates branded PDF with full order details.
+- ✅ Lightbox: opens on image click, supports zoom/rotate/keyboard navigation/thumbnails.
+- ✅ SEO: per-page metadata generates correctly (verified via curl — titles, descriptions, OG tags, JSON-LD all present). Sitemap.xml generates with all URLs. robots.txt updated.
+- ✅ Inventory: stock column in variant matrix builder with visual badges, dynamic stock indicator on product page, auto-disable buttons when out of stock.
+- ✅ Recently viewed: tracks product views, shows on product page + home page with time-ago badges.
+- ✅ FAQ: dedicated page with search + accordion, compact section on product page, admin management in settings, JSON-LD structured data.
+- ✅ Back-to-top button on all storefront pages.
+- ✅ Styling polish: 10+ new CSS utilities + print styles.
+- ✅ Lint clean (0 errors, 0 warnings). All 18 routes tested return HTTP 200 (including /sitemap.xml, /robots.txt, /api/faq).
+
+Unresolved Issues / Risks:
+1. **Razorpay**: Still mock checkout — real gateway integration requires live API keys.
+2. **Email**: sendEmail() via SDK falls back to console.log in sandbox.
+3. **WYSIWYG blog editor**: Still HTML textarea — @mdxeditor/editor installed but not integrated.
+4. **FAQ JSON-LD**: Rendered client-side so not in initial HTML (still works for client-side rendering but ideally would be server-rendered for SEO crawlers that don't execute JS).
+5. **Image lazy loading**: Product images not yet using Next.js Image with lazy loading (using plain <img> tags throughout).
+
+Priority Recommendations for Next Phase:
+1. **WYSIWYG blog editor** — integrate @mdxeditor/editor (already installed) to replace the HTML textarea in admin blog editor.
+2. **Real Razorpay checkout** — server-side order creation + signature verification when live keys available.
+3. **Next.js Image optimization** — migrate <img> tags to next/image with lazy loading + responsive sizes for better Core Web Vitals.
+4. **Server-side FAQ rendering** — move FAQ JSON-LD + content to server component for better SEO crawling.
+5. **Product image gallery lightbox for related products** — extend lightbox to work on related product cards.
+6. **Customer accounts** — optional customer login (email/OTP) to save addresses + view order history.
+7. **Abandoned cart recovery** — email customers who added to cart but didn't checkout.
+8. **Admin analytics dashboard** — charts for revenue over time, top products, order status distribution (recharts is installed).
