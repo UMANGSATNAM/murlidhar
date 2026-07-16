@@ -71,7 +71,7 @@ export function Header() {
       <div
         className={`border-b transition-all ${
           scrolled
-            ? 'bg-cream/95 backdrop-blur border-gold/30 shadow-sm'
+            ? 'bg-white/95 backdrop-blur border-gold/30 shadow-sm'
             : 'bg-cream border-border'
         }`}
       >

@@ -65,7 +65,7 @@ export default function DashboardPage() {
 
       {/* Recent orders */}
       <Card className="mt-6 overflow-hidden">
-        <div className="flex items-center justify-between border-b border-border bg-cream/60 px-5 py-3">
+        <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-5 py-3">
           <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
             <TrendingUp className="h-4 w-4 text-gold" /> Recent Orders
           </h3>
@@ -82,7 +82,7 @@ export default function DashboardPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-cream/40 text-xs uppercase tracking-wide text-muted-foreground">
+              <thead className="bg-secondary/30 text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="px-5 py-3 text-left">Order #</th>
                   <th className="px-5 py-3 text-left">Customer</th>
@@ -95,7 +95,7 @@ export default function DashboardPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {recentOrders.map((o) => (
-                  <tr key={o.id} className="hover:bg-cream/40">
+                  <tr key={o.id} className="hover:bg-secondary/30">
                     <td className="px-5 py-3">
                       <Link href={`/admin/orders/${o.id}`} className="font-semibold text-navy hover:text-gold-deep">
                         {o.orderNumber}

@@ -55,34 +55,34 @@
 :root {
   --radius: 0.625rem;
 
-  /* Brand palette — Murlidhar Offset */
+  /* Brand palette — Murlidhar Offset (navy + white + gold) */
   --navy: #0f1b33;
   --navy-deep: #0a1325;
   --navy-soft: #1b2b4a;
   --gold: #d4a017;
   --gold-soft: #e6c068;
   --gold-deep: #a87d0f;
-  --cream: #faf6ed;
+  --cream: #ffffff;                 /* now pure white */
   --ink: #1a1a1a;
 
-  /* shadcn semantic tokens mapped to brand */
-  --background: #faf6ed;            /* warm cream */
+  /* shadcn semantic tokens — white background, navy text, gold accent */
+  --background: #ffffff;            /* pure white */
   --foreground: #0f1b33;            /* navy ink */
   --card: #ffffff;
   --card-foreground: #0f1b33;
   --popover: #ffffff;
   --popover-foreground: #0f1b33;
   --primary: #0f1b33;               /* navy */
-  --primary-foreground: #faf6ed;    /* cream */
-  --secondary: #f0e8d4;             /* soft parchment */
+  --primary-foreground: #ffffff;    /* white */
+  --secondary: #f1f5f9;             /* light slate */
   --secondary-foreground: #0f1b33;
-  --muted: #f0e8d4;
-  --muted-foreground: #5a5446;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
   --accent: #d4a017;                /* gold */
   --accent-foreground: #0f1b33;
   --destructive: #b91c1c;
-  --border: #e3d9c2;
-  --input: #e3d9c2;
+  --border: #e2e8f0;                /* light gray border */
+  --input: #e2e8f0;
   --ring: #d4a017;
   --chart-1: #0f1b33;
   --chart-2: #d4a017;
@@ -90,28 +90,28 @@
   --chart-4: #a87d0f;
   --chart-5: #e6c068;
   --sidebar: #0f1b33;
-  --sidebar-foreground: #faf6ed;
+  --sidebar-foreground: #ffffff;
   --sidebar-primary: #d4a017;
   --sidebar-primary-foreground: #0f1b33;
   --sidebar-accent: #1b2b4a;
-  --sidebar-accent-foreground: #faf6ed;
+  --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #1b2b4a;
   --sidebar-ring: #d4a017;
 }
 
 .dark {
   --background: #0a1325;
-  --foreground: #faf6ed;
+  --foreground: #ffffff;
   --card: #0f1b33;
-  --card-foreground: #faf6ed;
+  --card-foreground: #ffffff;
   --popover: #0f1b33;
-  --popover-foreground: #faf6ed;
+  --popover-foreground: #ffffff;
   --primary: #d4a017;
   --primary-foreground: #0a1325;
   --secondary: #1b2b4a;
-  --secondary-foreground: #faf6ed;
+  --secondary-foreground: #ffffff;
   --muted: #1b2b4a;
-  --muted-foreground: #b8b0a0;
+  --muted-foreground: #b8c4d6;
   --accent: #d4a017;
   --accent-foreground: #0a1325;
   --destructive: #ef4444;
@@ -197,7 +197,7 @@
   }
 
   .cream-texture {
-    background-color: var(--cream);
+    background-color: #ffffff;
     background-image: radial-gradient(circle at 1px 1px, rgba(15, 27, 51, 0.04) 1px, transparent 0);
     background-size: 20px 20px;
   }
@@ -509,10 +509,26 @@ input[type=number] { -moz-appearance: textfield; }
     @apply overflow-hidden rounded-xl border border-border bg-white;
   }
   .product-card-skeleton .skel-img {
-    @apply aspect-square skeleton;
+    @apply aspect-square;
+    background: linear-gradient(
+      90deg,
+      #f1f5f9 25%,
+      #e2e8f0 50%,
+      #f1f5f9 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
   }
   .product-card-skeleton .skel-line {
-    @apply h-3 skeleton rounded;
+    @apply h-3 rounded;
+    background: linear-gradient(
+      90deg,
+      #f1f5f9 25%,
+      #e2e8f0 50%,
+      #f1f5f9 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
   }
 
   /* Stagger animation entrance */

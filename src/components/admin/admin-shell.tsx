@@ -73,7 +73,7 @@ function SidebarContent({
       </nav>
 
       <div className="space-y-2 border-t border-cream/10 p-3">
-        <div className="rounded-md bg-cream/5 p-3">
+        <div className="rounded-md bg-white/5 p-3">
           <p className="text-xs font-semibold text-cream">{admin.name || 'Admin'}</p>
           <p className="text-[10px] text-cream/60">{admin.email}</p>
         </div>
@@ -134,7 +134,7 @@ export function AdminShell({ children, admin }: { children: React.ReactNode; adm
       {/* Main */}
       <div className="flex flex-1 flex-col min-w-0">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-cream/95 px-4 py-3 backdrop-blur lg:px-6">
+        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-white/95 px-4 py-3 backdrop-blur lg:px-6">
           <div className="ml-12 lg:ml-0">
             <h1 className="font-display text-lg font-bold text-navy">
               {NAV.find((n) => pathname.startsWith(n.href))?.label || 'Admin'}

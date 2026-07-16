@@ -84,7 +84,7 @@ function MyOrdersContent() {
       <section className="mx-auto max-w-4xl px-4 py-10">
         {/* Search form */}
         <Card className="card-premium overflow-hidden">
-          <div className="bg-cream/60 px-6 py-4 border-b border-border">
+          <div className="bg-secondary/40 px-6 py-4 border-b border-border">
             <h2 className="flex items-center gap-2 font-display text-lg font-bold text-navy">
               <Search className="h-5 w-5 text-gold" /> Find Your Orders
             </h2>
@@ -153,7 +153,7 @@ function MyOrdersContent() {
             <p className="mt-1 text-sm text-muted-foreground">
               We couldn't find any orders for {searchType === 'phone' ? 'phone' : 'email'}: <strong>{query}</strong>
             </p>
-            <div className="mt-4 rounded-md bg-cream/60 p-3 text-xs text-muted-foreground">
+            <div className="mt-4 rounded-md bg-secondary/40 p-3 text-xs text-muted-foreground">
               <p>Double-check your {searchType}, or try the other lookup method.</p>
               <p className="mt-2">Need help? Call us at <a href="tel:9510737852" className="font-semibold text-gold-deep">9510737852</a>.</p>
             </div>

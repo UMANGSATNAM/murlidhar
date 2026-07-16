@@ -135,7 +135,7 @@ export default function AboutPage() {
           <SectionHeader eyebrow="Visit Us" title="Find Us in Unjha" light />
           <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:items-center">
             <div className="space-y-3">
-              <div className="flex items-start gap-3 rounded-lg border border-cream/15 bg-cream/5 p-4">
+              <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">
                 <MapPin className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
                   <p className="text-xs uppercase tracking-wide text-cream/60">Address</p>
@@ -143,7 +143,7 @@ export default function AboutPage() {
                   <p className="text-xs text-cream/60">Open 24 hours · All days of the week</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-cream/15 bg-cream/5 p-4">
+              <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">
                 <Phone className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
                   <p className="text-xs uppercase tracking-wide text-cream/60">Call us</p>
@@ -152,14 +152,14 @@ export default function AboutPage() {
                   <span className="text-sm text-cream/80">079160 29127</span>
                 </div>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-cream/15 bg-cream/5 p-4">
+              <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">
                 <Mail className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
                   <p className="text-xs uppercase tracking-wide text-cream/60">Email</p>
                   <a href="mailto:murlidharoffset84@gmail.com" className="font-display text-base font-bold text-cream hover:text-gold">murlidharoffset84@gmail.com</a>
                 </div>
               </div>
-              <div className="flex items-start gap-3 rounded-lg border border-cream/15 bg-cream/5 p-4">
+              <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">
                 <Star className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
                   <p className="text-xs uppercase tracking-wide text-cream/60">Google Rating</p>

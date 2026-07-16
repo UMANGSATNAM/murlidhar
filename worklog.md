@@ -311,3 +311,30 @@ Priority Recommendations for Next Phase:
 6. **Advanced search filters** — filter by price range, GSM, paper type, finish on shop page.
 7. **Print file preview** — admin can preview uploaded design files (CDR/PS/PDF) inline in order detail.
 8. **Bulk order discounts** — automatic tiered pricing for large quantities (e.g. 10% off 500+ pcs).
+
+---
+Task ID: 15 (Phase 4.5 — User Request)
+Agent: main
+Task: User requested: (1) change color scheme from cream to white + navy blue, (2) make admin product add/edit process smoother.
+
+Work Log:
+- **Color Scheme Change (cream → white)**: Updated globals.css `:root` variables — `--background` from `#faf6ed` (cream) to `#ffffff` (white), `--cream` variable to `#ffffff`, `--secondary`/`--muted` from parchment `#f0e8d4` to light slate `#f1f5f9`, `--muted-foreground` from `#5a5446` to `#475569` (cooler gray), `--border`/`--input` from `#e3d9c2` to `#e2e8f0` (light gray). Updated dark mode foreground from cream to white. Updated `cream-texture` utility to use white background. Global find-replace of all `bg-cream/60` → `bg-secondary/40`, `bg-cream/40` → `bg-secondary/30`, `bg-cream/95` → `bg-white/95` across all components and admin pages for proper visual hierarchy on white background.
+- **CSS bug fix**: `@apply skeleton` inside `product-card-skeleton` utility caused "Cannot apply unknown utility class" error — replaced with inline gradient + animation definition.
+- **Smooth Product Editor (complete rewrite of `/admin/products/new`)**: 
+  1. **Quick Start Templates** — 6 template buttons at top (Visiting Cards, Letterheads, Pamphlets, Wedding Cards, Brochures, Blank/Custom). Clicking a template auto-fills: product name, slug, short description, turnaround note, matching category, AND variant attributes with options. Saves 5+ minutes of manual entry per product.
+  2. **Auto-slug generation** — typing the product name auto-generates the URL slug in real-time (using `slugify()`). User can manually override by clicking the slug field — once edited manually, auto-generation stops.
+  3. **Quick turnaround buttons** — 5 quick-fill buttons (Same day, 1-2 days, 2-3 days, 3-4 days, 5-7 days) below the turnaround input.
+  4. **"Unsaved changes" badge** — appears in header whenever form data changes, with amber styling.
+  5. **Sticky bottom save bar** — appears when there are unsaved changes, with "Discard" and "Save Changes" buttons. Stays visible while scrolling.
+  6. **Two save options** — "Save & Exit" (saves + redirects to product list) and "Save & Continue Editing" (saves + stays on page, only shown in edit mode).
+  7. **Set as main image** — hovering over any product image shows a "set as main" button (chevron up) that moves the image to position 0. Previously only the first uploaded image was main.
+  8. **Better image hover controls** — hover overlay with set-main and remove buttons, semi-transparent navy background.
+  9. **Character counter** on short description field (shows X/120 characters).
+  10. **Better section headers** — each card section now has an icon (Package, Star, etc.) for visual scanning.
+  11. **Improved labels and help text** — every field has helpful placeholder + description text.
+
+Stage Summary:
+- ✅ Color scheme changed from cream to white + navy blue throughout the entire site.
+- ✅ Admin product editor completely rebuilt with smooth UX: templates, auto-slug, quick buttons, sticky save bar, image reordering.
+- ✅ Tested via agent-browser: login → dashboard (white theme) → product editor → clicked "Visiting Cards" template → verified name/slug/description/variants auto-filled → typed custom name → verified auto-slug generated.
+- ✅ Lint clean (0 errors, 0 warnings). All routes HTTP 200.

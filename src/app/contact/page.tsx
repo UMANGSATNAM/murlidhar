@@ -70,19 +70,19 @@ export default function ContactPage() {
           <div className="space-y-4">
             <Card className="overflow-hidden">
               <div className="grid grid-cols-1 sm:grid-cols-2">
-                <a href="tel:9510737852" className="flex flex-col items-center gap-2 border-b border-r border-border p-6 text-center transition hover:bg-cream/60 sm:border-b-0">
+                <a href="tel:9510737852" className="flex flex-col items-center gap-2 border-b border-r border-border p-6 text-center transition hover:bg-secondary/40 sm:border-b-0">
                   <Phone className="h-8 w-8 text-gold" />
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">Call us</p>
                   <p className="font-display text-base font-bold text-navy">9510737852</p>
                   <p className="text-xs text-muted-foreground">079160 29127</p>
                 </a>
-                <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 border-b border-border p-6 text-center transition hover:bg-cream/60 sm:border-b-0">
+                <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 border-b border-border p-6 text-center transition hover:bg-secondary/40 sm:border-b-0">
                   <MessageCircle className="h-8 w-8 text-gold" />
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">WhatsApp</p>
                   <p className="font-display text-base font-bold text-navy">Chat with us</p>
                   <p className="text-xs text-muted-foreground">Quick replies</p>
                 </a>
-                <a href="mailto:murlidharoffset84@gmail.com" className="flex flex-col items-center gap-2 border-r border-border p-6 text-center transition hover:bg-cream/60">
+                <a href="mailto:murlidharoffset84@gmail.com" className="flex flex-col items-center gap-2 border-r border-border p-6 text-center transition hover:bg-secondary/40">
                   <Mail className="h-8 w-8 text-gold" />
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">Email</p>
                   <p className="font-display text-sm font-bold text-navy break-all">murlidharoffset84@gmail.com</p>

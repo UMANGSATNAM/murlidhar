@@ -146,14 +146,14 @@ export default function AdminOrderDetailPage() {
         <div className="space-y-6">
           {/* Items */}
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                 <Package className="h-4 w-4 text-gold" /> Items ({order.items.length})
               </h3>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="bg-cream/40 text-xs uppercase tracking-wide text-muted-foreground">
+                <thead className="bg-secondary/30 text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-4 py-2 text-left">Product</th>
                     <th className="px-4 py-2 text-left">Variant</th>
@@ -174,11 +174,11 @@ export default function AdminOrderDetailPage() {
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t-2 border-border bg-cream/40">
+                  <tr className="border-t-2 border-border bg-secondary/30">
                     <td colSpan={4} className="px-4 py-3 text-right text-sm font-medium">Subtotal</td>
                     <td className="px-4 py-3 text-right font-semibold">{formatINR(order.subtotal)}</td>
                   </tr>
-                  <tr className="bg-cream/40">
+                  <tr className="bg-secondary/30">
                     <td colSpan={4} className="px-4 py-2 text-right text-sm font-medium">Shipping</td>
                     <td className="px-4 py-2 text-right">{formatINR(order.shipping)}</td>
                   </tr>
@@ -193,7 +193,7 @@ export default function AdminOrderDetailPage() {
 
           {/* Uploaded files */}
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                 <FileText className="h-4 w-4 text-gold" /> Uploaded Design Files ({order.files.length})
               </h3>
@@ -204,7 +204,7 @@ export default function AdminOrderDetailPage() {
               ) : (
                 <ul className="space-y-2">
                   {order.files.map((f) => (
-                    <li key={f.id} className="flex items-center justify-between gap-2 rounded-md border border-border bg-cream/40 p-3">
+                    <li key={f.id} className="flex items-center justify-between gap-2 rounded-md border border-border bg-secondary/30 p-3">
                       <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-navy text-cream">
                           <FileText className="h-4 w-4" />
@@ -231,13 +231,13 @@ export default function AdminOrderDetailPage() {
           {/* Customer remarks */}
           {order.remarks && (
             <Card className="overflow-hidden">
-              <div className="border-b border-border bg-cream/60 px-5 py-3">
+              <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                   <MessageSquare className="h-4 w-4 text-gold" /> Customer Remarks
                 </h3>
               </div>
               <div className="p-5">
-                <p className="whitespace-pre-line rounded-md bg-cream/40 p-4 text-sm text-foreground/80">{order.remarks}</p>
+                <p className="whitespace-pre-line rounded-md bg-secondary/30 p-4 text-sm text-foreground/80">{order.remarks}</p>
               </div>
             </Card>
           )}
@@ -247,7 +247,7 @@ export default function AdminOrderDetailPage() {
         <div className="space-y-6">
           {/* Customer */}
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                 <User className="h-4 w-4 text-gold" /> Customer
               </h3>
@@ -277,7 +277,7 @@ export default function AdminOrderDetailPage() {
 
           {/* Payment */}
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                 <IndianRupee className="h-4 w-4 text-gold" /> Payment
               </h3>
@@ -309,7 +309,7 @@ export default function AdminOrderDetailPage() {
 
           {/* Order status update */}
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                 <Package className="h-4 w-4 text-gold" /> Update Order Status
               </h3>

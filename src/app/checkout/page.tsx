@@ -138,7 +138,7 @@ function CheckoutContent() {
               <span className="text-sm text-muted-foreground">Order Total</span>
               <span className="font-display text-xl font-bold text-navy">{formatINR(placedOrder.total)}</span>
             </div>
-            <div className="mt-4 rounded-lg bg-cream/60 p-4 text-left text-sm">
+            <div className="mt-4 rounded-lg bg-secondary/40 p-4 text-left text-sm">
               <p className="font-semibold text-navy">What happens next?</p>
               <ul className="mt-2 space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
@@ -228,7 +228,7 @@ function CheckoutContent() {
           <div className="space-y-6">
             {/* Customer details */}
             <Card className="overflow-hidden">
-              <div className="border-b border-border bg-cream/60 px-5 py-3">
+              <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">1</span>
                   Your Details
@@ -252,7 +252,7 @@ function CheckoutContent() {
 
             {/* Delivery address */}
             <Card className="overflow-hidden">
-              <div className="border-b border-border bg-cream/60 px-5 py-3">
+              <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">2</span>
                   Delivery Address
@@ -280,7 +280,7 @@ function CheckoutContent() {
 
             {/* File upload */}
             <Card className="overflow-hidden">
-              <div className="border-b border-border bg-cream/60 px-5 py-3">
+              <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">3</span>
                   Upload Design Files
@@ -302,7 +302,7 @@ function CheckoutContent() {
                 {files.length > 0 && (
                   <ul className="mt-3 space-y-2">
                     {files.map((f, i) => (
-                      <li key={i} className="flex items-center justify-between gap-2 rounded-md border border-border bg-cream/40 px-3 py-2">
+                      <li key={i} className="flex items-center justify-between gap-2 rounded-md border border-border bg-secondary/30 px-3 py-2">
                         <div className="flex min-w-0 items-center gap-2">
                           <FileCheck2 className="h-4 w-4 shrink-0 text-gold" />
                           <span className="truncate text-sm text-navy">{f.name}</span>
@@ -320,7 +320,7 @@ function CheckoutContent() {
 
             {/* Remarks */}
             <Card className="overflow-hidden">
-              <div className="border-b border-border bg-cream/60 px-5 py-3">
+              <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">4</span>
                   Additional Instructions
@@ -333,7 +333,7 @@ function CheckoutContent() {
 
             {/* Payment */}
             <Card className="overflow-hidden">
-              <div className="border-b border-border bg-cream/60 px-5 py-3">
+              <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">5</span>
                   Payment Method

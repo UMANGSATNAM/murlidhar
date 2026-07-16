@@ -636,7 +636,7 @@ function ProductDetailContent() {
                   {files.map((f, i) => (
                     <li
                       key={i}
-                      className="flex items-center justify-between gap-2 rounded-md border border-border bg-cream/40 px-3 py-2"
+                      className="flex items-center justify-between gap-2 rounded-md border border-border bg-secondary/30 px-3 py-2"
                     >
                       <div className="flex min-w-0 items-center gap-2">
                         <FileCheck2 className="h-4 w-4 shrink-0 text-gold" />

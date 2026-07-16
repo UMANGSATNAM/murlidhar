@@ -127,7 +127,7 @@ function TrackContent() {
 
       <section className="mx-auto max-w-3xl px-4 py-10">
         <Card className="card-premium overflow-hidden">
-          <div className="bg-cream/60 px-6 py-4 border-b border-border">
+          <div className="bg-secondary/40 px-6 py-4 border-b border-border">
             <h2 className="flex items-center gap-2 font-display text-lg font-bold text-navy">
               <Search className="h-5 w-5 text-gold" /> Enter Order Number
             </h2>
@@ -169,7 +169,7 @@ function TrackContent() {
             <AlertCircle className="mx-auto h-12 w-12 text-amber-500" />
             <h3 className="mt-3 font-display text-xl font-bold text-navy">Order not found</h3>
             <p className="mt-1 text-sm text-muted-foreground">{error}</p>
-            <div className="mt-4 rounded-md bg-cream/60 p-3 text-xs text-muted-foreground">
+            <div className="mt-4 rounded-md bg-secondary/40 p-3 text-xs text-muted-foreground">
               <p>Double-check your order number — it should look like <code className="rounded bg-white px-1.5 py-0.5 text-navy">MO260716-5687</code>.</p>
               <p className="mt-2">Need help? Call us at <a href="tel:9510737852" className="font-semibold text-gold-deep">9510737852</a>.</p>
             </div>
@@ -251,7 +251,7 @@ function TrackContent() {
             <div className="grid gap-4 sm:grid-cols-2">
               {/* Customer + delivery */}
               <Card className="overflow-hidden">
-                <div className="border-b border-border bg-cream/60 px-5 py-3">
+                <div className="border-b border-border bg-secondary/40 px-5 py-3">
                   <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                     <MapPin className="h-4 w-4 text-gold" /> Delivery Details
                   </h3>
@@ -270,7 +270,7 @@ function TrackContent() {
 
               {/* Payment */}
               <Card className="overflow-hidden">
-                <div className="border-b border-border bg-cream/60 px-5 py-3">
+                <div className="border-b border-border bg-secondary/40 px-5 py-3">
                   <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                     <IndianRupee className="h-4 w-4 text-gold" /> Payment
                   </h3>
@@ -296,7 +296,7 @@ function TrackContent() {
 
             {/* Items */}
             <Card className="overflow-hidden">
-              <div className="border-b border-border bg-cream/60 px-5 py-3">
+              <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                   <Package className="h-4 w-4 text-gold" /> Items ({order.items.length})
                 </h3>
@@ -314,7 +314,7 @@ function TrackContent() {
                     <p className="font-semibold text-navy">{formatINR(it.total)}</p>
                   </div>
                 ))}
-                <div className="bg-cream/40 p-4">
+                <div className="bg-secondary/30 p-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span className="font-semibold">{formatINR(order.subtotal)}</span>
@@ -336,7 +336,7 @@ function TrackContent() {
               <div className="grid gap-4 sm:grid-cols-2">
                 {order.files.length > 0 && (
                   <Card className="overflow-hidden">
-                    <div className="border-b border-border bg-cream/60 px-5 py-3">
+                    <div className="border-b border-border bg-secondary/40 px-5 py-3">
                       <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                         <FileText className="h-4 w-4 text-gold" /> Design Files ({order.files.length})
                       </h3>
@@ -358,7 +358,7 @@ function TrackContent() {
                 )}
                 {order.remarks && (
                   <Card className="overflow-hidden">
-                    <div className="border-b border-border bg-cream/60 px-5 py-3">
+                    <div className="border-b border-border bg-secondary/40 px-5 py-3">
                       <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
                         <MessageSquare className="h-4 w-4 text-gold" /> Your Remarks
                       </h3>

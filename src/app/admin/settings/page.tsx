@@ -69,7 +69,7 @@ export default function AdminSettingsPage() {
         {/* Business info */}
         <TabsContent value="business">
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="font-display text-base font-bold text-navy">Business Information</h3>
             </div>
             <div className="grid gap-4 p-5 sm:grid-cols-2">
@@ -136,7 +136,7 @@ export default function AdminSettingsPage() {
         {/* Email */}
         <TabsContent value="email">
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="font-display text-base font-bold text-navy">Email & Notifications</h3>
               <p className="text-xs text-muted-foreground">Order confirmations and status updates are sent to customers automatically.</p>
             </div>
@@ -160,7 +160,7 @@ export default function AdminSettingsPage() {
         {/* Payment */}
         <TabsContent value="payment">
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="font-display text-base font-bold text-navy">Payment Options</h3>
               <p className="text-xs text-muted-foreground">Choose which payment methods appear at checkout.</p>
             </div>
@@ -213,7 +213,7 @@ export default function AdminSettingsPage() {
         {/* FAQ */}
         <TabsContent value="faq">
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="font-display text-base font-bold text-navy">Frequently Asked Questions</h3>
               <p className="text-xs text-muted-foreground">Manage the Q&A shown on the public FAQ page. Changes go live instantly.</p>
             </div>
@@ -229,7 +229,7 @@ export default function AdminSettingsPage() {
         {/* SEO */}
         <TabsContent value="seo">
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="font-display text-base font-bold text-navy">SEO Settings</h3>
               <p className="text-xs text-muted-foreground">Optimise how your site appears in search results.</p>
             </div>
@@ -293,7 +293,7 @@ function FaqEditor({ value, onChange }: { value: string; onChange: (v: string) =
         <p className="text-sm text-muted-foreground">No FAQs yet. Click "Add Question" to create your first one.</p>
       )}
       {items.map((item, i) => (
-        <div key={i} className="rounded-lg border border-border bg-cream/40 p-3">
+        <div key={i} className="rounded-lg border border-border bg-secondary/30 p-3">
           <div className="mb-2 flex items-center justify-between">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs font-bold text-gold">{i + 1}</span>
             <button type="button" onClick={() => remove(i)} className="text-muted-foreground hover:text-destructive">
@@ -344,7 +344,7 @@ function AnnouncementBarEditor({ value, onChange }: { value: string; onChange: (
   }
 
   return (
-    <div className="space-y-3 rounded-lg border border-border bg-cream/40 p-3">
+    <div className="space-y-3 rounded-lg border border-border bg-secondary/30 p-3">
       <div>
         <Label className="text-xs">Announcement Text</Label>
         <Input

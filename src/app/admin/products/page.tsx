@@ -124,7 +124,7 @@ export default function AdminProductsPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-cream/40 text-xs uppercase tracking-wide text-muted-foreground">
+              <thead className="bg-secondary/30 text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3 text-left">Product</th>
                   <th className="px-4 py-3 text-left">Category</th>
@@ -136,7 +136,7 @@ export default function AdminProductsPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {products.map((p) => (
-                  <tr key={p.id} className="hover:bg-cream/40">
+                  <tr key={p.id} className="hover:bg-secondary/30">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">

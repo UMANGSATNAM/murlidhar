@@ -98,7 +98,7 @@ export default function AdminBlogEditorPage() {
         {/* Main */}
         <div className="space-y-6">
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="font-display text-base font-bold text-navy">Post Content</h3>
             </div>
             <div className="space-y-4 p-5">
@@ -130,7 +130,7 @@ export default function AdminBlogEditorPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="font-display text-base font-bold text-navy">Publish</h3>
             </div>
             <div className="space-y-4 p-5">
@@ -153,7 +153,7 @@ export default function AdminBlogEditorPage() {
           </Card>
 
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-cream/60 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3">
               <h3 className="font-display text-base font-bold text-navy">Featured Image</h3>
             </div>
             <div className="p-5">

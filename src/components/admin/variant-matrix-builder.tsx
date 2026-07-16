@@ -119,7 +119,7 @@ export function VariantMatrixBuilder({
         </div>
 
         {attributes.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-border bg-cream/40 p-6 text-center">
+          <div className="rounded-lg border border-dashed border-border bg-secondary/30 p-6 text-center">
             <p className="text-sm text-muted-foreground">
               No variant attributes. This product will have a single price.
               Add attributes like "Paper Type" or "Quantity" to create variants.
@@ -189,7 +189,7 @@ export function VariantMatrixBuilder({
           </div>
           <div className="max-h-96 overflow-y-auto scroll-elegant rounded-lg border border-border">
             <table className="w-full text-sm">
-              <thead className="sticky top-0 bg-cream/95 backdrop-blur">
+              <thead className="sticky top-0 bg-white/95 backdrop-blur">
                 <tr className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
                   {attributes.map((a, i) => (
                     <th key={i} className="px-3 py-2 text-left">{a.name}</th>
@@ -200,7 +200,7 @@ export function VariantMatrixBuilder({
               </thead>
               <tbody className="divide-y divide-border">
                 {variants.map((v, i) => (
-                  <tr key={i} className="hover:bg-cream/40">
+                  <tr key={i} className="hover:bg-secondary/30">
                     {attributes.map((a, ai) => (
                       <td key={ai} className="px-3 py-2 text-foreground/80">{v.options[a.name] || '—'}</td>
                     ))}

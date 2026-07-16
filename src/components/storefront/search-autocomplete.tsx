@@ -110,7 +110,7 @@ export function SearchAutocomplete() {
           ) : (
             <div className="max-h-96 overflow-y-auto scroll-elegant">
               {categories.length > 0 && (
-                <div className="border-b border-border bg-cream/40 px-3 py-2">
+                <div className="border-b border-border bg-secondary/30 px-3 py-2">
                   <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Categories</p>
                   {categories.map((c) => (
                     <Link
@@ -132,7 +132,7 @@ export function SearchAutocomplete() {
                     key={p.id}
                     href={`/product/${p.slug}`}
                     onClick={() => { setOpen(false); setQ('') }}
-                    className="group flex items-center gap-3 rounded-md px-2 py-2 hover:bg-cream/60"
+                    className="group flex items-center gap-3 rounded-md px-2 py-2 hover:bg-secondary/40"
                   >
                     <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
                       {p.images[0]?.url ? (
@@ -150,7 +150,7 @@ export function SearchAutocomplete() {
                   </Link>
                 ))}
               </div>
-              <div className="border-t border-border bg-cream/40 p-2">
+              <div className="border-t border-border bg-secondary/30 p-2">
                 <button
                   onClick={submit}
                   className="flex w-full items-center justify-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gold-deep hover:bg-white"

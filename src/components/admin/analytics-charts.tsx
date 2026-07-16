@@ -99,7 +99,7 @@ export function AnalyticsCharts() {
 
       {/* Revenue chart */}
       <Card className="overflow-hidden">
-        <div className="flex items-center justify-between border-b border-border bg-cream/60 px-5 py-3">
+        <div className="flex items-center justify-between border-b border-border bg-secondary/40 px-5 py-3">
           <div>
             <h3 className="font-display text-base font-bold text-navy">Revenue (Last 30 Days)</h3>
             <p className="text-xs text-muted-foreground">Daily revenue from paid orders</p>
@@ -161,7 +161,7 @@ export function AnalyticsCharts() {
       {/* Two-column: status + payment */}
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="overflow-hidden">
-          <div className="border-b border-border bg-cream/60 px-5 py-3">
+          <div className="border-b border-border bg-secondary/40 px-5 py-3">
             <h3 className="font-display text-base font-bold text-navy">Order Status</h3>
             <p className="text-xs text-muted-foreground">Distribution across all orders</p>
           </div>
@@ -193,7 +193,7 @@ export function AnalyticsCharts() {
         </Card>
 
         <Card className="overflow-hidden">
-          <div className="border-b border-border bg-cream/60 px-5 py-3">
+          <div className="border-b border-border bg-secondary/40 px-5 py-3">
             <h3 className="font-display text-base font-bold text-navy">Payment Status</h3>
             <p className="text-xs text-muted-foreground">Paid vs pending vs failed</p>
           </div>
@@ -226,7 +226,7 @@ export function AnalyticsCharts() {
 
       {/* Top products */}
       <Card className="overflow-hidden">
-        <div className="border-b border-border bg-cream/60 px-5 py-3">
+        <div className="border-b border-border bg-secondary/40 px-5 py-3">
           <h3 className="font-display text-base font-bold text-navy">Top Products by Orders</h3>
           <p className="text-xs text-muted-foreground">Most ordered products with revenue contribution</p>
         </div>

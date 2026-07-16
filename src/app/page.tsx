@@ -259,7 +259,7 @@ export default function HomePage() {
                         key={i}
                         onClick={() => setHeroIdx(i)}
                         className={`h-2 rounded-full transition-all ${
-                          i === heroIdx ? 'w-8 bg-gold' : 'w-2 bg-cream/40 hover:bg-cream/70'
+                          i === heroIdx ? 'w-8 bg-gold' : 'w-2 bg-secondary/30 hover:bg-cream/70'
                         }`}
                         aria-label={`Go to slide ${i + 1}`}
                       />
@@ -415,7 +415,7 @@ export default function HomePage() {
             {TRUST_BADGES.map((b, i) => (
               <div
                 key={b.title}
-                className="group relative overflow-hidden rounded-xl border border-gold/20 bg-cream/5 p-6 text-center backdrop-blur transition hover:border-gold/50 hover:bg-cream/10"
+                className="group relative overflow-hidden rounded-xl border border-gold/20 bg-white/5 p-6 text-center backdrop-blur transition hover:border-gold/50 hover:bg-cream/10"
               >
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gold/20 text-gold transition group-hover:scale-110">
                   <b.icon className="h-8 w-8" />
@@ -526,21 +526,21 @@ export default function HomePage() {
                 light
               />
               <div className="mt-6 grid gap-3">
-                <a href="tel:9510737852" className="flex items-center gap-4 rounded-lg border border-cream/15 bg-cream/5 p-4 transition hover:border-gold/50 hover:bg-cream/10">
+                <a href="tel:9510737852" className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-cream/10">
                   <Phone className="h-5 w-5 text-gold" />
                   <div>
                     <p className="text-xs uppercase tracking-wide text-cream/60">Call us</p>
                     <p className="font-display text-lg font-bold text-cream">9510737852 · 079160 29127</p>
                   </div>
                 </a>
-                <a href="mailto:murlidharoffset84@gmail.com" className="flex items-center gap-4 rounded-lg border border-cream/15 bg-cream/5 p-4 transition hover:border-gold/50 hover:bg-cream/10">
+                <a href="mailto:murlidharoffset84@gmail.com" className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-cream/10">
                   <Mail className="h-5 w-5 text-gold" />
                   <div>
                     <p className="text-xs uppercase tracking-wide text-cream/60">Email</p>
                     <p className="font-display text-lg font-bold text-cream">murlidharoffset84@gmail.com</p>
                   </div>
                 </a>
-                <div className="flex items-center gap-4 rounded-lg border border-cream/15 bg-cream/5 p-4">
+                <div className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4">
                   <MapPin className="h-5 w-5 text-gold" />
                   <div>
                     <p className="text-xs uppercase tracking-wide text-cream/60">Visit our shop</p>

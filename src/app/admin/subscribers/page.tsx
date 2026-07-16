@@ -92,7 +92,7 @@ export default function AdminSubscribersPage() {
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-cream/40 text-xs uppercase tracking-wide text-muted-foreground">
+              <thead className="bg-secondary/30 text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3 text-left">Email</th>
                   <th className="px-4 py-3 text-left">Name</th>
@@ -103,7 +103,7 @@ export default function AdminSubscribersPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {items.map((s) => (
-                  <tr key={s.id} className="hover:bg-cream/40">
+                  <tr key={s.id} className="hover:bg-secondary/30">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4 text-gold" />

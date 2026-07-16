@@ -167,7 +167,7 @@ function CartContent() {
                           </span>
                         )}
                       </summary>
-                      <div className="mt-2 space-y-2 rounded-md border border-border bg-cream/40 p-3">
+                      <div className="mt-2 space-y-2 rounded-md border border-border bg-secondary/30 p-3">
                         <Textarea
                           value={remarksMap[item.key] || ''}
                           onChange={(e) => setRemarksMap((m) => ({ ...m, [item.key]: e.target.value }))}
@@ -258,7 +258,7 @@ function CartContent() {
                   </div>
                 </div>
 
-                <div className="space-y-2 rounded-lg bg-cream/60 p-3 text-xs">
+                <div className="space-y-2 rounded-lg bg-secondary/40 p-3 text-xs">
                   <div className="flex items-center gap-2 text-navy">
                     <ShieldCheck className="h-3.5 w-3.5 text-gold" /> 100% secure checkout
                   </div>

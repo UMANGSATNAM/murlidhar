@@ -95,7 +95,7 @@ export default function FAQClient({ faqs: initialFaqs }: { faqs: { q: string; a:
             <Accordion type="single" collapsible className="w-full">
               {filtered.map((faq, i) => (
                 <AccordionItem key={i} value={`item-${i}`} className="border-b border-border last:border-0">
-                  <AccordionTrigger className="px-5 py-4 text-left font-display text-base font-bold text-navy hover:no-underline hover:bg-cream/40">
+                  <AccordionTrigger className="px-5 py-4 text-left font-display text-base font-bold text-navy hover:no-underline hover:bg-secondary/30">
                     <span className="flex items-start gap-3">
                       <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold/20 text-xs font-bold text-gold-deep">
                         {i + 1}

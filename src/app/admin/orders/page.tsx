@@ -101,7 +101,7 @@ export default function AdminOrdersPage() {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-cream/40 text-xs uppercase tracking-wide text-muted-foreground">
+              <thead className="bg-secondary/30 text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3 text-left">Order #</th>
                   <th className="px-4 py-3 text-left">Customer</th>
@@ -114,7 +114,7 @@ export default function AdminOrdersPage() {
               </thead>
               <tbody className="divide-y divide-border">
                 {orders.map((o) => (
-                  <tr key={o.id} className="hover:bg-cream/40">
+                  <tr key={o.id} className="hover:bg-secondary/30">
                     <td className="px-4 py-3">
                       <Link href={`/admin/orders/${o.id}`} className="font-semibold text-navy hover:text-gold-deep">{o.orderNumber}</Link>
                       {(o._count?.files ?? 0) > 0 && <span className="ml-1 text-[10px] text-gold-deep">📎 {o._count?.files}</span>}
