@@ -101,12 +101,14 @@ export function serializeCookie(c: CookieOptions): string {
 
 export async function getAdminFromRequest(request: Request) {
   const cookieHeader = request.headers.get('cookie') || ''
-  const token = cookieHeader
+  const cookiePair = cookieHeader
     .split(';')
     .map((c) => c.trim())
     .find((c) => c.startsWith(`${COOKIE_NAME}=`))
-    ?.split('=')[1]
-  if (!token) return null
+  if (!cookiePair) return null
+  const rawToken = cookiePair.substring(COOKIE_NAME.length + 1)
+  if (!rawToken) return null
+  const token = decodeURIComponent(rawToken)
   const payload = verify(token)
   if (!payload) return null
   const admin = await db.adminUser.findUnique({
