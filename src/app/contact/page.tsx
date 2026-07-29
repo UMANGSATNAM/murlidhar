@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { toast as sonnerToast } from 'sonner'
 
 export default function ContactPage() {
@@ -49,7 +49,7 @@ export default function ContactPage() {
 
   return (
     <StorefrontShell>
-      <section className="bg-navy-gradient py-14 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-14 text-foreground">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <div className="mb-3 flex items-center justify-center gap-2">
             <span className="h-px w-8 bg-gold" />
@@ -59,10 +59,9 @@ export default function ContactPage() {
           <h1 className="font-display text-4xl font-bold sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>
             Contact <span className="text-gold-gradient">Murlidhar Offset</span>
           </h1>
-          <p className="mt-3 text-lg text-cream/80">We're open 24 hours — call, WhatsApp, or visit us anytime.</p>
+          <p className="mt-3 text-lg text-muted-foreground">We're open 24 hours — call, WhatsApp, or visit us anytime.</p>
         </div>
-        <MandalaDivider className="mt-8 opacity-60" />
-      </section>
+              </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12">
         <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
@@ -123,9 +122,9 @@ export default function ContactPage() {
 
           {/* Contact form */}
           <Card className="card-premium overflow-hidden">
-            <div className="bg-navy-gradient p-5 text-cream">
+            <div className="bg-gradient-to-b from-background to-secondary/20 p-5 text-foreground">
               <h2 className="font-display text-xl font-bold">Send Us a Message</h2>
-              <p className="text-sm text-cream/70">Fill in the form and we'll call you back as soon as possible.</p>
+              <p className="text-sm text-muted-foreground">Fill in the form and we'll call you back as soon as possible.</p>
             </div>
             {sent ? (
               <div className="flex flex-col items-center gap-4 p-8 text-center">
@@ -156,7 +155,7 @@ export default function ContactPage() {
                   <Label htmlFor="c-message">Message *</Label>
                   <Textarea id="c-message" required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="mt-1 resize-none border-border" rows={5} placeholder="Tell us what you need — visiting cards, wedding cards, banners, etc." />
                 </div>
-                <Button type="submit" size="lg" className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={submitting}>
+                <Button type="submit" size="lg" className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={submitting}>
                   {submitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...</>) : (<>Send Message <Send className="ml-2 h-4 w-4" /></>)}
                 </Button>
                 <p className="text-center text-[11px] text-muted-foreground">By submitting, you agree to be contacted by Murlidhar Offset regarding your enquiry.</p>

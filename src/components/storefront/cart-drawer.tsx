@@ -22,12 +22,12 @@ export function CartDrawer({ children }: { children: React.ReactNode }) {
       <span onClick={() => setOpen(true)}>{children}</span>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="w-full sm:max-w-md bg-cream p-0 flex flex-col">
-          <SheetHeader className="border-b border-gold/30 bg-navy px-5 py-4">
-            <SheetTitle className="flex items-center justify-between text-cream">
+          <SheetHeader className="border-b border-gold/30 bg-background px-5 py-4">
+            <SheetTitle className="flex items-center justify-between text-foreground">
               <span className="flex items-center gap-2">
                 <ShoppingBag className="h-5 w-5 text-gold" />
                 Your Cart
-                <span className="text-xs font-normal text-cream/60">({items.length} items)</span>
+                <span className="text-xs font-normal text-muted-foreground">({items.length} items)</span>
               </span>
             </SheetTitle>
           </SheetHeader>
@@ -41,7 +41,7 @@ export function CartDrawer({ children }: { children: React.ReactNode }) {
                   Explore our premium printing services and add your favourites.
                 </p>
               </div>
-              <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-cream">
+              <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground">
                 <Link href="/shop" onClick={() => setOpen(false)}>
                   Browse Shop <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -58,7 +58,7 @@ export function CartDrawer({ children }: { children: React.ReactNode }) {
                     <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md border border-border bg-white">
                       {item.image ? (
                          
-                        <img src={item.image} alt={item.productName} className="h-full w-full object-cover" />
+                        <Image src={item.image} alt={item.productName} fill className="object-cover" sizes="80px" />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center bg-secondary">
                           <ShoppingBag className="h-6 w-6 text-muted-foreground" />
@@ -123,10 +123,10 @@ export function CartDrawer({ children }: { children: React.ReactNode }) {
                   Shipping & taxes calculated at checkout. COD & online payment available.
                 </p>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button asChild variant="outline" className="border-navy text-navy hover:bg-navy hover:text-cream">
+                  <Button asChild variant="outline" className="border-navy text-navy hover:bg-background hover:text-foreground">
                     <Link href="/cart" onClick={() => setOpen(false)}>View Cart</Link>
                   </Button>
-                  <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-cream">
+                  <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground">
                     <Link href="/checkout" onClick={() => setOpen(false)}>
                       Checkout <ArrowRight className="ml-1 h-4 w-4" />
                     </Link>

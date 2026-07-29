@@ -65,7 +65,7 @@ export default function AdminTestimonialsPage() {
         </div>
         <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setEditing(null) }}>
           <DialogTrigger asChild>
-            <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" onClick={() => setEditing({ name: '', location: '', rating: 5, text: '', active: true, createdAt: new Date().toISOString() })}>
+            <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" onClick={() => setEditing({ name: '', location: '', rating: 5, text: '', active: true, createdAt: new Date().toISOString() })}>
               <Plus className="mr-2 h-4 w-4" /> Add Testimonial
             </Button>
           </DialogTrigger>
@@ -81,7 +81,7 @@ export default function AdminTestimonialsPage() {
           <Card key={t.id} className="p-5">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-navy font-display font-bold text-teal">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-background font-display font-bold text-teal">
                   {t.name.charAt(0)}
                 </div>
                 <div>
@@ -145,7 +145,7 @@ function TestimonialForm({ item, onSave, onCancel }: { item: Testimonial; onSave
       </div>
       <div className="flex justify-end gap-2 pt-2">
         <Button variant="outline" onClick={onCancel}><X className="mr-2 h-4 w-4" /> Cancel</Button>
-        <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" onClick={() => onSave(form)}><Save className="mr-2 h-4 w-4" /> Save</Button>
+        <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" onClick={() => onSave(form)}><Save className="mr-2 h-4 w-4" /> Save</Button>
       </div>
     </div>
   )

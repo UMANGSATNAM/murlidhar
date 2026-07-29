@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 interface FAQ { q: string; a: string }
@@ -51,7 +51,7 @@ export default function FAQClient({ faqs: initialFaqs }: { faqs: { q: string; a:
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       )}
-      <section className="bg-navy-gradient py-14 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-14 text-foreground">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <div className="mb-3 flex items-center justify-center gap-2">
             <span className="h-px w-8 bg-gold" />
@@ -61,10 +61,9 @@ export default function FAQClient({ faqs: initialFaqs }: { faqs: { q: string; a:
           <h1 className="font-display text-4xl font-bold sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>
             Frequently Asked <span className="text-gold-gradient">Questions</span>
           </h1>
-          <p className="mt-3 text-lg text-cream/80">Quick answers to common questions about our printing services.</p>
+          <p className="mt-3 text-lg text-muted-foreground">Quick answers to common questions about our printing services.</p>
         </div>
-        <MandalaDivider className="mt-8 opacity-60" />
-      </section>
+              </section>
 
       <section className="mx-auto max-w-3xl px-4 py-12">
         {/* Search */}
@@ -114,14 +113,14 @@ export default function FAQClient({ faqs: initialFaqs }: { faqs: { q: string; a:
 
         {/* Still have questions CTA */}
         <Card className="mt-8 overflow-hidden">
-          <div className="bg-navy-gradient p-6 text-center text-cream">
+          <div className="bg-gradient-to-b from-background to-secondary/20 p-6 text-center text-foreground">
             <h3 className="font-display text-xl font-bold">Still have questions?</h3>
-            <p className="mt-1 text-sm text-cream/70">Our team is available 24 hours to help you.</p>
+            <p className="mt-1 text-sm text-muted-foreground">Our team is available 24 hours to help you.</p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
               <a href="tel:9510737852" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-gold-soft">
                 <Phone className="h-4 w-4" /> Call 9510737852
               </a>
-              <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-cream hover:bg-cream/10">
+              <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-cream/10">
                 <MessageCircle className="h-4 w-4" /> WhatsApp
               </a>
               <Button asChild variant="outline" className="border-gold/50 text-gold hover:bg-gold hover:text-navy">

@@ -36,10 +36,10 @@ export function InvoiceDownloadButton({
 
   const variantClass =
     variant === 'outline'
-      ? 'border-navy text-navy hover:bg-navy hover:text-cream'
+      ? 'border-navy text-navy hover:bg-background hover:text-foreground'
       : variant === 'gold'
-      ? 'bg-gold text-navy hover:bg-gold-deep hover:text-cream'
-      : 'bg-navy text-cream hover:bg-navy-soft'
+      ? 'bg-gold text-navy hover:bg-gold-deep hover:text-foreground'
+      : 'bg-background text-foreground hover:bg-secondary/30'
 
   return (
     <Button

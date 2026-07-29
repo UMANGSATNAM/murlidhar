@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
 import {
   ShoppingCart,
@@ -41,7 +42,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { StorefrontShell, StarRating } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { ImageLightbox } from '@/components/storefront/image-lightbox'
 import { RecentlyViewed } from '@/components/storefront/recently-viewed'
 import { ProductFAQ } from '@/components/storefront/product-faq'
@@ -362,7 +363,7 @@ function ProductDetailContent() {
         <Printer className="h-16 w-16 text-muted-foreground/40" />
         <h1 className="font-display text-2xl font-bold text-navy">Product not found</h1>
         <p className="text-sm text-muted-foreground">This product may have been removed or is no longer available.</p>
-        <Button asChild className="bg-navy text-cream hover:bg-navy-soft">
+        <Button asChild className="bg-background text-foreground hover:bg-secondary/30">
           <Link href="/shop">Back to Shop</Link>
         </Button>
       </div>
@@ -404,10 +405,12 @@ function ProductDetailContent() {
                   onMouseMove={handleMouseMove}
                   onClick={() => setLightboxOpen(true)}
                 >
-                  <img
+                  <Image
                     src={product.images[activeImage].url}
                     alt={product.images[activeImage].alt || product.name}
-                    className="h-full w-full object-cover transition-transform duration-200"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-200"
                     style={
                       zoom.active
                         ? { transform: 'scale(2)', transformOrigin: `${zoom.x}% ${zoom.y}%` }
@@ -417,7 +420,7 @@ function ProductDetailContent() {
                   {/* Expand hint */}
                   <button
                     onClick={(e) => { e.stopPropagation(); setLightboxOpen(true) }}
-                    className={`pointer-events-auto absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-navy/80 px-3 py-1.5 text-xs text-cream backdrop-blur transition-opacity hover:bg-navy hover:text-teal ${zoom.active ? 'opacity-0' : 'opacity-100'}`}
+                    className={`pointer-events-auto absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1.5 text-xs text-foreground backdrop-blur transition-opacity hover:bg-background hover:text-teal ${zoom.active ? 'opacity-0' : 'opacity-100'}`}
                     aria-label="Open fullscreen view"
                   >
                     <ZoomIn className="h-3 w-3 text-gold" /> Click to expand
@@ -429,7 +432,7 @@ function ProductDetailContent() {
                 </div>
               )}
               {product.category && (
-                <span className="absolute left-4 top-4 rounded-full bg-navy/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-cream">
+                <span className="absolute left-4 top-4 rounded-full bg-background/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground">
                   {product.category.name}
                 </span>
               )}
@@ -450,8 +453,8 @@ function ProductDetailContent() {
                   onClick={handleToggleCompare}
                   className={`flex h-10 w-10 items-center justify-center rounded-full backdrop-blur transition-all ${
                     compareHas(product.id)
-                      ? 'bg-navy text-teal shadow-navy'
-                      : 'bg-white/90 text-navy hover:bg-navy hover:text-teal'
+                      ? 'bg-background text-teal shadow-navy'
+                      : 'bg-white/90 text-navy hover:bg-background hover:text-teal'
                   }`}
                   aria-label={compareHas(product.id) ? 'Remove from compare' : 'Add to compare'}
                 >
@@ -476,7 +479,7 @@ function ProductDetailContent() {
                       i === activeImage ? 'border-gold shadow-gold' : 'border-border hover:border-gold/50'
                     }`}
                   >
-                    <img src={img.url} alt={img.alt || `Image ${i + 1}`} className="h-full w-full object-cover" />
+                    <Image src={img.url} alt={img.alt || `Image ${i + 1}`} fill sizes="80px" className="object-cover" />
                   </button>
                 ))}
               </div>
@@ -543,7 +546,7 @@ function ProductDetailContent() {
                   <p className="text-xs text-muted-foreground">{formatINR(currentPrice)} per unit · incl. all taxes</p>
                 </div>
                 {product.variants.length > 1 && (
-                  <span className="rounded-full bg-navy px-3 py-1 text-[10px] font-semibold text-cream">
+                  <span className="rounded-full bg-background px-3 py-1 text-[10px] font-semibold text-foreground">
                     {product.variants.length} variants
                   </span>
                 )}
@@ -612,7 +615,7 @@ function ProductDetailContent() {
                 onClick={handleAddToCart}
                 size="lg"
                 variant="outline"
-                className="flex-1 border-navy text-navy hover:bg-navy hover:text-cream"
+                className="flex-1 border-navy text-navy hover:bg-background hover:text-foreground"
                 disabled={(!matchedVariant && product.attributes.length > 0) || (matchedVariant?.stock === 0)}
               >
                 <ShoppingCart className="mr-2 h-4 w-4" /> {matchedVariant?.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
@@ -620,7 +623,7 @@ function ProductDetailContent() {
               <Button
                 onClick={handleOrderNow}
                 size="lg"
-                className="flex-1 bg-gold text-navy hover:bg-gold-deep hover:text-cream"
+                className="flex-1 bg-gold text-navy hover:bg-gold-deep hover:text-foreground"
                 disabled={(!matchedVariant && product.attributes.length > 0) || (matchedVariant?.stock === 0)}
               >
                 <Zap className="mr-2 h-4 w-4" /> {matchedVariant?.stock === 0 ? 'Contact Us' : 'Order Now'}
@@ -629,7 +632,7 @@ function ProductDetailContent() {
                 onClick={handleToggleWishlist}
                 size="lg"
                 variant="outline"
-                className={`shrink-0 border-navy ${wishlistHas(product.id) ? 'bg-gold text-navy' : 'text-navy hover:bg-navy hover:text-cream'}`}
+                className={`shrink-0 border-navy ${wishlistHas(product.id) ? 'bg-gold text-navy' : 'text-navy hover:bg-background hover:text-foreground'}`}
                 aria-label="Toggle wishlist"
               >
                 <Heart className={`h-4 w-4 ${wishlistHas(product.id) ? 'fill-current' : ''}`} />
@@ -717,7 +720,7 @@ function ProductDetailContent() {
 
             {/* Turnaround note */}
             {product.turnaroundNote && (
-              <div className="mt-4 flex items-center gap-2 rounded-lg bg-navy/5 px-4 py-3 text-sm">
+              <div className="mt-4 flex items-center gap-2 rounded-lg bg-background/5 px-4 py-3 text-sm">
                 <Clock className="h-4 w-4 text-gold-deep" />
                 <span className="font-medium text-navy">{product.turnaroundNote}</span>
               </div>
@@ -743,8 +746,7 @@ function ProductDetailContent() {
         {/* ─── Related Products ───────────────────────────────────────────────── */}
         {related.length > 0 && (
           <section className="mt-16">
-            <MandalaDivider className="mb-10" />
-            <SectionHeader eyebrow="You May Also Like" title="Related Products" />
+                        <SectionHeader eyebrow="You May Also Like" title="Related Products" />
             <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {related.map((p) => (
                 <Link
@@ -754,7 +756,7 @@ function ProductDetailContent() {
                 >
                   <div className="relative aspect-square overflow-hidden bg-secondary">
                     {p.images[0]?.url ? (
-                      <img src={p.images[0].url} alt={p.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <Image src={p.images[0].url} alt={p.name} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                     ) : (
                       <div className="flex h-full items-center justify-center">
                         <Printer className="h-12 w-12 text-muted-foreground/40" />
@@ -774,8 +776,7 @@ function ProductDetailContent() {
 
         {/* ─── Customer Reviews ───────────────────────────────────────────────── */}
         <section className="mt-16">
-          <MandalaDivider className="mb-10" />
-          <div className="flex flex-wrap items-end justify-between gap-4">
+                    <div className="flex flex-wrap items-end justify-between gap-4">
             <SectionHeader
               eyebrow="Customer Reviews"
               title="What Buyers Say"
@@ -783,7 +784,7 @@ function ProductDetailContent() {
             />
             <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-navy text-cream hover:bg-navy-soft">
+                <Button className="bg-background text-foreground hover:bg-secondary/30">
                   <Star className="mr-2 h-4 w-4" /> Write a Review
                 </Button>
               </DialogTrigger>
@@ -822,7 +823,7 @@ function ProductDetailContent() {
                   </div>
                   <div className="flex justify-end gap-2 pt-2">
                     <Button type="button" variant="outline" onClick={() => setReviewOpen(false)}>Cancel</Button>
-                    <Button type="submit" className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={submittingReview}>
+                    <Button type="submit" className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={submittingReview}>
                       {submittingReview ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                       Submit Review
                     </Button>
@@ -857,7 +858,7 @@ function ProductDetailContent() {
                   <Card key={r.id} className="p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy font-display font-bold text-teal">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background font-display font-bold text-teal">
                           {r.name.charAt(0).toUpperCase()}
                         </div>
                         <div>

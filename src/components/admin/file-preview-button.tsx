@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { Eye, X, Download, ZoomIn, ZoomOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
@@ -20,6 +21,7 @@ export function FilePreviewButton({ file }: { file: OrderFile }) {
   const isPdf = /\.pdf$/i.test(file.fileName)
 
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!open) setZoom(1)
   }, [open])
 
@@ -27,7 +29,7 @@ export function FilePreviewButton({ file }: { file: OrderFile }) {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-md border border-navy/30 px-3 py-1.5 text-xs font-bold text-navy transition hover:bg-navy hover:text-white"
+        className="inline-flex items-center gap-1.5 rounded-md border border-navy/30 px-3 py-1.5 text-xs font-bold text-navy transition hover:bg-background hover:text-white"
         title="Preview file"
       >
         <Eye className="h-3.5 w-3.5" /> Preview
@@ -37,7 +39,7 @@ export function FilePreviewButton({ file }: { file: OrderFile }) {
         <DialogContent className="max-w-4xl !p-0 overflow-hidden">
           <DialogTitle className="sr-only">Preview: {file.fileName}</DialogTitle>
           {/* Top bar */}
-          <div className="flex items-center justify-between border-b border-border bg-navy px-4 py-3 text-white">
+          <div className="flex items-center justify-between border-b border-border bg-background px-4 py-3 text-white">
             <div className="flex min-w-0 items-center gap-2">
               <Eye className="h-4 w-4 shrink-0 text-gold" />
               <span className="truncate text-sm font-semibold">{file.fileName}</span>
@@ -85,12 +87,13 @@ export function FilePreviewButton({ file }: { file: OrderFile }) {
           {/* Content */}
           <div className="max-h-[75vh] overflow-auto bg-secondary/30 p-4">
             {isImage ? (
-              <div className="flex items-center justify-center">
+              <div className="relative flex h-[60vh] w-full items-center justify-center">
                 { }
-                <img
+                <Image
                   src={file.filePath}
                   alt={file.fileName}
-                  className="max-w-full transition-transform"
+                  fill
+                  className="object-contain transition-transform"
                   style={{ transform: `scale(${zoom})` }}
                 />
               </div>

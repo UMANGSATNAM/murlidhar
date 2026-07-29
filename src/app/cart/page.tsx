@@ -2,12 +2,13 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, ArrowLeft, Upload, X, FileCheck2, MessageSquare, Loader2, ShieldCheck, Truck, Tag } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider } from '@/components/storefront/section-bits'
+import {  } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { BulkDiscountBanner } from '@/components/storefront/bulk-discount-banner'
 import { useCart } from '@/lib/cart-store'
@@ -70,7 +71,7 @@ function CartContent() {
             Looks like you haven't added any products yet. Explore our premium printing services and find the perfect fit.
           </p>
         </div>
-        <Button asChild size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-cream">
+        <Button asChild size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground">
           <Link href="/shop">Browse Shop <ArrowRight className="ml-2 h-4 w-4" /></Link>
         </Button>
       </div>
@@ -79,9 +80,9 @@ function CartContent() {
 
   return (
     <>
-      <section className="bg-navy-gradient py-10 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-10 text-foreground">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="flex items-center gap-2 text-xs text-cream/60">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/" className="hover:text-teal">Home</Link>
             <span>/</span>
             <span className="text-teal">Cart</span>
@@ -90,8 +91,7 @@ function CartContent() {
             Your Cart ({items.length} {items.length === 1 ? 'item' : 'items'})
           </h1>
         </div>
-        <MandalaDivider className="mt-6 opacity-60" />
-      </section>
+              </section>
 
       <section className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
@@ -106,7 +106,7 @@ function CartContent() {
                   >
                     {item.image ? (
                        
-                      <img src={item.image} alt={item.productName} className="h-full w-full object-cover" />
+                      <Image src={item.image} alt={item.productName} fill sizes="(max-width: 640px) 100vw, 112px" className="object-cover" />
                     ) : (
                       <div className="flex h-full items-center justify-center">
                         <ShoppingCart className="h-6 w-6 text-muted-foreground/40" />
@@ -244,7 +244,7 @@ function CartContent() {
             <BulkDiscountBanner />
 
             <Card className="card-premium overflow-hidden">
-              <div className="bg-navy-gradient p-5 text-cream">
+              <div className="bg-gradient-to-b from-background to-secondary/20 p-5 text-foreground">
                 <h2 className="font-display text-lg font-bold">Order Summary</h2>
               </div>
               <div className="space-y-3 p-5">
@@ -276,7 +276,7 @@ function CartContent() {
                   </div>
                 </div>
 
-                <Button asChild size="lg" className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-cream">
+                <Button asChild size="lg" className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-foreground">
                   <Link href="/checkout">Proceed to Checkout <ArrowRight className="ml-2 h-4 w-4" /></Link>
                 </Button>
                 <p className="text-center text-[11px] text-muted-foreground">

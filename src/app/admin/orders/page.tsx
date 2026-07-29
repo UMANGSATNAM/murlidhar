@@ -31,6 +31,33 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = React.useState('')
   const [paymentFilter, setPaymentFilter] = React.useState('')
   const [listLoading, setListLoading] = React.useState(true)
+  const [selected, setSelected] = React.useState<string[]>([])
+
+  const handleBulkAction = async (action: string, data?: any) => {
+    if (action === 'delete' && !confirm(`Delete ${selected.length} orders? This cannot be undone.`)) return
+    
+    try {
+      const res = await fetch('/api/admin/orders/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ action, ids: selected, data })
+      })
+      const resData = await res.json()
+      if (!res.ok) throw new Error(resData.error)
+      sonnerToast.success(resData.message || 'Bulk action completed')
+      setSelected([])
+      // force reload
+      const params = new URLSearchParams()
+      if (q) params.set('q', q)
+      if (statusFilter) params.set('status', statusFilter)
+      if (paymentFilter) params.set('payment', paymentFilter)
+      params.set('page', String(page))
+      fetch(`/api/orders?${params}`, { credentials: 'include' }).then(r => r.json()).then(d => { setOrders(d.items || []); setTotal(d.total || 0) })
+    } catch (err: any) {
+      sonnerToast.error(err.message || 'Bulk action failed')
+    }
+  }
 
   React.useEffect(() => {
     if (!admin) return
@@ -95,7 +122,7 @@ export default function AdminOrdersPage() {
         <Button
           asChild
           variant="outline"
-          className="border-navy text-navy hover:bg-navy hover:text-white"
+          className="border-navy text-navy hover:bg-background hover:text-white"
         >
           <a
             href={`/api/admin/orders/export?status=${statusFilter}&payment=${paymentFilter}&q=${encodeURIComponent(q)}`}
@@ -106,6 +133,35 @@ export default function AdminOrdersPage() {
           </a>
         </Button>
       </div>
+
+      {selected.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-navy/10 bg-background/5 px-4 py-2">
+          <span className="text-sm font-semibold text-navy">{selected.length} selected</span>
+          <div className="flex flex-wrap gap-2">
+            <select
+              className="h-9 rounded-md border border-border bg-white px-3 text-sm"
+              onChange={(e) => {
+                if (e.target.value) handleBulkAction('status', { orderStatus: e.target.value })
+                e.target.value = ''
+              }}
+            >
+              <option value="">Update Status...</option>
+              {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <select
+              className="h-9 rounded-md border border-border bg-white px-3 text-sm"
+              onChange={(e) => {
+                if (e.target.value) handleBulkAction('status', { paymentStatus: e.target.value })
+                e.target.value = ''
+              }}
+            >
+              <option value="">Update Payment...</option>
+              {PAYMENT_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+            </select>
+            <Button size="sm" variant="destructive" onClick={() => handleBulkAction('delete')}>Delete</Button>
+          </div>
+        </div>
+      )}
 
       <Card className="overflow-hidden">
         {listLoading ? (
@@ -121,6 +177,9 @@ export default function AdminOrdersPage() {
             <table className="w-full text-sm">
               <thead className="bg-secondary/30 text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
+                  <th className="px-4 py-3 text-left w-10">
+                    <input type="checkbox" className="rounded border-navy/20 text-gold focus:ring-gold" checked={orders.length > 0 && selected.length === orders.length} onChange={(e) => setSelected(e.target.checked ? orders.map(o => o.id) : [])} />
+                  </th>
                   <th className="px-4 py-3 text-left">Order #</th>
                   <th className="px-4 py-3 text-left">Customer</th>
                   <th className="px-4 py-3 text-center">Items</th>
@@ -133,6 +192,9 @@ export default function AdminOrdersPage() {
               <tbody className="divide-y divide-border">
                 {orders.map((o) => (
                   <tr key={o.id} className="hover:bg-secondary/30">
+                    <td className="px-4 py-3">
+                      <input type="checkbox" className="rounded border-navy/20 text-gold focus:ring-gold" checked={selected.includes(o.id)} onChange={(e) => setSelected(prev => e.target.checked ? [...prev, o.id] : prev.filter(id => id !== o.id))} />
+                    </td>
                     <td className="px-4 py-3">
                       <Link href={`/admin/orders/${o.id}`} className="font-semibold text-navy hover:text-teal">{o.orderNumber}</Link>
                       {(o._count?.files ?? 0) > 0 && <span className="ml-1 text-[10px] text-gold-deep">📎 {o._count?.files}</span>}

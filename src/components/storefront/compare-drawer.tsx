@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { GitCompare, X, ArrowRight, Trash2, Printer } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
@@ -20,7 +21,7 @@ export function CompareDrawer({ children }: { children: React.ReactNode }) {
       <span onClick={() => setOpen(true)}>{children}</span>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="w-full sm:max-w-md bg-white p-0 flex flex-col">
-          <SheetHeader className="border-b border-gold/30 bg-navy px-5 py-4">
+          <SheetHeader className="border-b border-gold/30 bg-background px-5 py-4">
             <SheetTitle className="flex items-center gap-2 text-white">
               <GitCompare className="h-5 w-5 text-gold" />
               Compare Products
@@ -62,7 +63,7 @@ export function CompareDrawer({ children }: { children: React.ReactNode }) {
                     >
                       {item.image ? (
                          
-                        <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                        <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover" />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-secondary">
                           <Printer className="h-6 w-6 text-muted-foreground" />
@@ -96,7 +97,7 @@ export function CompareDrawer({ children }: { children: React.ReactNode }) {
               </div>
 
               <div className="border-t border-gold/30 bg-white px-5 py-4 space-y-2">
-                <Button asChild className="w-full bg-navy text-white hover:bg-navy-soft" disabled={items.length < 2}>
+                <Button asChild className="w-full bg-background text-white hover:bg-secondary/30" disabled={items.length < 2}>
                   <Link href="/compare" onClick={() => setOpen(false)}>
                     <GitCompare className="mr-2 h-4 w-4" /> Compare {items.length} {items.length === 1 ? 'product' : 'products'}
                   </Link>

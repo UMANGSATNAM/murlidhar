@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
@@ -68,7 +68,7 @@ function LoyaltyContent() {
 
   return (
     <>
-      <section className="bg-navy-gradient py-14 text-white">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-14 text-white">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <div className="mb-3 flex items-center justify-center gap-2">
             <span className="h-px w-8 bg-gold" />
@@ -82,8 +82,7 @@ function LoyaltyContent() {
             Earn 1 point for every ₹10 you spend. Redeem points for discounts on future orders.
           </p>
         </div>
-        <MandalaDivider className="mt-8 opacity-60" />
-      </section>
+              </section>
 
       <section className="mx-auto max-w-3xl px-4 py-10">
         {/* How it works */}
@@ -167,7 +166,7 @@ function LoyaltyContent() {
           <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Points balance card */}
             <Card className="overflow-hidden">
-              <div className="bg-navy-gradient p-6 text-center text-white">
+              <div className="bg-gradient-to-b from-background to-secondary/20 p-6 text-center text-white">
                 <Sparkles className="mx-auto h-8 w-8 text-gold" />
                 <p className="mt-2 text-xs uppercase tracking-wide text-white/60">Your Rewards Balance</p>
                 <p className="mt-1 font-display text-5xl font-bold text-gold">{account.points}</p>

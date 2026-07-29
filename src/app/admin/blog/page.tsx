@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Plus, Edit, Trash2, Loader2, FileText, Eye, EyeOff } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -44,7 +45,7 @@ export default function AdminBlogPage() {
           <h2 className="font-display text-2xl font-bold text-navy">Blog Posts</h2>
           <p className="text-sm text-muted-foreground">{posts.length} posts</p>
         </div>
-        <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-cream">
+        <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground">
           <Link href="/admin/blog/new"><Plus className="mr-2 h-4 w-4" /> New Post</Link>
         </Button>
       </div>
@@ -55,7 +56,7 @@ export default function AdminBlogPage() {
             <div className="relative aspect-video bg-secondary">
               {p.featuredImage ? (
                  
-                <img src={p.featuredImage} alt={p.title} className="h-full w-full object-cover" />
+                <Image src={p.featuredImage} alt={p.title} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />
               ) : (
                 <div className="flex h-full items-center justify-center"><FileText className="h-10 w-10 text-muted-foreground/30" /></div>
               )}

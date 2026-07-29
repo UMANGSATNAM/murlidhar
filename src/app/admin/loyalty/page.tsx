@@ -56,7 +56,7 @@ export default function AdminLoyaltyPage() {
               <p className="text-xs uppercase tracking-wide text-muted-foreground">Total Members</p>
               <p className="mt-1 font-display text-2xl font-bold text-navy">{total}</p>
             </div>
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-navy">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-background">
               <Users className="h-5 w-5 text-gold" />
             </div>
           </div>

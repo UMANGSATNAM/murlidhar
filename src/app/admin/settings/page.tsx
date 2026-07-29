@@ -52,7 +52,7 @@ export default function AdminSettingsPage() {
           <h2 className="font-display text-2xl font-bold text-navy">Site Settings</h2>
           <p className="text-sm text-muted-foreground">All changes appear on the live storefront instantly.</p>
         </div>
-        <Button onClick={handleSave} className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={saving}>
+        <Button onClick={handleSave} className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={saving}>
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />} Save Settings
         </Button>
       </div>
@@ -248,7 +248,7 @@ export default function AdminSettingsPage() {
       </Tabs>
 
       <div className="mt-6 flex justify-end">
-        <Button onClick={handleSave} size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={saving}>
+        <Button onClick={handleSave} size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={saving}>
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />} Save All Settings
         </Button>
       </div>
@@ -295,7 +295,7 @@ function FaqEditor({ value, onChange }: { value: string; onChange: (v: string) =
       {items.map((item, i) => (
         <div key={i} className="rounded-lg border border-border bg-secondary/30 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs font-bold text-teal">{i + 1}</span>
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs font-bold text-teal">{i + 1}</span>
             <button type="button" onClick={() => remove(i)} className="text-muted-foreground hover:text-destructive">
               <Trash2 className="h-4 w-4" />
             </button>

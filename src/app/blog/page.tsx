@@ -2,11 +2,12 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Calendar, ArrowRight, User, PenTool } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 
 interface Post {
   id: string; title: string; slug: string; excerpt?: string
@@ -29,7 +30,7 @@ export default function BlogPage() {
 
   return (
     <StorefrontShell>
-      <section className="bg-navy-gradient py-14 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-14 text-foreground">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <div className="mb-3 flex items-center justify-center gap-2">
             <span className="h-px w-8 bg-gold" />
@@ -39,10 +40,9 @@ export default function BlogPage() {
           <h1 className="font-display text-4xl font-bold sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>
             The Murlidhar <span className="text-gold-gradient">Print Journal</span>
           </h1>
-          <p className="mt-3 text-lg text-cream/80">Printing tips, design guides and stories from our studio.</p>
+          <p className="mt-3 text-lg text-muted-foreground">Printing tips, design guides and stories from our studio.</p>
         </div>
-        <MandalaDivider className="mt-8 opacity-60" />
-      </section>
+              </section>
 
       <section className="mx-auto max-w-7xl px-4 py-12">
         {loading ? (
@@ -69,10 +69,10 @@ export default function BlogPage() {
             {featured && (
               <Link href={`/blog/${featured.slug}`} className="group mb-10 block overflow-hidden rounded-2xl border border-border bg-white transition hover:shadow-navy">
                 <div className="grid lg:grid-cols-2">
-                  <div className="aspect-[16/10] lg:aspect-auto overflow-hidden bg-secondary">
+                  <div className="relative aspect-[16/10] h-full lg:aspect-auto overflow-hidden bg-secondary">
                     {featured.featuredImage ? (
                        
-                      <img src={featured.featuredImage} alt={featured.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <Image src={featured.featuredImage} alt={featured.title} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                     ) : null}
                   </div>
                   <div className="p-6 lg:p-8 flex flex-col justify-center">
@@ -98,10 +98,10 @@ export default function BlogPage() {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {rest.map((p) => (
                   <Link key={p.id} href={`/blog/${p.slug}`} className="group flex flex-col overflow-hidden rounded-xl border border-border bg-white transition hover:-translate-y-1 hover:shadow-navy">
-                    <div className="aspect-[16/9] overflow-hidden bg-secondary">
+                    <div className="relative aspect-[16/9] overflow-hidden bg-secondary">
                       {p.featuredImage && (
                          
-                        <img src={p.featuredImage} alt={p.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        <Image src={p.featuredImage} alt={p.title} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                       )}
                     </div>
                     <div className="flex flex-1 flex-col p-5">

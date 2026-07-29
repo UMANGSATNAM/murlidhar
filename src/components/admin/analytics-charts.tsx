@@ -79,7 +79,7 @@ export function AnalyticsCharts() {
           value={String(data.totals.totalOrders)}
           icon={ShoppingCart}
           sub={`${data.totals.paid} paid · ${data.totals.pending} pending`}
-          color="bg-navy"
+          color="bg-background"
         />
         <KPICard
           label="Avg. Order Value"
@@ -121,24 +121,24 @@ export function AnalyticsCharts() {
                   <stop offset="100%" stopColor="#0d9488" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c2" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
               <XAxis
                 dataKey="date"
                 tick={{ fontSize: 11, fill: '#5a5446' }}
                 interval={3}
-                axisLine={{ stroke: '#e3d9c2' }}
+                axisLine={{ stroke: '#e2e8f0' }}
               />
               <YAxis
                 tick={{ fontSize: 11, fill: '#5a5446' }}
                 tickFormatter={(v) => `₹${v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}`}
-                axisLine={{ stroke: '#e3d9c2' }}
+                axisLine={{ stroke: '#e2e8f0' }}
               />
               <Tooltip
                 contentStyle={{
                   background: '#0f1b33',
                   border: '1px solid #0d9488',
                   borderRadius: '8px',
-                  color: '#faf6ed',
+                  color: '#f8fafc',
                   fontSize: '12px',
                 }}
                 labelStyle={{ color: '#0d9488', fontWeight: 600 }}
@@ -185,7 +185,7 @@ export function AnalyticsCharts() {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
+                  contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -216,7 +216,7 @@ export function AnalyticsCharts() {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
+                  contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -233,17 +233,17 @@ export function AnalyticsCharts() {
         <div className="p-4">
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={data.topProducts} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e3d9c2" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 11, fill: '#5a5446' }} axisLine={{ stroke: '#e3d9c2' }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: '#5a5446' }} axisLine={{ stroke: '#e2e8f0' }} />
               <YAxis
                 type="category"
                 dataKey="name"
                 tick={{ fontSize: 11, fill: '#0f1b33' }}
                 width={140}
-                axisLine={{ stroke: '#e3d9c2' }}
+                axisLine={{ stroke: '#e2e8f0' }}
               />
               <Tooltip
-                contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#faf6ed', fontSize: '12px' }}
+                contentStyle={{ background: '#0f1b33', border: '1px solid #0d9488', borderRadius: '8px', color: '#f8fafc', fontSize: '12px' }}
                 formatter={(v: any, n: any) => [v, n === 'orders' ? 'Orders' : 'Revenue (₹)']}
               />
               <Bar dataKey="orders" fill="#0f1b33" radius={[0, 4, 4, 0]} barSize={18} />
@@ -283,7 +283,7 @@ function KPICard({
           )}
         </div>
         <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${color}`}>
-          <Icon className="h-5 w-5 text-cream" />
+          <Icon className="h-5 w-5 text-foreground" />
         </div>
       </div>
     </Card>

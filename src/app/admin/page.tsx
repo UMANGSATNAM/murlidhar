@@ -46,12 +46,12 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-navy-gradient p-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-background to-secondary/20 p-4">
       <div className="pointer-events-none absolute inset-0 opacity-10">
-        <div className="absolute inset-0 navy-texture" />
+        <div className="absolute inset-0 " />
       </div>
       <Card className="relative w-full max-w-md overflow-hidden rounded-2xl">
-        <div className="bg-navy-gradient p-8 text-center text-cream">
+        <div className="bg-gradient-to-b from-background to-secondary/20 p-8 text-center text-foreground">
           <div className="mx-auto mb-4 flex justify-center"><MandalaLogo size={72} /></div>
           <h1 className="font-display text-2xl font-bold" style={{ fontFamily: 'var(--font-display)' }}>
             Murlidhar Offset
@@ -99,7 +99,7 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          <Button type="submit" size="lg" className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={loading}>
+          <Button type="submit" size="lg" className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={loading}>
             {loading ? (
               <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing in...</>
             ) : (

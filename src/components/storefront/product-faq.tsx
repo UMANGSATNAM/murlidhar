@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ChevronRight, ArrowRight } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { SectionHeader, MandalaDivider } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
 interface FAQ { q: string; a: string }
@@ -24,8 +24,7 @@ export function ProductFAQ() {
 
   return (
     <section className="mt-16">
-      <MandalaDivider className="mb-10" />
-      <div className="flex flex-wrap items-end justify-between gap-3">
+            <div className="flex flex-wrap items-end justify-between gap-3">
         <SectionHeader eyebrow="Good to Know" title="Quick Questions" center={false} />
         <Button asChild variant="link" className="text-gold-deep">
           <Link href="/faq">View all FAQs <ArrowRight className="ml-1 h-4 w-4" /></Link>

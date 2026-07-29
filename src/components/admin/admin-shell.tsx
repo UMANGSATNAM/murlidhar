@@ -47,7 +47,7 @@ function SidebarContent({
         <Link href="/admin/dashboard" className="flex items-center gap-3" onClick={onNavigate}>
           <MandalaLogo size={42} />
           <div>
-            <p className="font-display text-base font-bold text-cream">Murlidhar Offset</p>
+            <p className="font-display text-base font-bold text-foreground">Murlidhar Offset</p>
             <p className="text-[10px] uppercase tracking-[0.2em] text-gold">Admin Panel</p>
           </div>
         </Link>
@@ -64,7 +64,7 @@ function SidebarContent({
               className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition ${
                 active
                   ? 'bg-gold text-navy shadow-sm'
-                  : 'text-cream/70 hover:bg-cream/10 hover:text-cream'
+                  : 'text-muted-foreground hover:bg-cream/10 hover:text-foreground'
               }`}
             >
               <item.icon className="h-4 w-4" />
@@ -77,19 +77,19 @@ function SidebarContent({
 
       <div className="space-y-2 border-t border-cream/10 p-3">
         <div className="rounded-md bg-white/5 p-3">
-          <p className="text-xs font-semibold text-cream">{admin.name || 'Admin'}</p>
-          <p className="text-[10px] text-cream/60">{admin.email}</p>
+          <p className="text-xs font-semibold text-foreground">{admin.name || 'Admin'}</p>
+          <p className="text-[10px] text-muted-foreground">{admin.email}</p>
         </div>
         <Link
           href="/"
           target="_blank"
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-cream/70 hover:bg-cream/10 hover:text-cream"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-cream/10 hover:text-foreground"
         >
           <ExternalLink className="h-3.5 w-3.5" /> View Live Site
         </Link>
         <button
           onClick={onLogout}
-          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-cream/70 hover:bg-destructive/20 hover:text-destructive"
+          className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-destructive/20 hover:text-destructive"
         >
           <LogOut className="h-3.5 w-3.5" /> Sign Out
         </button>
@@ -116,7 +116,7 @@ export function AdminShell({ children, admin }: { children: React.ReactNode; adm
   return (
     <div className="flex min-h-screen bg-cream">
       {/* Desktop sidebar */}
-      <aside className="hidden w-64 shrink-0 bg-navy lg:block">
+      <aside className="hidden w-64 shrink-0 bg-background lg:block">
         <div className="sticky top-0 h-screen">
           <SidebarContent pathname={pathname} admin={admin} onLogout={logout} />
         </div>
@@ -125,11 +125,11 @@ export function AdminShell({ children, admin }: { children: React.ReactNode; adm
       {/* Mobile sidebar */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetTrigger asChild>
-          <button className="fixed left-3 top-3 z-40 flex h-10 w-10 items-center justify-center rounded-md bg-navy text-cream lg:hidden" aria-label="Open menu">
+          <button className="fixed left-3 top-3 z-40 flex h-10 w-10 items-center justify-center rounded-md bg-background text-foreground lg:hidden" aria-label="Open menu">
             <Menu className="h-5 w-5" />
           </button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64 bg-navy p-0">
+        <SheetContent side="left" className="w-64 bg-background p-0">
           <SidebarContent pathname={pathname} admin={admin} onNavigate={() => setMobileOpen(false)} onLogout={logout} />
         </SheetContent>
       </Sheet>
@@ -151,11 +151,11 @@ export function AdminShell({ children, admin }: { children: React.ReactNode; adm
               <Bell className="h-4 w-4" />
               <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-gold" />
             </button>
-            <div className="flex items-center gap-2 rounded-full bg-navy px-3 py-1.5">
+            <div className="flex items-center gap-2 rounded-full bg-background px-3 py-1.5">
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gold text-xs font-bold text-navy">
                 {(admin.name || admin.email).charAt(0).toUpperCase()}
               </div>
-              <span className="hidden text-xs font-medium text-cream sm:inline">{admin.name || 'Admin'}</span>
+              <span className="hidden text-xs font-medium text-foreground sm:inline">{admin.name || 'Admin'}</span>
             </div>
           </div>
         </header>

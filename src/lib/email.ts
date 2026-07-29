@@ -54,8 +54,8 @@ export function orderConfirmationHtml(opts: {
     )
     .join('')
   return `
-  <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#faf6ed;padding:24px;border:1px solid #e3d9c2">
-    <div style="background:#0f1b33;color:#faf6ed;padding:20px;border-radius:8px;text-align:center">
+  <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:24px;border:1px solid #e2e8f0">
+    <div style="background:#0f1b33;color:#f8fafc;padding:20px;border-radius:8px;text-align:center">
       <h1 style="margin:0;color:#0d9488;font-family:Georgia,serif">${opts.business}</h1>
       <p style="margin:4px 0 0;font-size:13px;letter-spacing:1px">QUALITY PRINTING, LASTING IMPRESSION</p>
     </div>
@@ -65,7 +65,7 @@ export function orderConfirmationHtml(opts: {
     <p><strong>Order Number:</strong> ${opts.orderNumber}</p>
     <table style="width:100%;border-collapse:collapse;margin:16px 0;background:#fff">
       <thead>
-        <tr style="background:#0f1b33;color:#faf6ed">
+        <tr style="background:#0f1b33;color:#f8fafc">
           <th style="padding:10px;text-align:left">Item</th>
           <th style="padding:10px;text-align:center">Qty</th>
           <th style="padding:10px;text-align:right">Total</th>
@@ -94,8 +94,8 @@ export function statusUpdateHtml(opts: {
   business: string
 }) {
   return `
-  <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#faf6ed;padding:24px;border:1px solid #e3d9c2">
-    <div style="background:#0f1b33;color:#faf6ed;padding:20px;border-radius:8px;text-align:center">
+  <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:24px;border:1px solid #e2e8f0">
+    <div style="background:#0f1b33;color:#f8fafc;padding:20px;border-radius:8px;text-align:center">
       <h1 style="margin:0;color:#0d9488;font-family:Georgia,serif">${opts.business}</h1>
     </div>
     <h2 style="color:#0f1b33">Order Status Update</h2>

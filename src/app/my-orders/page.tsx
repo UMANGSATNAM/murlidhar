@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
@@ -66,7 +66,7 @@ function MyOrdersContent() {
 
   return (
     <>
-      <section className="bg-navy-gradient py-14 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-14 text-foreground">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <div className="mb-3 flex items-center justify-center gap-2">
             <span className="h-px w-8 bg-gold" />
@@ -76,10 +76,9 @@ function MyOrdersContent() {
           <h1 className="font-display text-4xl font-bold sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>
             My <span className="text-gold-gradient">Orders</span>
           </h1>
-          <p className="mt-3 text-lg text-cream/80">Look up all your past orders by phone number or email.</p>
+          <p className="mt-3 text-lg text-muted-foreground">Look up all your past orders by phone number or email.</p>
         </div>
-        <MandalaDivider className="mt-8 opacity-60" />
-      </section>
+              </section>
 
       <section className="mx-auto max-w-4xl px-4 py-10">
         {/* Search form */}
@@ -99,7 +98,7 @@ function MyOrdersContent() {
                 type="button"
                 onClick={() => setSearchType('phone')}
                 className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
-                  searchType === 'phone' ? 'bg-navy text-cream' : 'text-navy hover:bg-secondary'
+                  searchType === 'phone' ? 'bg-background text-foreground' : 'text-navy hover:bg-secondary'
                 }`}
               >
                 <Phone className="h-3.5 w-3.5" /> Phone
@@ -108,7 +107,7 @@ function MyOrdersContent() {
                 type="button"
                 onClick={() => setSearchType('email')}
                 className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
-                  searchType === 'email' ? 'bg-navy text-cream' : 'text-navy hover:bg-secondary'
+                  searchType === 'email' ? 'bg-background text-foreground' : 'text-navy hover:bg-secondary'
                 }`}
               >
                 <Mail className="h-3.5 w-3.5" /> Email
@@ -129,7 +128,7 @@ function MyOrdersContent() {
                   autoFocus
                 />
               </div>
-              <Button type="submit" size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={loading}>
+              <Button type="submit" size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Search className="mr-2 h-4 w-4" />}
                 Search
               </Button>
@@ -212,7 +211,7 @@ function MyOrdersContent() {
                         <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
                           order.orderStatus === 'delivered' ? 'bg-green-100 text-green-800' :
                           order.orderStatus === 'cancelled' ? 'bg-red-100 text-red-800' :
-                          'bg-navy/10 text-navy'
+                          'bg-background/10 text-navy'
                         }`}>
                           {order.orderStatus}
                         </span>

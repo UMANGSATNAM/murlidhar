@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Save, Loader2, Upload, Eye } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -88,7 +89,7 @@ export default function AdminBlogEditorPage() {
               <Link href={`/blog/${form.slug}`} target="_blank"><Eye className="mr-2 h-4 w-4" /> Preview</Link>
             </Button>
           )}
-          <Button onClick={handleSave} className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={saving}>
+          <Button onClick={handleSave} className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={saving}>
             {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />} Save Post
           </Button>
         </div>
@@ -160,8 +161,8 @@ export default function AdminBlogEditorPage() {
               {form.featuredImage ? (
                 <div className="group relative aspect-video overflow-hidden rounded-md border border-border">
                   { }
-                  <img src={form.featuredImage} alt="featured" className="h-full w-full object-cover" />
-                  <button onClick={() => setForm({ ...form, featuredImage: '' })} className="absolute right-2 top-2 rounded bg-navy/80 px-2 py-1 text-xs text-cream hover:bg-destructive">Remove</button>
+                  <Image src={form.featuredImage} alt="featured" fill sizes="400px" className="object-cover" />
+                  <button onClick={() => setForm({ ...form, featuredImage: '' })} className="absolute right-2 top-2 rounded bg-background/80 px-2 py-1 text-xs text-foreground hover:bg-destructive">Remove</button>
                 </div>
               ) : (
                 <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border bg-secondary/30 px-4 py-8 text-center hover:border-gold hover:bg-gold/5">
@@ -173,7 +174,7 @@ export default function AdminBlogEditorPage() {
             </div>
           </Card>
 
-          <Button onClick={handleSave} className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={saving}>
+          <Button onClick={handleSave} className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={saving}>
             {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />} {isEdit ? 'Update Post' : 'Create Post'}
           </Button>
         </div>

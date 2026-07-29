@@ -9,7 +9,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 
 const SERVICES = [
   { icon: CreditCard, name: 'Visiting Cards', desc: 'Premium business cards with gold foil, dripoff UV, matt, texture & more finishes. Sold in quantities of 100–1000 pcs.', link: '/shop?category=business-cards', tags: ['Gold Foil', 'Dripoff UV', 'Matt', '350–400 GSM'] },
@@ -33,7 +33,7 @@ export default function ServicesPage() {
   return (
     <StorefrontShell>
       {/* Hero */}
-      <section className="bg-navy-gradient py-14 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-14 text-foreground">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <div className="mb-3 flex items-center justify-center gap-2">
             <span className="h-px w-8 bg-gold" />
@@ -43,32 +43,56 @@ export default function ServicesPage() {
           <h1 className="font-display text-4xl font-bold sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>
             Our <span className="text-gold-gradient">Printing Services</span>
           </h1>
-          <p className="mt-3 text-lg text-cream/80">A complete print studio under one roof — from everyday stationery to premium packaging.</p>
+          <p className="mt-3 text-lg text-muted-foreground">A complete print studio under one roof — from everyday stationery to premium packaging.</p>
         </div>
-        <MandalaDivider className="mt-8 opacity-60" />
-      </section>
+              </section>
 
       {/* Services grid */}
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.map((s) => (
-              <Card key={s.name} className="group card-premium flex flex-col p-6 transition hover:-translate-y-1 hover:shadow-navy">
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-navy text-teal transition group-hover:bg-gold group-hover:text-navy">
-                  <s.icon className="h-7 w-7" />
-                </div>
-                <h3 className="font-display text-lg font-bold text-navy">{s.name}</h3>
-                <p className="mt-2 flex-1 text-sm text-muted-foreground">{s.desc}</p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {s.tags.map((t) => (
-                    <span key={t} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium text-navy">{t}</span>
-                  ))}
-                </div>
-                <Button asChild variant="link" className="mt-3 justify-start p-0 text-gold-deep hover:text-teal">
-                  <Link href={s.link}>Order Now <ArrowRight className="ml-1 h-4 w-4" /></Link>
-                </Button>
-              </Card>
-            ))}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            {SERVICES.map((s, idx) => {
+              // Asymmetric bento sizing: indices 0, 3, 7, 10 are larger, others are square-ish
+              const isLarge = [0, 3, 7, 10, 14].includes(idx)
+              const colSpanClass = isLarge ? "col-span-2 sm:col-span-2" : "col-span-2 sm:col-span-1"
+
+              return (
+                <Link
+                  key={s.name}
+                  href={s.link}
+                  className={`group relative flex ${isLarge ? 'flex-row items-center justify-between' : 'flex-col justify-between'} overflow-hidden rounded-2xl border border-border bg-white p-5 transition-all hover:border-amber-400 hover:shadow-md hover:-translate-y-1 ${colSpanClass}`}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  
+                  <div className={`${isLarge ? 'mb-0' : 'mb-4'}`}>
+                    <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-navy/5 text-navy transition-transform duration-500 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white">
+                      <s.icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="font-display text-base font-bold leading-tight text-navy">
+                      {s.name}
+                    </h3>
+                    {isLarge && (
+                      <p className="mt-1 text-xs text-muted-foreground line-clamp-2 max-w-[200px]">
+                        {s.desc}
+                      </p>
+                    )}
+                    {!isLarge && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {s.tags.slice(0, 2).map((t) => (
+                          <span key={t} className="rounded-full bg-secondary/80 px-1.5 py-0.5 text-[9px] font-medium text-navy">{t}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className={`flex items-center ${isLarge ? '' : 'w-full justify-end'} relative z-10`}>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-white opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-2">
+                      <ArrowRight className="h-4 w-4" />
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -95,12 +119,12 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-navy-gradient py-16 text-center text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-16 text-center text-foreground">
         <div className="mx-auto max-w-2xl px-4">
           <h2 className="font-display text-3xl font-bold sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>
             Ready to start your print project?
           </h2>
-          <p className="mt-3 text-cream/70">Browse our catalogue or call us — we'll guide you to the perfect solution.</p>
+          <p className="mt-3 text-muted-foreground">Browse our catalogue or call us — we'll guide you to the perfect solution.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="bg-gold text-navy hover:bg-gold-soft">
               <Link href="/shop">Browse Shop <ArrowRight className="ml-2 h-4 w-4" /></Link>

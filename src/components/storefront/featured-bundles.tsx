@@ -2,10 +2,11 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Tag, Plus, ArrowRight, Percent, Package } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { SectionHeader, MandalaDivider } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { useCart } from '@/lib/cart-store'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
@@ -52,8 +53,7 @@ export function FeaturedBundles() {
 
   return (
     <>
-      <MandalaDivider className="mb-10" />
-      <section className="py-8">
+            <section className="py-8">
         <div className="mx-auto max-w-7xl px-4">
           <SectionHeader
             eyebrow="Save More"
@@ -66,7 +66,7 @@ export function FeaturedBundles() {
               return (
                 <Card key={b.id} className="group overflow-hidden border-gold/30 transition-all hover:-translate-y-1 hover:shadow-navy">
                   {/* Header */}
-                  <div className="relative bg-navy-gradient p-4 text-white">
+                  <div className="relative bg-gradient-to-b from-background to-secondary/20 p-4 text-white">
                     <div className="flex items-center justify-between">
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-gold px-2.5 py-0.5 text-[10px] font-bold uppercase text-navy">
                         <Tag className="h-3 w-3" /> Combo Deal
@@ -85,10 +85,10 @@ export function FeaturedBundles() {
                     <ul className="space-y-1.5">
                       {b.items.map((it) => (
                         <li key={it.id} className="flex items-center gap-2 text-sm">
-                          <div className="h-8 w-8 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
+                          <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
                             {it.product.images[0]?.url ? (
                                
-                              <img src={it.product.images[0].url} alt={it.product.name} className="h-full w-full object-cover" />
+                              <Image src={it.product.images[0].url} alt={it.product.name} fill className="object-cover" sizes="32px" />
                             ) : (
                               <div className="flex h-full items-center justify-center"><Package className="h-3 w-3 text-muted-foreground/40" /></div>
                             )}

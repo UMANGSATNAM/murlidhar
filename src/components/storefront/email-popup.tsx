@@ -98,7 +98,7 @@ export function EmailSubscriptionPopup() {
           // Form state
           <>
             {/* Top banner with navy gradient */}
-            <div className="bg-navy-gradient p-6 text-center text-white">
+            <div className="bg-gradient-to-b from-background to-secondary/20 p-6 text-center text-white">
               <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-gold/20">
                 <Gift className="h-7 w-7 text-gold" />
               </div>

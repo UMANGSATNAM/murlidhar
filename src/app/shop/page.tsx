@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { SlidersHorizontal, X, Search, Printer, ArrowRight, Package, ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -11,7 +12,7 @@ import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { StorefrontShell, StarRating } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { formatINR } from '@/lib/format'
 
 interface Category { id: string; name: string; slug: string; icon?: string; _count?: { products: number } }
@@ -30,7 +31,9 @@ const CATEGORY_ICONS: Record<string, any> = {
 export default function ShopPage() {
   return (
     <StorefrontShell>
-      <ShopContent />
+      <React.Suspense fallback={<div className="flex min-h-screen items-center justify-center py-20 text-navy font-display text-lg font-bold animate-pulse">Loading shop...</div>}>
+        <ShopContent />
+      </React.Suspense>
     </StorefrontShell>
   )
 }
@@ -85,21 +88,20 @@ function ShopContent() {
   return (
     <>
       {/* Page header */}
-      <section className="bg-navy-gradient py-12 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-12 text-foreground">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="flex items-center gap-2 text-xs text-cream/60">
-            <Link href="/" className="hover:text-teal">Home</Link>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Link href="/" className="hover:text-accent font-medium">Home</Link>
             <span>/</span>
-            <span className="text-gold">Shop</span>
+            <span className="text-accent font-semibold">Shop</span>
           </div>
-          <h1 className="mt-2 font-display text-3xl font-bold sm:text-4xl" style={{ fontFamily: 'var(--font-display)' }}>
+          <h1 className="mt-2 font-display text-3xl font-extrabold sm:text-4xl">
             Shop Our Print Catalogue
           </h1>
-          <p className="mt-2 max-w-2xl text-sm text-cream/70">
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
             Premium printing services for every need. Select a product, choose your variant, upload your design file, and we'll handle the rest.
           </p>
         </div>
-        <MandalaDivider className="mt-8 opacity-60" />
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-8">
@@ -120,11 +122,11 @@ function ShopContent() {
           {/* ─── Products Grid ────────────────────────────────────────────────── */}
           <div>
             {/* Toolbar */}
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-white p-3">
+            <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-white shadow-sm p-4">
               <div className="flex items-center gap-3">
-                <p className="text-sm text-muted-foreground">
-                  Showing <span className="font-semibold text-navy">{products.length}</span> of{' '}
-                  <span className="font-semibold text-navy">{total}</span> products
+                <p className="text-sm font-medium text-navy">
+                  Showing <span className="font-bold">{products.length}</span> of{' '}
+                  <span className="font-bold">{total}</span> products
                 </p>
               </div>
 
@@ -132,13 +134,13 @@ function ShopContent() {
                 {/* Mobile filter trigger */}
                 <Sheet>
                   <SheetTrigger asChild>
-                    <Button variant="outline" size="sm" className="lg:hidden border-navy text-navy">
+                    <Button variant="outline" size="sm" className="lg:hidden border-border text-foreground hover:bg-secondary">
                       <SlidersHorizontal className="mr-2 h-4 w-4" /> Filters
                     </Button>
                   </SheetTrigger>
-                  <SheetContent side="left" className="w-[300px] bg-cream p-0">
-                    <SheetHeader className="border-b border-border bg-navy px-5 py-4">
-                      <SheetTitle className="text-cream">Filters</SheetTitle>
+                  <SheetContent side="left" className="w-[300px] bg-background p-0">
+                    <SheetHeader className="border-b border-border bg-muted/50 px-5 py-4">
+                      <SheetTitle className="text-foreground">Filters</SheetTitle>
                     </SheetHeader>
                     <div className="p-4">
                       <FilterPanel
@@ -157,7 +159,7 @@ function ShopContent() {
                 <select
                   value={sort}
                   onChange={(e) => setParam('sort', e.target.value)}
-                  className="h-9 rounded-md border border-border bg-white px-3 text-sm focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold"
+                  className="h-9 rounded-md border border-border bg-white px-3 text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                 >
                   <option value="newest">Newest First</option>
                   <option value="name">Name (A–Z)</option>
@@ -173,7 +175,7 @@ function ShopContent() {
                 {category && (
                   <button
                     onClick={() => setParam('category', '')}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3 py-1 text-xs font-medium text-cream"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1 text-xs font-medium text-foreground"
                   >
                     {categories.find((c) => c.slug === category)?.name || category}
                     <X className="h-3 w-3" />
@@ -182,7 +184,7 @@ function ShopContent() {
                 {q && (
                   <button
                     onClick={() => setParam('q', '')}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-navy px-3 py-1 text-xs font-medium text-cream"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-background px-3 py-1 text-xs font-medium text-foreground"
                   >
                     Search: "{q}" <X className="h-3 w-3" />
                   </button>
@@ -194,7 +196,7 @@ function ShopContent() {
             {loading ? (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="overflow-hidden rounded-xl border border-border bg-white">
+                  <div key={i} className="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
                     <div className="aspect-square animate-pulse bg-secondary" />
                     <div className="p-4">
                       <div className="h-4 w-3/4 animate-pulse rounded bg-secondary" />
@@ -205,13 +207,13 @@ function ShopContent() {
                 ))}
               </div>
             ) : products.length === 0 ? (
-              <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-white py-20 text-center">
-                <Package className="h-12 w-12 text-muted-foreground/40" />
+              <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-border bg-white py-20 text-center shadow-sm">
+                <Package className="h-12 w-12 text-muted-foreground/50" />
                 <div>
                   <p className="font-display text-lg font-bold text-navy">No products found</p>
                   <p className="mt-1 text-sm text-muted-foreground">Try adjusting your filters or browse all products.</p>
                 </div>
-                <Button asChild className="bg-navy text-cream hover:bg-navy-soft">
+                <Button asChild className="bg-amber-500 text-white hover:bg-amber-600 rounded-lg">
                   <Link href="/shop">Clear Filters</Link>
                 </Button>
               </div>
@@ -231,7 +233,7 @@ function ShopContent() {
                   size="sm"
                   disabled={page <= 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="border-navy text-navy"
+                  className="border-border text-foreground hover:bg-secondary"
                 >
                   <ChevronLeft className="h-4 w-4" /> Prev
                 </Button>
@@ -249,8 +251,8 @@ function ShopContent() {
                         onClick={() => setPage(p)}
                         className={`h-9 w-9 rounded-md text-sm font-medium transition ${
                           p === page
-                            ? 'bg-navy text-cream'
-                            : 'border border-border bg-white text-navy hover:bg-secondary'
+                            ? 'bg-foreground text-background'
+                            : 'border border-border bg-white text-foreground hover:bg-secondary'
                         }`}
                       >
                         {p}
@@ -263,7 +265,7 @@ function ShopContent() {
                   size="sm"
                   disabled={page >= totalPages}
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="border-navy text-navy"
+                  className="border-border text-foreground hover:bg-secondary"
                 >
                   Next <ChevronRight className="h-4 w-4" />
                 </Button>
@@ -303,14 +305,14 @@ function FilterPanel({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="mb-3 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wide text-navy">
-          <SlidersHorizontal className="h-4 w-4 text-gold" /> Categories
+        <h3 className="mb-3 flex items-center gap-2 font-display text-sm font-bold uppercase tracking-wide text-foreground">
+          <SlidersHorizontal className="h-4 w-4 text-accent" /> Categories
         </h3>
         <div className="space-y-1">
           <button
             onClick={() => onCategoryChange('')}
             className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition ${
-              !selectedCategory ? 'bg-navy text-cream' : 'text-foreground/70 hover:bg-secondary'
+              !selectedCategory ? 'bg-background text-foreground' : 'text-foreground/70 hover:bg-secondary'
             }`}
           >
             All Products
@@ -323,7 +325,7 @@ function FilterPanel({
               key={c.id}
               onClick={() => onCategoryChange(c.slug)}
               className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition ${
-                selectedCategory === c.slug ? 'bg-navy text-cream' : 'text-foreground/70 hover:bg-secondary'
+                selectedCategory === c.slug ? 'bg-background text-foreground' : 'text-foreground/70 hover:bg-secondary'
               }`}
             >
               {c.name}
@@ -334,7 +336,7 @@ function FilterPanel({
       </div>
 
       <div className="border-t border-border pt-6">
-        <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wide text-navy">Price Range</h3>
+        <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wide text-foreground">Price Range</h3>
         <div className="space-y-3">
           <Slider
             value={priceRange}
@@ -345,11 +347,10 @@ function FilterPanel({
             className="py-2"
           />
           <div className="flex items-center justify-between text-xs">
-            <span className="rounded bg-secondary px-2 py-1 font-medium text-navy">{formatINR(priceRange[0])}</span>
+            <span className="rounded bg-secondary px-2 py-1 font-medium text-foreground">{formatINR(priceRange[0])}</span>
             <span className="text-muted-foreground">to</span>
-            <span className="rounded bg-secondary px-2 py-1 font-medium text-navy">{formatINR(priceRange[1])}</span>
+            <span className="rounded bg-secondary px-2 py-1 font-medium text-foreground">{formatINR(priceRange[1])}</span>
           </div>
-          {/* Quick price presets */}
           <div className="flex flex-wrap gap-1.5 pt-1">
             {pricePresets.map((p) => {
               const active = priceRange[0] === p.min && priceRange[1] === p.max
@@ -359,8 +360,8 @@ function FilterPanel({
                   onClick={() => onPriceChange([p.min, p.max])}
                   className={`rounded-full border px-2.5 py-0.5 text-[10px] font-medium transition ${
                     active
-                      ? 'border-gold bg-gold text-navy'
-                      : 'border-border bg-white text-muted-foreground hover:border-gold/50 hover:text-navy'
+                      ? 'border-accent bg-accent text-accent-foreground'
+                      : 'border-border bg-white text-muted-foreground hover:border-accent/50 hover:text-foreground'
                   }`}
                 >
                   {p.label}
@@ -372,7 +373,7 @@ function FilterPanel({
       </div>
 
       <div className="border-t border-border pt-6">
-        <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wide text-navy">Sort By</h3>
+        <h3 className="mb-3 font-display text-sm font-bold uppercase tracking-wide text-foreground">Sort By</h3>
         <div className="space-y-1">
           {[
             { value: 'newest', label: 'Newest First' },
@@ -384,20 +385,20 @@ function FilterPanel({
               key={opt.value}
               onClick={() => onSortChange(opt.value)}
               className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition ${
-                sort === opt.value ? 'bg-secondary font-semibold text-navy' : 'text-foreground/70 hover:bg-secondary'
+                sort === opt.value ? 'bg-secondary font-semibold text-foreground' : 'text-foreground/70 hover:bg-secondary'
               }`}
             >
-              {sort === opt.value && <span className="h-1.5 w-1.5 rounded-full bg-gold" />}
+              {sort === opt.value && <span className="h-1.5 w-1.5 rounded-full bg-accent" />}
               {opt.label}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="rounded-lg border border-gold/30 bg-gold/5 p-4">
-        <p className="font-display text-sm font-bold text-navy">Need help choosing?</p>
+      <div className="rounded-xl border border-border bg-cream p-5 shadow-sm">
+        <p className="font-display text-base font-bold text-navy">Need help choosing?</p>
         <p className="mt-1 text-xs text-muted-foreground">Our team will guide you to the right product for your need.</p>
-        <Button asChild size="sm" className="mt-3 w-full bg-navy text-cream hover:bg-navy-soft">
+        <Button asChild size="sm" className="mt-4 w-full rounded-lg bg-amber-500 text-white hover:bg-amber-600">
           <a href="tel:9510737852">Call 9510737852</a>
         </Button>
       </div>
@@ -410,15 +411,17 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-border bg-white transition-all hover:-translate-y-1 hover:shadow-navy"
+      className="group flex flex-col overflow-hidden rounded-xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
     >
-      <div className="relative aspect-square overflow-hidden bg-secondary">
+      <div className="relative aspect-square overflow-hidden bg-secondary border-b border-border">
         {img ? (
            
-          <img
+          <Image
             src={img}
             alt={product.images?.[0]?.alt || product.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -426,7 +429,7 @@ function ProductCard({ product }: { product: Product }) {
           </div>
         )}
         {product.category && (
-          <span className="absolute left-3 top-3 rounded-full bg-navy/90 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-cream backdrop-blur">
+          <span className="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-navy backdrop-blur shadow-sm">
             {product.category.name}
           </span>
         )}
@@ -437,13 +440,13 @@ function ProductCard({ product }: { product: Product }) {
           <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{product.shortDesc}</p>
         )}
         <div className="mt-2"><StarRating rating={product.rating} count={product.reviewCount} size={13} /></div>
-        <div className="mt-3 flex items-end justify-between border-t border-border pt-3">
+        <div className="mt-4 flex items-end justify-between border-t border-border pt-4">
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Starting from</p>
-            <p className="font-display text-lg font-bold text-navy">{formatINR(product.basePrice)}</p>
+            <p className="text-[10px] uppercase font-bold tracking-widest text-gold-deep">Starting from</p>
+            <p className="font-display text-xl font-bold text-navy">{formatINR(product.basePrice)}</p>
           </div>
-          <span className="inline-flex items-center gap-1 rounded-md bg-secondary px-3 py-1.5 text-xs font-semibold text-navy transition group-hover:bg-gold">
-            View <ArrowRight className="h-3 w-3" />
+          <span className="inline-flex items-center gap-1 rounded-full bg-navy/5 px-3 py-1.5 text-xs font-bold text-navy transition group-hover:bg-amber-500 group-hover:text-white">
+            View <ArrowRight className="h-4 w-4" />
           </span>
         </div>
       </div>

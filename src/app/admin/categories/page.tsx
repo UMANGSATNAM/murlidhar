@@ -89,7 +89,7 @@ export default function AdminCategoriesPage() {
         </div>
         <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setEditing(null) }}>
           <DialogTrigger asChild>
-            <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" onClick={() => setEditing({ name: '', slug: '', description: '', icon: 'Folder', order: 0, active: true })}>
+            <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" onClick={() => setEditing({ name: '', slug: '', description: '', icon: 'Folder', order: 0, active: true })}>
               <Plus className="mr-2 h-4 w-4" /> Add Category
             </Button>
           </DialogTrigger>
@@ -105,7 +105,7 @@ export default function AdminCategoriesPage() {
           <Card key={c.id} className="p-5">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-navy text-teal">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-background text-teal">
                   <FolderTree className="h-5 w-5" />
                 </div>
                 <div>
@@ -170,7 +170,7 @@ function CategoryForm({ cat, onSave, onCancel }: { cat: Category; onSave: (c: Pa
       </div>
       <div className="flex justify-end gap-2 pt-2">
         <Button variant="outline" onClick={onCancel}><X className="mr-2 h-4 w-4" /> Cancel</Button>
-        <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" onClick={() => onSave(form)}><Save className="mr-2 h-4 w-4" /> Save</Button>
+        <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" onClick={() => onSave(form)}><Save className="mr-2 h-4 w-4" /> Save</Button>
       </div>
     </div>
   )

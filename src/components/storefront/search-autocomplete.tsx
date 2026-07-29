@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { Search, X, Loader2, Package, ArrowRight, Folder } from 'lucide-react'
 import { Input } from '@/components/ui/input'
@@ -36,6 +37,7 @@ export function SearchAutocomplete() {
 
   React.useEffect(() => {
     if (q.trim().length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProducts([])
       setCategories([])
       setLoading(false)
@@ -134,10 +136,10 @@ export function SearchAutocomplete() {
                     onClick={() => { setOpen(false); setQ('') }}
                     className="group flex items-center gap-3 rounded-md px-2 py-2 hover:bg-secondary/40"
                   >
-                    <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
+                    <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
                       {p.images[0]?.url ? (
                          
-                        <img src={p.images[0].url} alt={p.name} className="h-full w-full object-cover" />
+                        <Image src={p.images[0].url} alt={p.name} fill sizes="40px" className="object-cover" />
                       ) : (
                         <div className="flex h-full items-center justify-center"><Package className="h-4 w-4 text-muted-foreground/40" /></div>
                       )}

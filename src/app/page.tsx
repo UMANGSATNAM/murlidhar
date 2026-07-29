@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowRight,
   ShieldCheck,
@@ -27,7 +28,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StorefrontShell, StarRating } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { RecentlyViewed } from '@/components/storefront/recently-viewed'
 import { NewsletterSignup } from '@/components/storefront/newsletter-signup'
@@ -145,135 +146,71 @@ export default function HomePage() {
   return (
     <StorefrontShell>
       {/* ─── HERO SLIDER ─────────────────────────────────────────────────────── */}
-      <section className="relative bg-navy-gradient overflow-hidden">
+      <section className="relative bg-gradient-to-br from-cream via-white to-amber-50/30 overflow-hidden">
         <div className="absolute inset-0 opacity-20" aria-hidden="true">
-          <div className="absolute inset-0 navy-texture" />
-        </div>
-        {/* Decorative gold corner flourishes */}
-        <div className="pointer-events-none absolute inset-0 z-10">
-          <div className="absolute left-4 top-4 h-16 w-16 border-l-2 border-t-2 border-gold/40" />
-          <div className="absolute right-4 top-4 h-16 w-16 border-r-2 border-t-2 border-gold/40" />
-          <div className="absolute bottom-4 left-4 h-16 w-16 border-b-2 border-l-2 border-gold/40" />
-          <div className="absolute bottom-4 right-4 h-16 w-16 border-b-2 border-r-2 border-gold/40" />
+          <div className="absolute inset-0" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 py-10 sm:py-16 lg:py-20">
           <div className="grid items-center gap-8 lg:grid-cols-2">
             {/* Left — copy */}
-            <div className="text-cream">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold">
-                <Sparkles className="h-3 w-3" /> Since decades · Unjha, Gujarat
+            <div className="text-foreground">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-700 shadow-sm">
+                <Sparkles className="h-4 w-4 text-amber-500" /> Since 1990 · Unjha
               </div>
               <h1
-                className="font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl"
-                style={{ fontFamily: 'var(--font-display)' }}
+                className="font-display text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl text-navy"
               >
                 We Print Your
                 <br />
-                <span className="text-gold-gradient">Dreams on Paper</span>
+                <span className="bg-gradient-to-r from-amber-500 to-amber-600 text-white px-3 py-0.5 rounded-md leading-tight">Dreams on Paper</span>
               </h1>
-              <p className="mt-4 max-w-md text-base leading-relaxed text-cream/80 sm:text-lg">
+              <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground sm:text-lg">
                 Premium printing press in Unjha, Gujarat. Visiting cards, wedding cards, brochures, banners & more — crafted with precision on our Konica Minolta AccurioPrint C4065 digital press.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Button asChild size="lg" className="bg-gold text-navy hover:bg-gold-soft hover:text-navy">
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Button asChild size="lg" className="bg-amber-500 text-white hover:bg-amber-600 shadow-lg hover:shadow-xl font-bold tracking-wide rounded-xl h-14 px-8 text-base transition-all">
                   <Link href="/shop">
-                    Explore Shop <ArrowRight className="ml-2 h-4 w-4" />
+                    Explore Shop <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="border-gold/50 text-gold hover:bg-gold hover:text-navy">
+                <Button asChild size="lg" variant="outline" className="border-2 border-navy/20 text-navy hover:bg-navy hover:text-white shadow-sm font-bold tracking-wide rounded-xl h-14 px-8 text-base transition-all">
                   <Link href="/services">View Services</Link>
                 </Button>
               </div>
               {/* Mini trust stats */}
-              <div className="mt-8 grid grid-cols-3 gap-4 border-t border-cream/10 pt-6">
+              <div className="mt-10 grid grid-cols-3 gap-6 border-t border-amber-200/60 pt-8">
                 <div>
-                  <p className="font-display text-2xl font-bold text-teal">5.0★</p>
-                  <p className="text-xs text-cream/60">Google Rating</p>
+                  <p className="font-display text-3xl font-black text-amber-600">5.0★</p>
+                  <p className="mt-1 text-sm font-medium text-navy/70 uppercase tracking-widest">Google Rating</p>
                 </div>
                 <div>
-                  <p className="font-display text-2xl font-bold text-teal">30+</p>
-                  <p className="text-xs text-cream/60">Years of Craft</p>
+                  <p className="font-display text-3xl font-black text-amber-600">30+</p>
+                  <p className="mt-1 text-sm font-medium text-navy/70 uppercase tracking-widest">Years of Craft</p>
                 </div>
                 <div>
-                  <p className="font-display text-2xl font-bold text-teal">10k+</p>
-                  <p className="text-xs text-cream/60">Orders Delivered</p>
+                  <p className="font-display text-3xl font-black text-amber-600">10k+</p>
+                  <p className="mt-1 text-sm font-medium text-navy/70 uppercase tracking-widest">Orders Delivered</p>
                 </div>
               </div>
             </div>
 
-            {/* Right — hero image slider */}
-            <div className="relative">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border-2 border-gold/30 shadow-2xl">
-                {banners.length > 0 ? (
-                  banners.map((b, i) => (
-                    <div
-                      key={b.id}
-                      className={`absolute inset-0 transition-opacity duration-700 ${
-                        i === heroIdx ? 'opacity-100' : 'opacity-0'
-                      }`}
-                    >
-                      { }
-                      <img
-                        src={b.imageUrl}
-                        alt={b.title || 'Murlidhar Offset'}
-                        className="h-full w-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/80 via-transparent to-transparent" />
-                      {b.title && (
-                        <div className="absolute bottom-0 left-0 right-0 p-5 text-cream">
-                          <p className="font-display text-lg font-semibold text-gold-soft">{b.title}</p>
-                          {b.subtitle && (
-                            <p className="mt-1 line-clamp-2 text-sm text-cream/80">{b.subtitle}</p>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <div className="flex h-full items-center justify-center bg-navy-soft">
-                    <MandalaLogo size={120} />
-                  </div>
-                )}
+            {/* Right — hero image */}
+            <div className="relative flex items-center justify-center lg:justify-end">
+              <div className="relative w-full max-w-[500px] aspect-square overflow-hidden rounded-2xl border border-amber-200/50 shadow-2xl">
+                <Image
+                  src="/images/murlidhar-mandala.jpg"
+                  alt="Murlidhar Offset"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                />
               </div>
-
-              {/* Slider controls */}
-              {banners.length > 1 && (
-                <>
-                  <button
-                    onClick={() => setHeroIdx((i) => (i - 1 + banners.length) % banners.length)}
-                    className="absolute left-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-navy/60 text-cream backdrop-blur transition hover:bg-gold hover:text-navy"
-                    aria-label="Previous slide"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => setHeroIdx((i) => (i + 1) % banners.length)}
-                    className="absolute right-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-navy/60 text-cream backdrop-blur transition hover:bg-gold hover:text-navy"
-                    aria-label="Next slide"
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
-                  <div className="absolute -bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5">
-                    {banners.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setHeroIdx(i)}
-                        className={`h-2 rounded-full transition-all ${
-                          i === heroIdx ? 'w-8 bg-gold' : 'w-2 bg-secondary/30 hover:bg-cream/70'
-                        }`}
-                        aria-label={`Go to slide ${i + 1}`}
-                      />
-                    ))}
-                  </div>
-                </>
-              )}
             </div>
           </div>
         </div>
 
-        <MandalaDivider className="opacity-60" />
-      </section>
+              </section>
 
       {/* ─── ABOUT BAND ───────────────────────────────────────────────────────── */}
       <section className="cream-texture py-16 sm:py-20">
@@ -289,7 +226,7 @@ export default function HomePage() {
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {TRUST_BADGES.map((b) => (
                   <div key={b.title} className="flex gap-3 rounded-lg border border-border bg-white p-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-navy text-teal">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-background text-teal">
                       <b.icon className="h-5 w-5" />
                     </div>
                     <div>
@@ -299,7 +236,7 @@ export default function HomePage() {
                   </div>
                 ))}
               </div>
-              <Button asChild className="mt-6 bg-navy text-cream hover:bg-navy-soft">
+              <Button asChild className="mt-6 bg-amber-500 text-white hover:bg-amber-600 rounded-lg shadow-sm">
                 <Link href="/about">
                   Read Our Story <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -309,7 +246,7 @@ export default function HomePage() {
             {/* Machine showcase card */}
             <div className="relative">
               <div className="card-premium overflow-hidden rounded-2xl shadow-navy">
-                <div className="bg-navy-gradient p-6 text-cream">
+                <div className="bg-gradient-to-b from-background to-secondary/20 p-6 text-foreground">
                   <div className="flex items-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gold/20">
                       <Printer className="h-6 w-6 text-gold" />
@@ -319,10 +256,10 @@ export default function HomePage() {
                       <p className="font-display text-lg font-bold">Konica Minolta AccurioPrint C4065</p>
                     </div>
                   </div>
-                  <p className="mt-4 text-sm leading-relaxed text-cream/80">
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
                     A production-grade digital press that delivers exceptional colour accuracy, handles heavy stock up to 400 GSM, and prints at speeds that keep our turnaround times industry-leading.
                   </p>
-                  <ul className="mt-4 space-y-2 text-sm text-cream/90">
+                  <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
                     {['True CMYK colour reproduction', 'Up to 400 GSM stock support', 'Crisp text & fine-line detail', 'Fast same-day turnaround on small jobs'].map((f) => (
                       <li key={f} className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-gold" /> {f}
@@ -344,31 +281,41 @@ export default function HomePage() {
             title="Featured Categories"
             subtitle="From a single visiting card to large-volume commercial print runs — explore our most popular product categories."
           />
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
             {categories.map((cat, idx) => {
               const Icon = CATEGORY_ICONS[cat.icon || ''] || Printer
+              // Asymmetric bento sizing: index 0 and 3 are larger, others are square-ish
+              const isLarge = idx === 0 || idx === 3
+              const colSpanClass = isLarge ? "col-span-2 sm:col-span-2" : "col-span-2 sm:col-span-1"
+
               return (
                 <Link
                   key={cat.id}
                   href={`/shop?category=${cat.slug}`}
-                  className="group relative overflow-hidden rounded-xl border border-border bg-white p-6 transition-all hover:-translate-y-1 hover:shadow-navy"
+                  className={`group relative flex ${isLarge ? 'flex-row items-center justify-between' : 'flex-col justify-between'} overflow-hidden rounded-2xl border border-border bg-white p-5 transition-all hover:border-amber-400 hover:shadow-md hover:-translate-y-1 ${colSpanClass}`}
                 >
-                  <div className="absolute right-0 top-0 h-24 w-24 -translate-y-8 translate-x-8 rounded-full bg-gold/10 transition-transform group-hover:scale-150" />
-                  <div className="relative">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-navy text-teal transition-colors group-hover:bg-gold group-hover:text-navy">
-                      <Icon className="h-7 w-7" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  
+                  <div className={`${isLarge ? 'mb-0' : 'mb-4'}`}>
+                    <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-navy/5 text-navy transition-transform duration-500 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white">
+                      <Icon className="h-5 w-5" />
                     </div>
-                    <h3 className="mt-4 font-display text-lg font-bold text-navy">{cat.name}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                      {cat.description || `Premium ${cat.name.toLowerCase()} printed on quality stock.`}
-                    </p>
-                    <div className="mt-3 flex items-center justify-between">
-                      <span className="text-xs font-semibold text-gold-deep">
-                        {cat._count?.products ?? 0} products
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-sm font-medium text-navy transition-transform group-hover:translate-x-1">
-                        Explore <ArrowRight className="h-4 w-4" />
-                      </span>
+                    <h3 className="font-display text-base font-bold leading-tight text-navy">
+                      {cat.name}
+                    </h3>
+                    {isLarge && (
+                      <p className="mt-1 text-xs text-muted-foreground line-clamp-1 max-w-[200px]">
+                        {cat.description || `Premium ${cat.name.toLowerCase()} for your brand.`}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className={`flex items-center ${isLarge ? '' : 'w-full justify-between'} relative z-10`}>
+                    <span className="rounded-full bg-background px-2.5 py-1 text-[10px] font-bold tracking-wider text-navy shadow-sm">
+                      {cat._count?.products ?? 0} ITEMS
+                    </span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-white opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-2 ml-3">
+                      <ArrowRight className="h-4 w-4" />
                     </div>
                   </div>
                 </Link>
@@ -378,8 +325,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <MandalaDivider />
-
+      
       {/* ─── FEATURED PRODUCTS ────────────────────────────────────────────────── */}
       <section className="cream-texture py-16 sm:py-20">
         <div className="mx-auto max-w-7xl px-4">
@@ -394,7 +340,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="mt-10 text-center">
-            <Button asChild variant="outline" size="lg" className="border-navy text-navy hover:bg-navy hover:text-cream">
+            <Button asChild variant="outline" size="lg" className="border-navy/20 text-navy hover:bg-navy hover:text-white rounded-xl">
               <Link href="/shop">
                 View All Products <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -407,7 +353,7 @@ export default function HomePage() {
       <FeaturedBundles />
 
       {/* ─── WHY CHOOSE US ────────────────────────────────────────────────────── */}
-      <section className="bg-navy-gradient py-16 sm:py-20 text-cream">
+      <section className="bg-gradient-to-br from-navy-deep via-navy to-navy-soft py-16 sm:py-20 text-white">
         <div className="mx-auto max-w-7xl px-4">
           <SectionHeader
             eyebrow="Our Promise"
@@ -419,14 +365,14 @@ export default function HomePage() {
             {TRUST_BADGES.map((b, i) => (
               <div
                 key={b.title}
-                className="group relative overflow-hidden rounded-xl border border-gold/20 bg-white/5 p-6 text-center backdrop-blur transition hover:border-gold/50 hover:bg-cream/10"
+                className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/5 p-6 text-center backdrop-blur transition hover:border-amber-400/40 hover:bg-white/10"
               >
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gold/20 text-gold transition group-hover:scale-110">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 transition group-hover:scale-110">
                   <b.icon className="h-8 w-8" />
                 </div>
-                <h3 className="font-display text-lg font-bold text-cream">{b.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-cream/70">{b.desc}</p>
-                <div className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gold/60">
+                <h3 className="font-display text-lg font-bold text-white">{b.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-white/70">{b.desc}</p>
+                <div className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400/60">
                   0{i + 1}
                 </div>
               </div>
@@ -466,8 +412,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <MandalaDivider />
-
+      
       {/* ─── RECENTLY VIEWED ──────────────────────────────────────────────────── */}
       <RecentlyViewed />
 
@@ -497,7 +442,7 @@ export default function HomePage() {
                 <StarRating rating={t.rating} size={16} showCount={false} />
                 <p className="mt-3 text-sm leading-relaxed text-foreground/80">"{t.text}"</p>
                 <div className="mt-4 flex items-center gap-3 border-t border-border pt-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy font-display font-bold text-teal">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background font-display font-bold text-teal">
                     {t.name.charAt(0)}
                   </div>
                   <div>
@@ -519,7 +464,7 @@ export default function HomePage() {
       </section>
 
       {/* ─── CONTACT CTA BAND ─────────────────────────────────────────────────── */}
-      <section className="bg-navy-gradient py-16 text-cream">
+      <section className="bg-gradient-to-br from-navy-deep via-navy to-navy-soft py-16 text-white">
         <div className="mx-auto max-w-7xl px-4">
           <div className="grid gap-8 lg:grid-cols-2 lg:items-center">
             <div>
@@ -530,33 +475,33 @@ export default function HomePage() {
                 light
               />
               <div className="mt-6 grid gap-3">
-                <a href="tel:9510737852" className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-cream/10">
+                <a href="tel:9510737852" className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-white/10">
                   <Phone className="h-5 w-5 text-gold" />
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-cream/60">Call us</p>
-                    <p className="font-display text-lg font-bold text-cream">9510737852 · 079160 29127</p>
+                    <p className="text-xs uppercase tracking-wide text-white/60">Call us</p>
+                    <p className="font-display text-lg font-bold text-white">9510737852 · 079160 29127</p>
                   </div>
                 </a>
-                <a href="mailto:murlidharoffset84@gmail.com" className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-cream/10">
+                <a href="mailto:murlidharoffset84@gmail.com" className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-white/10">
                   <Mail className="h-5 w-5 text-gold" />
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-cream/60">Email</p>
-                    <p className="font-display text-lg font-bold text-cream">murlidharoffset84@gmail.com</p>
+                    <p className="text-xs uppercase tracking-wide text-white/60">Email</p>
+                    <p className="font-display text-lg font-bold text-white">murlidharoffset84@gmail.com</p>
                   </div>
                 </a>
                 <div className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4">
                   <MapPin className="h-5 w-5 text-gold" />
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-cream/60">Visit our shop</p>
-                    <p className="font-display text-base font-bold text-cream">Shreeji Super Market, 7, Unjha, Gujarat 384170</p>
-                    <p className="text-xs text-cream/60">{settings?.hours || 'Open 24 hours'}</p>
+                    <p className="text-xs uppercase tracking-wide text-white/60">Visit our shop</p>
+                    <p className="font-display text-base font-bold text-white">Shreeji Super Market, 7, Unjha, Gujarat 384170</p>
+                    <p className="text-xs text-white/60">{settings?.hours || 'Open 24 hours'}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Map embed */}
-            <div className="overflow-hidden rounded-2xl border-2 border-gold/30 shadow-2xl">
+            <div className="overflow-hidden rounded-2xl border border-amber-400/20 shadow-2xl">
               <iframe
                 title="Murlidhar Offset location"
                 src={settings?.mapEmbedUrl || 'https://www.google.com/maps?q=Unjha,Gujarat,384170&output=embed'}
@@ -586,10 +531,12 @@ function ProductCard({ product }: { product: Product }) {
       <div className="relative aspect-square overflow-hidden bg-secondary">
         {img ? (
            
-          <img
+          <Image
             src={img}
             alt={product.images?.[0]?.alt || product.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -597,7 +544,7 @@ function ProductCard({ product }: { product: Product }) {
           </div>
         )}
         {product.category && (
-          <span className="absolute left-3 top-3 rounded-full bg-navy/90 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-cream backdrop-blur">
+          <span className="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-foreground backdrop-blur">
             {product.category.name}
           </span>
         )}

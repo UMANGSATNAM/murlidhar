@@ -17,6 +17,7 @@ export function AnnouncementBar() {
   React.useEffect(() => {
     // Check sessionStorage for dismissal in this session
     if (typeof window !== 'undefined' && sessionStorage.getItem('mo-announcement-dismissed') === '1') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDismissed(true)
       return
     }

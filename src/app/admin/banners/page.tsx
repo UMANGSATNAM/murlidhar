@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { Plus, Trash2, Edit, Loader2, Image as ImageIcon, Upload, Save, X, Eye, EyeOff } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -65,7 +66,7 @@ export default function AdminBannersPage() {
         </div>
         <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) setEditing(null) }}>
           <DialogTrigger asChild>
-            <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" onClick={() => setEditing({ imageUrl: '', position: 'hero', order: 0, active: true })}>
+            <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" onClick={() => setEditing({ imageUrl: '', position: 'hero', order: 0, active: true })}>
               <Plus className="mr-2 h-4 w-4" /> Add Banner
             </Button>
           </DialogTrigger>
@@ -81,10 +82,10 @@ export default function AdminBannersPage() {
           <Card key={b.id} className="overflow-hidden">
             <div className="relative aspect-video bg-secondary">
               { }
-              <img src={b.imageUrl} alt={b.title || 'banner'} className="h-full w-full object-cover" />
+              <Image src={b.imageUrl} alt={b.title || 'banner'} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover" />
               <div className="absolute right-2 top-2 flex gap-1">
-                <button onClick={() => { setEditing(b); setOpen(true) }} className="flex h-7 w-7 items-center justify-center rounded bg-navy/80 text-cream hover:bg-gold hover:text-navy"><Edit className="h-3.5 w-3.5" /></button>
-                <button onClick={() => handleDelete(b)} className="flex h-7 w-7 items-center justify-center rounded bg-navy/80 text-cream hover:bg-destructive"><Trash2 className="h-3.5 w-3.5" /></button>
+                <button onClick={() => { setEditing(b); setOpen(true) }} className="flex h-7 w-7 items-center justify-center rounded bg-background/80 text-foreground hover:bg-gold hover:text-navy"><Edit className="h-3.5 w-3.5" /></button>
+                <button onClick={() => handleDelete(b)} className="flex h-7 w-7 items-center justify-center rounded bg-background/80 text-foreground hover:bg-destructive"><Trash2 className="h-3.5 w-3.5" /></button>
               </div>
               <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${b.active ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
                 {b.active ? <Eye className="inline h-3 w-3" /> : <EyeOff className="inline h-3 w-3" />} {b.active ? 'Live' : 'Hidden'}
@@ -137,9 +138,9 @@ function BannerForm({ banner, onSave, onCancel }: { banner: Banner; onSave: (b: 
           </label>
         </div>
         {form.imageUrl && (
-          <div className="mt-2 aspect-video overflow-hidden rounded-md border border-border bg-secondary">
+          <div className="relative mt-2 aspect-video overflow-hidden rounded-md border border-border bg-secondary">
             { }
-            <img src={form.imageUrl} alt="preview" className="h-full w-full object-cover" />
+            <Image src={form.imageUrl} alt="preview" fill sizes="400px" className="object-cover" />
           </div>
         )}
       </div>
@@ -177,7 +178,7 @@ function BannerForm({ banner, onSave, onCancel }: { banner: Banner; onSave: (b: 
       </div>
       <div className="flex justify-end gap-2 pt-2">
         <Button variant="outline" onClick={onCancel}><X className="mr-2 h-4 w-4" /> Cancel</Button>
-        <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={!form.imageUrl} onClick={() => onSave(form)}><Save className="mr-2 h-4 w-4" /> Save</Button>
+        <Button className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={!form.imageUrl} onClick={() => onSave(form)}><Save className="mr-2 h-4 w-4" /> Save</Button>
       </div>
     </div>
   )

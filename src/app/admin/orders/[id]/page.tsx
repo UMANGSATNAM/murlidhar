@@ -77,7 +77,7 @@ export default function AdminOrderDetailPage() {
     <AdminShell admin={admin}>
       <div className="p-10 text-center">
         <p className="font-display text-xl font-bold text-navy">Order not found</p>
-        <Button asChild className="mt-4 bg-navy text-cream hover:bg-navy-soft"><Link href="/admin/orders">Back to Orders</Link></Button>
+        <Button asChild className="mt-4 bg-background text-foreground hover:bg-secondary/30"><Link href="/admin/orders">Back to Orders</Link></Button>
       </div>
     </AdminShell>
   )
@@ -143,7 +143,7 @@ export default function AdminOrderDetailPage() {
             label="Invoice"
             className="border-navy text-navy"
           />
-          <Button onClick={handleSave} className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={saving}>
+          <Button onClick={handleSave} className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={saving}>
             {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
             Save & Email Customer
           </Button>
@@ -191,7 +191,7 @@ export default function AdminOrderDetailPage() {
                     <td colSpan={4} className="px-4 py-2 text-right text-sm font-medium">Shipping</td>
                     <td className="px-4 py-2 text-right">{formatINR(order.shipping)}</td>
                   </tr>
-                  <tr className="bg-navy text-cream">
+                  <tr className="bg-background text-foreground">
                     <td colSpan={4} className="px-4 py-3 text-right font-bold">Total</td>
                     <td className="px-4 py-3 text-right font-display text-lg font-bold">{formatINR(order.total)}</td>
                   </tr>
@@ -219,7 +219,7 @@ export default function AdminOrderDetailPage() {
                       <li key={f.id} className="rounded-md border border-border bg-secondary/30 p-3">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex min-w-0 items-center gap-3">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-navy text-cream">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-background text-foreground">
                               <FileText className="h-4 w-4" />
                             </div>
                             <div className="min-w-0">
@@ -425,7 +425,7 @@ export default function AdminOrderDetailPage() {
                   placeholder="e.g. Your order is ready for pickup."
                 />
               </div>
-              <Button onClick={handleSave} className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={saving}>
+              <Button onClick={handleSave} className="w-full bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={saving}>
                 {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
                 Save & Send Email
               </Button>

@@ -40,7 +40,7 @@ export function NewsletterSignup({ variant = 'footer' }: { variant?: 'footer' | 
 
   if (success) {
     return (
-      <div className={`flex items-center gap-3 ${variant === 'footer' ? 'text-cream' : 'text-navy'}`}>
+      <div className={`flex items-center gap-3 ${variant === 'footer' ? 'text-foreground' : 'text-navy'}`}>
         <CheckCircle2 className="h-5 w-5 text-green-500" />
         <div>
           <p className="text-sm font-semibold">You're subscribed!</p>
@@ -73,7 +73,7 @@ export function NewsletterSignup({ variant = 'footer' }: { variant?: 'footer' | 
             className="border-border bg-white"
             required
           />
-          <Button type="submit" className="bg-navy text-cream hover:bg-navy-soft shrink-0" disabled={loading}>
+          <Button type="submit" className="bg-background text-foreground hover:bg-secondary/30 shrink-0" disabled={loading}>
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             <span className="ml-1.5">Subscribe</span>
           </Button>
@@ -86,16 +86,16 @@ export function NewsletterSignup({ variant = 'footer' }: { variant?: 'footer' | 
   return (
     <form onSubmit={handleSubmit} className="space-y-2">
       <p className="text-xs uppercase tracking-[0.2em] text-gold">Newsletter</p>
-      <p className="text-sm text-cream/70">Get printing tips & seasonal offers in your inbox.</p>
+      <p className="text-sm text-muted-foreground">Get printing tips & seasonal offers in your inbox.</p>
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-cream/40" />
+          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Your email"
-            className="border-cream/20 bg-cream/10 pl-10 text-cream placeholder:text-cream/40 focus:border-gold"
+            className="border-cream/20 bg-cream/10 pl-10 text-foreground placeholder:text-muted-foreground focus:border-gold"
             required
           />
         </div>
@@ -103,7 +103,7 @@ export function NewsletterSignup({ variant = 'footer' }: { variant?: 'footer' | 
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         </Button>
       </div>
-      <p className="text-[10px] text-cream/50">We respect your privacy. Unsubscribe anytime.</p>
+      <p className="text-[10px] text-muted-foreground">We respect your privacy. Unsubscribe anytime.</p>
     </form>
   )
 }

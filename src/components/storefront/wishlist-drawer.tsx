@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Heart, X, ShoppingBag, Trash2, ArrowRight, ShoppingCart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
@@ -36,11 +37,11 @@ export function WishlistDrawer({ children }: { children: React.ReactNode }) {
       <span onClick={() => setOpen(true)}>{children}</span>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="right" className="w-full sm:max-w-md bg-cream p-0 flex flex-col">
-          <SheetHeader className="border-b border-gold/30 bg-navy px-5 py-4">
-            <SheetTitle className="flex items-center gap-2 text-cream">
+          <SheetHeader className="border-b border-gold/30 bg-background px-5 py-4">
+            <SheetTitle className="flex items-center gap-2 text-foreground">
               <Heart className="h-5 w-5 text-gold" />
               Wishlist
-              <span className="text-xs font-normal text-cream/60">({items.length} {items.length === 1 ? 'item' : 'items'})</span>
+              <span className="text-xs font-normal text-muted-foreground">({items.length} {items.length === 1 ? 'item' : 'items'})</span>
             </SheetTitle>
           </SheetHeader>
 
@@ -55,7 +56,7 @@ export function WishlistDrawer({ children }: { children: React.ReactNode }) {
                   Save your favourite printing products here for later.
                 </p>
               </div>
-              <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-cream">
+              <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground">
                 <Link href="/shop" onClick={() => setOpen(false)}>
                   Browse Shop <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
@@ -76,7 +77,7 @@ export function WishlistDrawer({ children }: { children: React.ReactNode }) {
                     >
                       {item.image ? (
                          
-                        <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                        <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover" />
                       ) : (
                         <div className="flex h-full items-center justify-center bg-secondary">
                           <ShoppingBag className="h-6 w-6 text-muted-foreground" />
@@ -98,7 +99,7 @@ export function WishlistDrawer({ children }: { children: React.ReactNode }) {
                         <Button
                           size="sm"
                           onClick={() => moveToCart(item)}
-                          className="h-7 bg-gold px-2 text-xs text-navy hover:bg-gold-deep hover:text-cream"
+                          className="h-7 bg-gold px-2 text-xs text-navy hover:bg-gold-deep hover:text-foreground"
                         >
                           <ShoppingCart className="mr-1 h-3 w-3" /> Add to Cart
                         </Button>
@@ -116,7 +117,7 @@ export function WishlistDrawer({ children }: { children: React.ReactNode }) {
               </div>
 
               <div className="border-t border-gold/30 bg-white px-5 py-4">
-                <Button asChild className="w-full bg-navy text-cream hover:bg-navy-soft">
+                <Button asChild className="w-full bg-background text-foreground hover:bg-secondary/30">
                   <Link href="/shop" onClick={() => setOpen(false)}>
                     Continue Shopping <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>

@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
   GitCompare, X, Star, ShoppingBag, ArrowRight, Printer, Clock, Package,
@@ -10,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StorefrontShell, StarRating } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { useCompare } from '@/lib/compare-store'
 import { useCart } from '@/lib/cart-store'
 import { formatINR } from '@/lib/format'
@@ -46,7 +47,7 @@ function CompareContent() {
 
   return (
     <>
-      <section className="bg-navy-gradient py-12 text-white">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-12 text-white">
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex items-center gap-2 text-xs text-white/60">
             <Link href="/" className="hover:text-teal">Home</Link>
@@ -63,8 +64,7 @@ function CompareContent() {
               : 'Add products to compare them side-by-side'}
           </p>
         </div>
-        <MandalaDivider className="mt-6 opacity-60" />
-      </section>
+              </section>
 
       <section className="mx-auto max-w-7xl px-4 py-8">
         {items.length === 0 ? (
@@ -108,16 +108,16 @@ function CompareContent() {
                           <div className="relative">
                             <button
                               onClick={() => { remove(item.productId); sonnerToast.success('Removed from compare') }}
-                              className="absolute -right-1 -top-1 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-navy text-white shadow hover:bg-destructive"
+                              className="absolute -right-1 -top-1 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-background text-white shadow hover:bg-destructive"
                               aria-label="Remove"
                             >
                               <X className="h-3.5 w-3.5" />
                             </button>
                             <Link href={`/product/${item.slug}`} className="group block">
-                              <div className="aspect-square overflow-hidden rounded-lg border border-border bg-secondary">
+                              <div className="relative aspect-square overflow-hidden rounded-lg border border-border bg-secondary">
                                 {item.image ? (
                                    
-                                  <img src={item.image} alt={item.name} className="h-full w-full object-cover transition group-hover:scale-105" />
+                                  <Image src={item.image} alt={item.name} fill sizes="220px" className="object-cover transition group-hover:scale-105" />
                                 ) : (
                                   <div className="flex h-full items-center justify-center">
                                     <Printer className="h-12 w-12 text-muted-foreground/30" />

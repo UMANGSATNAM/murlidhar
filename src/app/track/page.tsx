@@ -13,7 +13,7 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { InvoiceDownloadButton } from '@/components/storefront/invoice-button'
 import { formatINR } from '@/lib/format'
@@ -48,7 +48,9 @@ const STATUS_STEPS = [
 export default function TrackPage() {
   return (
     <StorefrontShell>
-      <TrackContent />
+      <React.Suspense fallback={<div className="flex min-h-screen items-center justify-center py-20 text-navy font-display text-lg font-bold animate-pulse">Loading tracking...</div>}>
+        <TrackContent />
+      </React.Suspense>
     </StorefrontShell>
   )
 }
@@ -88,6 +90,7 @@ function TrackContent() {
   React.useEffect(() => {
     const o = searchParams.get('o')
     if (o) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOrderNumber(o)
       performSearch(o)
     }
@@ -110,7 +113,7 @@ function TrackContent() {
 
   return (
     <>
-      <section className="bg-navy-gradient py-14 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-14 text-foreground">
         <div className="mx-auto max-w-4xl px-4 text-center">
           <div className="mb-3 flex items-center justify-center gap-2">
             <span className="h-px w-8 bg-gold" />
@@ -120,10 +123,9 @@ function TrackContent() {
           <h1 className="font-display text-4xl font-bold sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>
             Track Your <span className="text-gold-gradient">Order</span>
           </h1>
-          <p className="mt-3 text-lg text-cream/80">Enter your order number to see real-time status updates.</p>
+          <p className="mt-3 text-lg text-muted-foreground">Enter your order number to see real-time status updates.</p>
         </div>
-        <MandalaDivider className="mt-8 opacity-60" />
-      </section>
+              </section>
 
       <section className="mx-auto max-w-3xl px-4 py-10">
         <Card className="card-premium overflow-hidden">
@@ -147,7 +149,7 @@ function TrackContent() {
                   autoFocus
                 />
               </div>
-              <Button type="submit" size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={loading}>
+              <Button type="submit" size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={loading}>
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Search className="mr-2 h-4 w-4" />}
                 Track Order
               </Button>
@@ -181,15 +183,15 @@ function TrackContent() {
           <div className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Status tracker */}
             <Card className="overflow-hidden">
-              <div className="bg-navy-gradient p-5 text-cream">
+              <div className="bg-gradient-to-b from-background to-secondary/20 p-5 text-foreground">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-cream/60">Order Number</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Order Number</p>
                     <p className="font-display text-2xl font-bold text-gold">{order.orderNumber}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs uppercase tracking-wide text-cream/60">Placed on</p>
-                    <p className="text-sm font-semibold text-cream">
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Placed on</p>
+                    <p className="text-sm font-semibold text-foreground">
                       {new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
@@ -401,21 +403,21 @@ function TrackContent() {
             )}
 
             {/* Help CTA */}
-            <Card className="bg-navy-gradient p-6 text-center text-cream">
+            <Card className="bg-gradient-to-b from-background to-secondary/20 p-6 text-center text-foreground">
               <h3 className="font-display text-xl font-bold">Need help with your order?</h3>
-              <p className="mt-1 text-sm text-cream/70">Our team is available 24 hours — call us anytime.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Our team is available 24 hours — call us anytime.</p>
               <div className="mt-4 flex flex-wrap justify-center gap-2">
                 <a href="tel:9510737852" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-gold-soft">
                   <Phone className="h-4 w-4" /> Call 9510737852
                 </a>
-                <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-cream hover:bg-cream/10">
+                <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-cream/10">
                   <MessageCircle className="h-4 w-4" /> WhatsApp
                 </a>
                 <InvoiceDownloadButton
                   order={order}
                   variant="outline"
                   label="Download Invoice"
-                  className="border-cream/30 bg-cream/10 text-cream hover:bg-cream hover:text-navy"
+                  className="border-cream/30 bg-cream/10 text-foreground hover:bg-cream hover:text-navy"
                 />
               </div>
             </Card>

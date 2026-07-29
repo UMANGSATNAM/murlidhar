@@ -45,6 +45,7 @@
   --color-gold-soft: var(--gold-soft);
   --color-gold-deep: var(--gold-deep);
   --color-cream: var(--cream);
+  --color-teal: var(--teal);
   --color-ink: var(--ink);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -53,71 +54,78 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.625rem; /* Smooth rounded corners for e-commerce feel */
 
-  /* Brand palette — Murlidhar Offset (navy + white + teal) */
-  --navy: #0f1b33;
-  --navy-deep: #0a1325;
-  --navy-soft: #1b2b4a;
-  --gold: #0d9488;                  /* teal (was gold) */
-  --gold-soft: #2dd4bf;             /* light teal */
-  --gold-deep: #0f766e;             /* dark teal */
-  --cream: #ffffff;                 /* pure white */
-  --ink: #1a1a1a;
+  /* Brand palette — Warm Premium E-Commerce */
+  --navy: #1e293b;                  /* Slate-800 — primary dark */
+  --navy-deep: #0f172a;             /* Slate-900 — deepest background */
+  --navy-soft: #334155;             /* Slate-700 — softer dark */
+  --gold: #f59e0b;                  /* Amber-500 — primary accent */
+  --gold-soft: #fbbf24;             /* Amber-400 — lighter accent */
+  --gold-deep: #d97706;             /* Amber-600 — deeper accent */
+  --cream: #fefce8;                 /* Amber-50 — warm off-white */
+  --teal: #0d9488;                  /* Teal-600 — for ratings & highlights */
+  --ink: #1e293b;
 
-  /* shadcn semantic tokens — white background, navy text, teal accent */
-  --background: #ffffff;            /* pure white */
-  --foreground: #0f1b33;            /* navy ink */
+  /* shadcn semantic tokens */
+  --background: #ffffff;            
+  --foreground: #1e293b;            /* Navy for text */
   --card: #ffffff;
-  --card-foreground: #0f1b33;
+  --card-foreground: #1e293b;
   --popover: #ffffff;
-  --popover-foreground: #0f1b33;
-  --primary: #0f1b33;               /* navy */
-  --primary-foreground: #ffffff;    /* white */
-  --secondary: #f1f5f9;             /* light slate */
-  --secondary-foreground: #0f1b33;
-  --muted: #f1f5f9;
-  --muted-foreground: #475569;
-  --accent: #0d9488;                /* teal */
-  --accent-foreground: #ffffff;
-  --destructive: #b91c1c;
-  --border: #e2e8f0;                /* light gray border */
+  --popover-foreground: #1e293b;
+  --primary: #1e293b;               /* Navy primary */
+  --primary-foreground: #ffffff;    
+  --secondary: #f8fafc;             /* Slate-50 — very light bg */
+  --secondary-foreground: #1e293b;
+  --muted: #f1f5f9;                 /* Slate-100 */
+  --muted-foreground: #64748b;      /* Slate-500 */
+  --accent: #f59e0b;                /* Amber accent */
+  --accent-foreground: #1e293b;
+  --destructive: #ef4444;           /* Red for errors */
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0;                /* Soft slate-200 borders */
   --input: #e2e8f0;
-  --ring: #0d9488;
-  --chart-1: #0f1b33;
+  --ring: #f59e0b;                  /* Amber focus ring */
+  
+  --chart-1: #f59e0b;
   --chart-2: #0d9488;
-  --chart-3: #1b2b4a;
-  --chart-4: #0f766e;
-  --chart-5: #2dd4bf;
-  --sidebar: #0f1b33;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #0d9488;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1b2b4a;
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #1b2b4a;
-  --sidebar-ring: #0d9488;
+  --chart-3: #6366f1;
+  --chart-4: #ec4899;
+  --chart-5: #8b5cf6;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #f59e0b;
+  --sidebar-primary-foreground: #0f172a;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #334155;
+  --sidebar-ring: #f59e0b;
 }
 
 .dark {
-  --background: #0a1325;
-  --foreground: #ffffff;
-  --card: #0f1b33;
-  --card-foreground: #ffffff;
-  --popover: #0f1b33;
-  --popover-foreground: #ffffff;
-  --primary: #0d9488;
-  --primary-foreground: #0a1325;
-  --secondary: #1b2b4a;
-  --secondary-foreground: #ffffff;
-  --muted: #1b2b4a;
-  --muted-foreground: #b8c4d6;
-  --accent: #0d9488;
-  --accent-foreground: #0a1325;
+  --background: #0f172a;          /* Deep navy */
+  --foreground: #f8fafc;          /* Slate-50 */
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --primary: #f59e0b;             /* Amber primary in dark */
+  --primary-foreground: #0f172a;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;    /* Slate-400 */
+  --accent: #f59e0b;
+  --accent-foreground: #0f172a;
   --destructive: #ef4444;
-  --border: #1b2b4a;
-  --input: #1b2b4a;
-  --ring: #0d9488;
+  --destructive-foreground: #ffffff;
+  --border: #334155;              /* Slate-700 */
+  --input: #334155;
+  --ring: #f59e0b;
+}
+
+@layer utilities {
 }
 
 @layer base {
@@ -145,12 +153,12 @@
 
   .text-navy { color: var(--navy); }
   .text-navy-deep { color: var(--navy-deep); }
-  .text-gold { color: var(--navy); }         /* was teal, now navy for text on white backgrounds */
+  .text-gold { color: var(--gold); }
   .text-gold-soft { color: var(--gold-soft); }
-  .text-gold-deep { color: var(--navy); }     /* navy for readability on white */
+  .text-gold-deep { color: var(--gold-deep); }
   .text-cream { color: var(--cream); }
-  .text-teal { color: var(--gold); }          /* teal — use ONLY on dark backgrounds */
-  .fill-teal { fill: var(--gold); }
+  .text-teal { color: var(--teal); }
+  .fill-teal { fill: var(--teal); }
 
   .border-navy { border-color: var(--navy); }
   .border-gold { border-color: var(--gold); }
@@ -158,50 +166,47 @@
 
   .ring-gold { --tw-ring-color: var(--gold); }
 
-  /* Gold gradient text */
+  /* Gold gradient text (Now Indigo) */
   .text-gold-gradient {
-    background: linear-gradient(135deg, #0d9488 0%, #2dd4bf 50%, #0f766e 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #3730a3 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
-  /* Gold gradient background (for bars/buttons) */
+  /* Gold gradient background (Now Indigo) */
   .bg-gold-gradient {
-    background: linear-gradient(90deg, #0d9488 0%, #2dd4bf 50%, #0d9488 100%);
+    background: linear-gradient(90deg, #4f46e5 0%, #6366f1 50%, #4f46e5 100%);
     background-size: 200% auto;
     animation: shimmer 6s linear infinite;
   }
 
-  /* Navy gradient */
+  /* Navy gradient (Now Obsidian) */
   .bg-navy-gradient {
-    background: linear-gradient(135deg, #0a1325 0%, #0f1b33 50%, #1b2b4a 100%);
+    background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
   }
 
-  /* Gold foil accent line */
+  /* Gold foil accent line (Now Indigo) */
   .gold-foil-line {
-    background: linear-gradient(90deg, transparent 0%, #0d9488 20%, #2dd4bf 50%, #0d9488 80%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, #4f46e5 20%, #6366f1 50%, #4f46e5 80%, transparent 100%);
   }
 
-  /* Mandala divider — decorative svg pattern */
+  /* Mandala divider — simplified to sharp line */
   .mandala-divider {
-    height: 24px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='24' viewBox='0 0 80 24'%3E%3Cg fill='none' stroke='%230d9488' stroke-width='1' opacity='0.5'%3E%3Ccircle cx='40' cy='12' r='6'/%3E%3Ccircle cx='40' cy='12' r='10' stroke-dasharray='2 3'/%3E%3Cpath d='M40 2 L40 22 M30 12 L50 12 M33 5 L47 19 M47 5 L33 19'/%3E%3Cpath d='M0 12 L24 12 M56 12 L80 12' stroke-dasharray='1 4'/%3E%3C/g%3E%3C/svg%3E");
-    background-repeat: repeat-x;
-    background-position: center;
+    height: 1px;
+    background-color: var(--border);
+    margin: 24px 0;
   }
 
   /* Subtle dotted texture for navy sections */
   .navy-texture {
-    background-color: var(--navy);
-    background-image: radial-gradient(circle at 1px 1px, rgba(212, 160, 23, 0.08) 1px, transparent 0);
-    background-size: 24px 24px;
+    background-color: var(--navy-deep);
+    background-image: radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.03), transparent 50%);
   }
 
   .cream-texture {
-    background-color: #ffffff;
-    background-image: radial-gradient(circle at 1px 1px, rgba(15, 27, 51, 0.04) 1px, transparent 0);
-    background-size: 20px 20px;
+    background-color: var(--cream);
+    background-image: radial-gradient(circle at 80% 30%, rgba(245, 158, 11, 0.04), transparent 50%);
   }
 
   /* Premium card with gold top border */
@@ -222,10 +227,10 @@
   }
 
   .shadow-gold {
-    box-shadow: 0 10px 30px -10px rgba(212, 160, 23, 0.4);
+    box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.3);
   }
   .shadow-navy {
-    box-shadow: 0 10px 30px -10px rgba(15, 27, 51, 0.4);
+    box-shadow: 0 10px 30px -10px rgba(17, 24, 39, 0.2);
   }
 
   /* Custom scrollbar */
@@ -290,8 +295,8 @@ input[type=number] { -moz-appearance: textfield; }
 
   /* Pulse for badges */
   @keyframes pulse-gold {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(212, 160, 23, 0.4); }
-    50% { box-shadow: 0 0 0 6px rgba(212, 160, 23, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
   }
   .animate-pulse-gold {
     animation: pulse-gold 2s infinite;
@@ -330,7 +335,7 @@ input[type=number] { -moz-appearance: textfield; }
     100% { background-position: 200% center; }
   }
   .text-gold-shimmer {
-    background: linear-gradient(90deg, #0f766e 0%, #0d9488 25%, #2dd4bf 50%, #0d9488 75%, #0f766e 100%);
+    background: linear-gradient(90deg, #d97706 0%, #f59e0b 25%, #fbbf24 50%, #f59e0b 75%, #d97706 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     background-clip: text;
@@ -377,7 +382,7 @@ input[type=number] { -moz-appearance: textfield; }
   }
   .hover-elevate:hover {
     transform: translateY(-4px);
-    box-shadow: 0 16px 40px -12px rgba(15, 27, 51, 0.25);
+    box-shadow: 0 16px 40px -12px rgba(17, 24, 39, 0.15);
   }
 
   /* Navy button shine */
@@ -434,12 +439,12 @@ input[type=number] { -moz-appearance: textfield; }
 
   /* Glass effect for floating elements */
   .glass-navy {
-    background: rgba(15, 27, 51, 0.85);
+    background: rgba(46, 16, 101, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
   .glass-cream {
-    background: rgba(250, 246, 237, 0.9);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
@@ -455,25 +460,17 @@ input[type=number] { -moz-appearance: textfield; }
     @apply inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-[10px] font-bold uppercase text-green-800;
   }
 
-  /* Mandala watermark background */
+  /* Mandala watermark background - removed for sharpness */
   .mandala-watermark {
     position: relative;
   }
   .mandala-watermark::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='none' stroke='%230d9488' stroke-width='0.5' opacity='0.08'%3E%3Ccircle cx='100' cy='100' r='40'/%3E%3Ccircle cx='100' cy='100' r='60' stroke-dasharray='3 3'/%3E%3Ccircle cx='100' cy='100' r='80'/%3E%3Cg transform='translate(100 100)'%3E%3Cg id='p'%3E%3Cpath d='M0 -80 Q12 -60 0 -40 Q-12 -60 0 -80'/%3E%3C/g%3E%3Cuse href='%23p' transform='rotate(30)'/%3E%3Cuse href='%23p' transform='rotate(60)'/%3E%3Cuse href='%23p' transform='rotate(90)'/%3E%3Cuse href='%23p' transform='rotate(120)'/%3E%3Cuse href='%23p' transform='rotate(150)'/%3E%3Cuse href='%23p' transform='rotate(180)'/%3E%3Cuse href='%23p' transform='rotate(210)'/%3E%3Cuse href='%23p' transform='rotate(240)'/%3E%3Cuse href='%23p' transform='rotate(270)'/%3E%3Cuse href='%23p' transform='rotate(300)'/%3E%3Cuse href='%23p' transform='rotate(330)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    pointer-events: none;
-    z-index: 0;
+    display: none;
   }
 
   /* Premium gold border with gradient */
   .border-gold-gradient {
-    border-image: linear-gradient(135deg, #0d9488, #2dd4bf, #0f766e) 1;
+    border-image: linear-gradient(135deg, #f59e0b, #fbbf24, #d97706) 1;
   }
 
   /* Text balance for headings */
@@ -484,7 +481,7 @@ input[type=number] { -moz-appearance: textfield; }
   /* Smooth focus ring */
   .focus-ring-gold:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.4);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
   }
 
   /* Image fade-in on load */
@@ -558,8 +555,8 @@ input[type=number] { -moz-appearance: textfield; }
   /* Premium badge */
   .badge-premium {
     @apply inline-flex items-center gap-1 rounded-full;
-    background: linear-gradient(135deg, #0d9488, #2dd4bf);
-    color: #0f1b33;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    color: #111827;
     padding: 2px 8px;
     font-size: 10px;
     font-weight: 700;
@@ -649,8 +646,8 @@ button:focus:not(:focus-visible) {
   }
   .product-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px -8px rgba(15, 27, 51, 0.18);
-    border-color: rgba(212, 160, 23, 0.4);
+    box-shadow: 0 12px 32px -8px rgba(17, 24, 39, 0.1);
+    border-color: rgba(245, 158, 11, 0.4);
   }
 
   /* Animated gold underline that draws on hover */
@@ -664,7 +661,7 @@ button:focus:not(:focus-visible) {
     left: 50%;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, #0d9488, #2dd4bf);
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
     transition: all 0.3s ease;
     transform: translateX(-50%);
     border-radius: 2px;
@@ -682,7 +679,7 @@ button:focus:not(:focus-visible) {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, transparent 50%, rgba(15, 27, 51, 0.4) 100%);
+    background: linear-gradient(180deg, transparent 50%, rgba(17, 24, 39, 0.4) 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
@@ -695,8 +692,8 @@ button:focus:not(:focus-visible) {
   .badge-shine {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #0d9488, #2dd4bf);
-    color: #0f1b33;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    color: #111827;
   }
   .badge-shine::before {
     content: '';
@@ -714,8 +711,8 @@ button:focus:not(:focus-visible) {
 
   /* Subtle pulse for important CTAs */
   @keyframes pulse-attention {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(212, 160, 23, 0.5); }
-    50% { box-shadow: 0 0 0 8px rgba(212, 160, 23, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
+    50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
   }
   .pulse-attention {
     animation: pulse-attention 2s infinite;
@@ -737,12 +734,12 @@ button:focus:not(:focus-visible) {
     @apply transition-colors duration-150;
   }
   .table-row-hover:hover {
-    background-color: rgba(212, 160, 23, 0.05);
+    background-color: rgba(245, 158, 11, 0.05);
   }
 
   /* Decorative dotted divider — alternative to mandala */
   .dotted-divider-gold {
-    background-image: radial-gradient(circle, #0d9488 1px, transparent 1px);
+    background-image: radial-gradient(circle, #f59e0b 1px, transparent 1px);
     background-size: 12px 2px;
     background-repeat: repeat-x;
     background-position: center;
@@ -760,14 +757,14 @@ button:focus:not(:focus-visible) {
     border-left: 3px solid transparent;
   }
   .table-row-gold-hover:hover {
-    background-color: rgba(212, 160, 23, 0.04);
+    background-color: rgba(245, 158, 11, 0.04);
     border-left-color: var(--gold);
   }
 
   /* Input focus animation */
   .input-focus-gold:focus {
     border-color: var(--gold) !important;
-    box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.15);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
     transition: all 0.2s ease;
   }
 
@@ -797,7 +794,7 @@ button:focus:not(:focus-visible) {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(circle at 50% 0%, rgba(212, 160, 23, 0.06), transparent 70%);
+    background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.06), transparent 70%);
     pointer-events: none;
   }
 

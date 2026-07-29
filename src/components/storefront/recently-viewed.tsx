@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Clock, ArrowRight, Printer, X } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -45,13 +46,13 @@ export function RecentlyViewed({ excludeProductId }: { excludeProductId?: string
               <div className="relative aspect-square overflow-hidden bg-secondary">
                 {item.image ? (
                    
-                  <img src={item.image} alt={item.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <Image src={item.image} alt={item.name} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 ) : (
                   <div className="flex h-full items-center justify-center">
                     <Printer className="h-10 w-10 text-muted-foreground/40" />
                   </div>
                 )}
-                <span className="absolute left-2 top-2 rounded-full bg-navy/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-cream backdrop-blur">
+                <span className="absolute left-2 top-2 rounded-full bg-background/90 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-foreground backdrop-blur">
                   <Clock className="mr-1 inline h-2.5 w-2.5" />
                   {timeAgo(item.viewedAt)}
                 </span>

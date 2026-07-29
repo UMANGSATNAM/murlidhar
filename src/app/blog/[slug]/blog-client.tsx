@@ -2,12 +2,13 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useParams } from 'next/navigation'
 import { Calendar, User, ArrowLeft, ArrowRight, ChevronRight, PenTool } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider } from '@/components/storefront/section-bits'
+import {  } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { BlogContent } from '@/components/storefront/blog-content'
 
@@ -56,7 +57,7 @@ function BlogPostContent() {
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-4 py-20 text-center">
         <MandalaLogo size={96} />
         <h1 className="font-display text-2xl font-bold text-navy">Article not found</h1>
-        <Button asChild className="bg-navy text-cream hover:bg-navy-soft">
+        <Button asChild className="bg-background text-foreground hover:bg-secondary/30">
           <Link href="/blog">Back to Blog</Link>
         </Button>
       </div>
@@ -93,21 +94,20 @@ function BlogPostContent() {
 
         {/* Featured image */}
         {post.featuredImage && (
-          <div className="mb-8 overflow-hidden rounded-2xl border border-border shadow-sm">
+          <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-2xl border border-border shadow-sm">
             { }
-            <img src={post.featuredImage} alt={post.title} className="aspect-[16/9] w-full object-cover" />
+            <Image src={post.featuredImage} alt={post.title} fill sizes="(max-width: 768px) 100vw, 768px" className="object-cover" />
           </div>
         )}
 
         {/* Content */}
         <BlogContent content={post.content} />
 
-        <MandalaDivider className="my-10" />
-
+        
         {/* Footer CTA */}
-        <Card className="bg-navy-gradient p-6 text-center text-cream">
+        <Card className="bg-gradient-to-b from-background to-secondary/20 p-6 text-center text-foreground">
           <h3 className="font-display text-xl font-bold">Need help with your next print project?</h3>
-          <p className="mt-2 text-sm text-cream/70">Our team is just a call away — open 24 hours.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Our team is just a call away — open 24 hours.</p>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             <Button asChild className="bg-gold text-navy hover:bg-gold-soft">
               <Link href="/shop">Browse Shop <ArrowRight className="ml-2 h-4 w-4" /></Link>

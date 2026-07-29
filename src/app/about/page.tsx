@@ -6,7 +6,7 @@ import { ShieldCheck, Clock, IndianRupee, HeartHandshake, Printer, CheckCircle2,
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider, SectionHeader } from '@/components/storefront/section-bits'
+import { SectionHeader } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 
 const TRUST = [
@@ -22,9 +22,9 @@ export default function AboutPage() {
   return (
     <StorefrontShell>
       {/* Hero */}
-      <section className="relative bg-navy-gradient py-16 text-cream">
+      <section className="relative bg-gradient-to-b from-background to-secondary/20 py-16 text-foreground">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0 navy-texture" />
+          <div className="absolute inset-0 " />
         </div>
         <div className="relative mx-auto max-w-4xl px-4 text-center">
           <div className="mb-4 flex justify-center"><MandalaLogo size={96} /></div>
@@ -36,10 +36,9 @@ export default function AboutPage() {
           <h1 className="font-display text-4xl font-bold sm:text-5xl" style={{ fontFamily: 'var(--font-display)' }}>
             About <span className="text-gold-gradient">Murlidhar Offset</span>
           </h1>
-          <p className="mt-4 text-lg text-cream/80">Quality Printing, Lasting Impression — We Print Your Dreams on Paper</p>
+          <p className="mt-4 text-lg text-muted-foreground">Quality Printing, Lasting Impression — We Print Your Dreams on Paper</p>
         </div>
-        <MandalaDivider className="mt-10 opacity-60" />
-      </section>
+              </section>
 
       {/* Story */}
       <section className="py-16">
@@ -65,7 +64,7 @@ export default function AboutPage() {
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {TRUST.map((b, i) => (
               <Card key={b.title} className="card-premium p-6 text-center">
-                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-navy text-teal">
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-background text-teal">
                   <b.icon className="h-7 w-7" />
                 </div>
                 <h3 className="font-display text-base font-bold text-navy">{b.title}</h3>
@@ -96,16 +95,16 @@ export default function AboutPage() {
                 ))}
               </ul>
             </div>
-            <div className="rounded-2xl border-2 border-gold/30 bg-navy-gradient p-8 text-cream shadow-navy">
+            <div className="rounded-2xl border-2 border-gold/30 bg-gradient-to-b from-background to-secondary/20 p-8 text-foreground shadow-navy">
               <Printer className="h-16 w-16 text-gold" />
               <h3 className="mt-4 font-display text-2xl font-bold">Konica Minolta AccurioPrint C4065</h3>
-              <p className="mt-2 text-sm text-cream/80">
+              <p className="mt-2 text-sm text-muted-foreground">
                 The AccurioPress C4065 is a colour production printing system that redefines print quality, productivity and media flexibility — enabling us to deliver print-shop-grade results on every single job.
               </p>
               <div className="mt-6 grid grid-cols-3 gap-4 border-t border-cream/10 pt-4 text-center">
-                <div><p className="font-display text-2xl font-bold text-teal">65</p><p className="text-xs text-cream/60">ppm speed</p></div>
-                <div><p className="font-display text-2xl font-bold text-teal">400</p><p className="text-xs text-cream/60">GSM max</p></div>
-                <div><p className="font-display text-2xl font-bold text-teal">1200</p><p className="text-xs text-cream/60">dpi</p></div>
+                <div><p className="font-display text-2xl font-bold text-teal">65</p><p className="text-xs text-muted-foreground">ppm speed</p></div>
+                <div><p className="font-display text-2xl font-bold text-teal">400</p><p className="text-xs text-muted-foreground">GSM max</p></div>
+                <div><p className="font-display text-2xl font-bold text-teal">1200</p><p className="text-xs text-muted-foreground">dpi</p></div>
               </div>
             </div>
           </div>
@@ -122,7 +121,7 @@ export default function AboutPage() {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Button asChild className="bg-navy text-cream hover:bg-navy-soft">
+            <Button asChild className="bg-background text-foreground hover:bg-secondary/30">
               <Link href="/services">View Detailed Services <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
           </div>
@@ -130,7 +129,7 @@ export default function AboutPage() {
       </section>
 
       {/* Contact / Map */}
-      <section className="bg-navy-gradient py-16 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-16 text-foreground">
         <div className="mx-auto max-w-7xl px-4">
           <SectionHeader eyebrow="Visit Us" title="Find Us in Unjha" light />
           <div className="mt-8 grid gap-8 lg:grid-cols-2 lg:items-center">
@@ -138,32 +137,32 @@ export default function AboutPage() {
               <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">
                 <MapPin className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-cream/60">Address</p>
-                  <p className="font-display text-base font-bold text-cream">Shreeji Super Market, 7, Unjha, Gujarat 384170</p>
-                  <p className="text-xs text-cream/60">Open 24 hours · All days of the week</p>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Address</p>
+                  <p className="font-display text-base font-bold text-foreground">Shreeji Super Market, 7, Unjha, Gujarat 384170</p>
+                  <p className="text-xs text-muted-foreground">Open 24 hours · All days of the week</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">
                 <Phone className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-cream/60">Call us</p>
-                  <a href="tel:9510737852" className="font-display text-base font-bold text-cream hover:text-teal">9510737852</a>
-                  <span className="text-cream/40"> · </span>
-                  <span className="text-sm text-cream/80">079160 29127</span>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Call us</p>
+                  <a href="tel:9510737852" className="font-display text-base font-bold text-foreground hover:text-teal">9510737852</a>
+                  <span className="text-muted-foreground"> · </span>
+                  <span className="text-sm text-muted-foreground">079160 29127</span>
                 </div>
               </div>
               <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">
                 <Mail className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-cream/60">Email</p>
-                  <a href="mailto:murlidharoffset84@gmail.com" className="font-display text-base font-bold text-cream hover:text-teal">murlidharoffset84@gmail.com</a>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Email</p>
+                  <a href="mailto:murlidharoffset84@gmail.com" className="font-display text-base font-bold text-foreground hover:text-teal">murlidharoffset84@gmail.com</a>
                 </div>
               </div>
               <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">
                 <Star className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
-                  <p className="text-xs uppercase tracking-wide text-cream/60">Google Rating</p>
-                  <p className="font-display text-base font-bold text-cream">5.0 ★ · Based on customer reviews</p>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Google Rating</p>
+                  <p className="font-display text-base font-bold text-foreground">5.0 ★ · Based on customer reviews</p>
                 </div>
               </div>
             </div>

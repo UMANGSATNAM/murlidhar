@@ -41,12 +41,12 @@ export default function DashboardPage() {
     <AdminShell admin={admin}>
       {/* Welcome banner */}
       <Card className="mb-6 overflow-hidden">
-        <div className="bg-navy-gradient p-6 text-cream">
+        <div className="bg-gradient-to-b from-background to-secondary/20 p-6 text-foreground">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-teal">Welcome back</p>
               <h2 className="mt-1 font-display text-2xl font-bold">{admin.name || admin.email}</h2>
-              <p className="mt-1 text-sm text-cream/70">Here's what's happening at your print studio today.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Here's what's happening at your print studio today.</p>
             </div>
             <div className="flex gap-2">
               <Button asChild className="bg-gold text-navy hover:bg-gold-soft">

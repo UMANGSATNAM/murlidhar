@@ -72,7 +72,7 @@ export default function AdminReviewsPage() {
               key={s}
               onClick={() => setStatusFilter(s)}
               className={`rounded-md px-3 py-1.5 text-xs font-semibold uppercase transition ${
-                statusFilter === s ? 'bg-navy text-cream' : 'text-navy hover:bg-secondary'
+                statusFilter === s ? 'bg-background text-foreground' : 'text-navy hover:bg-secondary'
               }`}
             >
               {s}
@@ -96,7 +96,7 @@ export default function AdminReviewsPage() {
           {reviews.map((r) => (
             <Card key={r.id} className={`overflow-hidden ${!r.active ? 'border-amber-300 bg-amber-50/30' : ''}`}>
               <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy font-display font-bold text-teal">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-background font-display font-bold text-teal">
                   {r.name.charAt(0).toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0">

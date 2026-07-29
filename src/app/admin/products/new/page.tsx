@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowLeft, Save, Loader2, Upload, X, Image as ImageIcon, Eye,
   Star, Zap, Package, Wand2, ChevronUp, Check,
@@ -323,7 +324,7 @@ export default function AdminProductEditorPage() {
                 onClick={() => applyTemplate(tpl)}
                 className="group flex flex-col items-center gap-2 rounded-lg border border-border bg-white p-3 text-center transition hover:border-gold hover:shadow-sm"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-navy text-teal transition group-hover:bg-gold group-hover:text-navy">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-background text-teal transition group-hover:bg-gold group-hover:text-navy">
                   <tpl.icon className="h-5 w-5" />
                 </div>
                 <span className="text-xs font-semibold text-navy">{tpl.label}</span>
@@ -494,12 +495,12 @@ export default function AdminProductEditorPage() {
                 <div className="mt-3 grid grid-cols-3 gap-2">
                   {images.map((img, i) => (
                     <div key={i} className="group relative aspect-square overflow-hidden rounded-md border border-border bg-secondary">
-                      <img src={img.url} alt={img.alt || ''} className="h-full w-full object-cover" />
+                      <Image src={img.url} alt={img.alt || ''} fill sizes="150px" className="object-cover" />
                       {i === 0 && (
                         <span className="absolute bottom-1 left-1 rounded bg-gold px-1.5 py-0.5 text-[9px] font-bold text-navy">MAIN</span>
                       )}
                       {/* Hover controls */}
-                      <div className="absolute inset-0 flex items-center justify-center gap-1 bg-navy/60 opacity-0 transition group-hover:opacity-100">
+                      <div className="absolute inset-0 flex items-center justify-center gap-1 bg-background/60 opacity-0 transition group-hover:opacity-100">
                         {i !== 0 && (
                           <button
                             type="button"
@@ -542,7 +543,7 @@ export default function AdminProductEditorPage() {
               {saving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</> : <><Save className="mr-2 h-4 w-4" /> Save & Exit</>}
             </Button>
             {isEdit && (
-              <Button onClick={() => handleSave(true)} variant="outline" className="w-full border-navy text-navy hover:bg-navy hover:text-white" disabled={saving}>
+              <Button onClick={() => handleSave(true)} variant="outline" className="w-full border-navy text-navy hover:bg-background hover:text-white" disabled={saving}>
                 <Check className="mr-2 h-4 w-4" /> Save & Continue Editing
               </Button>
             )}

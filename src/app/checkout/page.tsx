@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
   ShoppingCart, ArrowRight, ArrowLeft, Upload, X, FileCheck2, Loader2,
@@ -15,7 +16,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { StorefrontShell } from '@/components/storefront/storefront-shell'
-import { MandalaDivider } from '@/components/storefront/section-bits'
+import {  } from '@/components/storefront/section-bits'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
 import { InvoiceDownloadButton } from '@/components/storefront/invoice-button'
 import { useCart, type CartItem } from '@/lib/cart-store'
@@ -211,12 +212,12 @@ function CheckoutContent() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16">
         <Card className="card-premium overflow-hidden text-center">
-          <div className="bg-navy-gradient p-8 text-cream">
+          <div className="bg-gradient-to-b from-background to-secondary/20 p-8 text-foreground">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gold/20">
               <CheckCircle2 className="h-12 w-12 text-gold" />
             </div>
-            <h1 className="font-display text-3xl font-bold text-cream">Order Placed!</h1>
-            <p className="mt-2 text-sm text-cream/70">Thank you for your order. We've received your request and will begin production shortly.</p>
+            <h1 className="font-display text-3xl font-bold text-foreground">Order Placed!</h1>
+            <p className="mt-2 text-sm text-muted-foreground">Thank you for your order. We've received your request and will begin production shortly.</p>
           </div>
           <div className="p-6">
             <div className="rounded-lg border border-gold/30 bg-gold/5 p-4">
@@ -245,7 +246,7 @@ function CheckoutContent() {
               </ul>
             </div>
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-              <Button asChild className="flex-1 bg-navy text-cream hover:bg-navy-soft">
+              <Button asChild className="flex-1 bg-background text-foreground hover:bg-secondary/30">
                 <Link href="/shop">Continue Shopping <ArrowRight className="ml-2 h-4 w-4" /></Link>
               </Button>
               <Button asChild variant="outline" className="flex-1 border-navy text-navy">
@@ -286,7 +287,7 @@ function CheckoutContent() {
           <h1 className="font-display text-3xl font-bold text-navy">Your cart is empty</h1>
           <p className="mt-2 text-sm text-muted-foreground">Add some products before checking out.</p>
         </div>
-        <Button asChild size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-cream">
+        <Button asChild size="lg" className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground">
           <Link href="/shop">Browse Shop <ArrowRight className="ml-2 h-4 w-4" /></Link>
         </Button>
       </div>
@@ -295,9 +296,9 @@ function CheckoutContent() {
 
   return (
     <>
-      <section className="bg-navy-gradient py-10 text-cream">
+      <section className="bg-gradient-to-b from-background to-secondary/20 py-10 text-foreground">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="flex items-center gap-2 text-xs text-cream/60">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/" className="hover:text-teal">Home</Link>
             <span>/</span>
             <Link href="/cart" className="hover:text-teal">Cart</Link>
@@ -308,8 +309,7 @@ function CheckoutContent() {
             Secure Checkout
           </h1>
         </div>
-        <MandalaDivider className="mt-6 opacity-60" />
-      </section>
+              </section>
 
       <form onSubmit={handleSubmit} className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
@@ -319,7 +319,7 @@ function CheckoutContent() {
             <Card className="overflow-hidden">
               <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">1</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs text-foreground">1</span>
                   Your Details
                 </h2>
               </div>
@@ -343,7 +343,7 @@ function CheckoutContent() {
             <Card className="overflow-hidden">
               <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">2</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs text-foreground">2</span>
                   Delivery Address
                 </h2>
               </div>
@@ -371,7 +371,7 @@ function CheckoutContent() {
             <Card className="overflow-hidden">
               <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">3</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs text-foreground">3</span>
                   Upload Design Files
                   <span className="ml-1 rounded bg-secondary px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">Optional</span>
                 </h2>
@@ -411,7 +411,7 @@ function CheckoutContent() {
             <Card className="overflow-hidden">
               <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">4</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs text-foreground">4</span>
                   Additional Instructions
                 </h2>
               </div>
@@ -424,7 +424,7 @@ function CheckoutContent() {
             <Card className="overflow-hidden">
               <div className="border-b border-border bg-secondary/40 px-5 py-3">
                 <h2 className="flex items-center gap-2 font-display text-base font-bold text-navy">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs text-cream">5</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-background text-xs text-foreground">5</span>
                   Payment Method
                 </h2>
               </div>
@@ -472,9 +472,9 @@ function CheckoutContent() {
           {/* Right — order summary */}
           <div className="lg:sticky lg:top-24 lg:self-start">
             <Card className="card-premium overflow-hidden">
-              <div className="bg-navy-gradient p-5 text-cream">
+              <div className="bg-gradient-to-b from-background to-secondary/20 p-5 text-foreground">
                 <h2 className="font-display text-lg font-bold">Order Summary</h2>
-                <p className="text-xs text-cream/60">{items.length} {items.length === 1 ? 'item' : 'items'}</p>
+                <p className="text-xs text-muted-foreground">{items.length} {items.length === 1 ? 'item' : 'items'}</p>
               </div>
               <div className="max-h-72 overflow-y-auto scroll-elegant p-4">
                 {items.map((item) => (
@@ -482,7 +482,7 @@ function CheckoutContent() {
                     <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
                       {item.image ? (
                          
-                        <img src={item.image} alt={item.productName} className="h-full w-full object-cover" />
+                        <Image src={item.image} alt={item.productName} fill sizes="56px" className="object-cover" />
                       ) : (
                         <div className="flex h-full items-center justify-center"><Printer className="h-4 w-4 text-muted-foreground/40" /></div>
                       )}
@@ -567,7 +567,7 @@ function CheckoutContent() {
                     You saved {formatINR(loyaltyDiscount)} with loyalty points!
                   </p>
                 )}
-                <Button type="submit" size="lg" className="mt-2 w-full bg-gold text-navy hover:bg-gold-deep hover:text-cream" disabled={submitting}>
+                <Button type="submit" size="lg" className="mt-2 w-full bg-gold text-navy hover:bg-gold-deep hover:text-foreground" disabled={submitting}>
                   {submitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Placing Order...</>) : (<>Place Order <ArrowRight className="ml-2 h-4 w-4" /></>)}
                 </Button>
                 <Button asChild type="button" variant="ghost" size="sm" className="w-full text-navy">

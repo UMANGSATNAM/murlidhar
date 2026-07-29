@@ -37,9 +37,9 @@ export interface InvoiceData {
 }
 
 const NAVY: [number, number, number] = [15, 27, 51]
-const GOLD: [number, number, number] = [212, 160, 23]
-const CREAM: [number, number, number] = [250, 246, 237]
-const MUTED: [number, number, number] = [90, 84, 70]
+const GOLD: [number, number, number] = [13, 148, 136]
+const CREAM: [number, number, number] = [255, 255, 255]
+const MUTED: [number, number, number] = [71, 85, 105]
 
 export function generateInvoicePDF(data: InvoiceData): jsPDF {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' })
@@ -64,7 +64,7 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(8)
-  doc.setTextColor(212, 160, 23)
+  doc.setTextColor(45, 212, 191)
   doc.text('QUALITY PRINTING · LASTING IMPRESSION', margin, 66)
 
   doc.setTextColor(200, 200, 200)

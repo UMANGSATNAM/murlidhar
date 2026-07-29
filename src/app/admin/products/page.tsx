@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Plus, Search, Edit, Trash2, Eye, EyeOff, Package, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
@@ -19,6 +20,14 @@ interface Product {
 }
 
 export default function AdminProductsPage() {
+  return (
+    <React.Suspense fallback={<div className="flex min-h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-gold" /></div>}>
+      <AdminProductsContent />
+    </React.Suspense>
+  )
+}
+
+function AdminProductsContent() {
   const { admin, loading } = useAdmin()
   useAdminRedirect(admin, loading)
   const router = useRouter()
@@ -30,6 +39,27 @@ export default function AdminProductsPage() {
   const [q, setQ] = React.useState(searchParams.get('q') || '')
   const [listLoading, setListLoading] = React.useState(true)
   const [deleting, setDeleting] = React.useState<string | null>(null)
+  const [selected, setSelected] = React.useState<string[]>([])
+
+  const handleBulkAction = async (action: string, data?: any) => {
+    if (action === 'delete' && !confirm(`Delete ${selected.length} products? This cannot be undone.`)) return
+    
+    try {
+      const res = await fetch('/api/admin/products/bulk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ action, ids: selected, data })
+      })
+      const resData = await res.json()
+      if (!res.ok) throw new Error(resData.error)
+      sonnerToast.success(resData.message || 'Bulk action completed')
+      setSelected([])
+      fetchProducts()
+    } catch (err: any) {
+      sonnerToast.error(err.message || 'Bulk action failed')
+    }
+  }
 
   const fetchProducts = React.useCallback(() => {
     setListLoading(true)
@@ -92,13 +122,13 @@ export default function AdminProductsPage() {
           <h2 className="font-display text-2xl font-bold text-navy">Products</h2>
           <p className="text-sm text-muted-foreground">{total} products in your catalogue</p>
         </div>
-        <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-cream">
+        <Button asChild className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground">
           <Link href="/admin/products/new"><Plus className="mr-2 h-4 w-4" /> Add Product</Link>
         </Button>
       </div>
 
       {/* Search */}
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -110,6 +140,17 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
+      {selected.length > 0 && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-navy/10 bg-background/5 px-4 py-2">
+          <span className="text-sm font-semibold text-navy">{selected.length} selected</span>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" className="border-navy text-navy" onClick={() => handleBulkAction('status', { active: true })}>Set Active</Button>
+            <Button size="sm" variant="outline" className="border-navy text-navy" onClick={() => handleBulkAction('status', { active: false })}>Set Hidden</Button>
+            <Button size="sm" variant="destructive" onClick={() => handleBulkAction('delete')}>Delete</Button>
+          </div>
+        </div>
+      )}
+
       <Card className="overflow-hidden">
         {listLoading ? (
           <div className="p-10 text-center"><Loader2 className="mx-auto h-8 w-8 animate-spin text-gold" /></div>
@@ -117,7 +158,7 @@ export default function AdminProductsPage() {
           <div className="p-10 text-center">
             <Package className="mx-auto h-12 w-12 text-muted-foreground/40" />
             <p className="mt-3 font-display text-lg font-bold text-navy">No products found</p>
-            <Button asChild className="mt-4 bg-navy text-cream hover:bg-navy-soft">
+            <Button asChild className="mt-4 bg-background text-foreground hover:bg-secondary/30">
               <Link href="/admin/products/new"><Plus className="mr-2 h-4 w-4" /> Add Your First Product</Link>
             </Button>
           </div>
@@ -126,6 +167,9 @@ export default function AdminProductsPage() {
             <table className="w-full text-sm">
               <thead className="bg-secondary/30 text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
+                  <th className="px-4 py-3 text-left w-10">
+                    <input type="checkbox" className="rounded border-navy/20 text-gold focus:ring-gold" checked={products.length > 0 && selected.length === products.length} onChange={(e) => setSelected(e.target.checked ? products.map(p => p.id) : [])} />
+                  </th>
                   <th className="px-4 py-3 text-left">Product</th>
                   <th className="px-4 py-3 text-left">Category</th>
                   <th className="px-4 py-3 text-right">Base Price</th>
@@ -138,11 +182,14 @@ export default function AdminProductsPage() {
                 {products.map((p) => (
                   <tr key={p.id} className="hover:bg-secondary/30">
                     <td className="px-4 py-3">
+                      <input type="checkbox" className="rounded border-navy/20 text-gold focus:ring-gold" checked={selected.includes(p.id)} onChange={(e) => setSelected(prev => e.target.checked ? [...prev, p.id] : prev.filter(id => id !== p.id))} />
+                    </td>
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
+                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
                           {p.images[0]?.url ? (
                              
-                            <img src={p.images[0].url} alt={p.name} className="h-full w-full object-cover" />
+                            <Image src={p.images[0].url} alt={p.name} fill sizes="48px" className="object-cover" />
                           ) : (
                             <div className="flex h-full items-center justify-center"><Package className="h-4 w-4 text-muted-foreground/40" /></div>
                           )}

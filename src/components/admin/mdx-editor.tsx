@@ -76,8 +76,8 @@ export function MdxEditor({
           border: 0 !important;
         }
         .mo-mdx-editor .mdxeditor-toolbar {
-          background: #faf6ed !important;
-          border-bottom: 1px solid #e3d9c2 !important;
+          background: #f8fafc !important;
+          border-bottom: 1px solid #e2e8f0 !important;
           padding: 6px 8px !important;
         }
         .mo-mdx-editor .mdxeditor-toolbar button {
@@ -85,14 +85,14 @@ export function MdxEditor({
           border-radius: 4px !important;
         }
         .mo-mdx-editor .mdxeditor-toolbar button:hover {
-          background: #e3d9c2 !important;
+          background: #e2e8f0 !important;
         }
         .mo-mdx-editor .mdxeditor-toolbar button.active {
           background: #0d9488 !important;
           color: #0f1b33 !important;
         }
         .mo-mdx-editor [role="separator"] {
-          background: #e3d9c2 !important;
+          background: #e2e8f0 !important;
           width: 1px !important;
           margin: 0 4px !important;
         }
@@ -112,7 +112,7 @@ export function MdxEditor({
         }
         .mo-mdx-editor .mdxeditor-content-editable blockquote {
           border-left-color: #0d9488 !important;
-          background: #faf6ed !important;
+          background: #f8fafc !important;
           padding: 8px 12px !important;
           border-radius: 0 6px 6px 0 !important;
         }
