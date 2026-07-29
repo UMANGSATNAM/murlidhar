@@ -33,7 +33,13 @@ export default function AdminLoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
-      const data = await res.json()
+      const text = await res.text()
+      let data: any = {}
+      try {
+        data = text ? JSON.parse(text) : {}
+      } catch {
+        throw new Error('Server returned empty or non-JSON response')
+      }
       if (!res.ok) throw new Error(data.error || 'Login failed')
       sonnerToast.success('Welcome back!')
       router.push('/admin/dashboard')
