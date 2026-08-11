@@ -13,12 +13,12 @@ async function main() {
     await db.adminUser.create({
       data: {
         email: adminEmail,
-        passwordHash: hashPassword('admin123'),
+        passwordHash: hashPassword('1234'),
         name: 'Prince Patel',
         role: 'superadmin',
       },
     })
-    console.log('  ✓ admin user:', adminEmail, '/ admin123')
+    console.log('  ✓ admin user:', adminEmail, '/ 1234')
   }
 
   // ─── Site Settings ────────────────────────────────────────────────────────

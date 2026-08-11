@@ -124,11 +124,11 @@ export async function ensureSeedAdmin() {
     await db.adminUser.create({
       data: {
         email: 'admin@murlidharoffset.com',
-        passwordHash: hashPassword('admin123'),
+        passwordHash: hashPassword('1234'),
         name: 'Prince Patel',
         role: 'superadmin',
       },
     })
-    console.log('[seed] admin user created: admin@murlidharoffset.com / admin123')
+    console.log('[seed] admin user created: admin@murlidharoffset.com / 1234')
   }
 }

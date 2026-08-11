@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import {
   LayoutDashboard, Package, FolderTree, ShoppingCart, Image as ImageIcon,
-  FileText, Star, Settings, LogOut, Menu, ExternalLink, Bell, ChevronRight, MessageSquareQuote, Mail, TrendingDown, Award, Tag,
+  FileText, Star, Settings, LogOut, Menu, ExternalLink, Bell, ChevronRight, MessageSquareQuote, Mail, TrendingDown, Award, Tag, KeyRound,
 } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { MandalaLogo } from '@/components/storefront/mandala-logo'
@@ -86,6 +86,13 @@ function SidebarContent({
           className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-cream/10 hover:text-foreground"
         >
           <ExternalLink className="h-3.5 w-3.5" /> View Live Site
+        </Link>
+        <Link
+          href="/admin/settings?tab=security"
+          onClick={onNavigate}
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-muted-foreground hover:bg-cream/10 hover:text-foreground"
+        >
+          <KeyRound className="h-3.5 w-3.5" /> Change Password
         </Link>
         <button
           onClick={onLogout}

@@ -13,7 +13,7 @@ import { toast as sonnerToast } from 'sonner'
 export default function AdminLoginPage() {
   const router = useRouter()
   const [email, setEmail] = React.useState('admin@murlidharoffset.com')
-  const [password, setPassword] = React.useState('admin123')
+  const [password, setPassword] = React.useState('')
   const [showPwd, setShowPwd] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
 
@@ -112,16 +112,6 @@ export default function AdminLoginPage() {
               <>Sign In <ArrowRight className="ml-2 h-4 w-4" /></>
             )}
           </Button>
-
-          <div className="rounded-md border border-gold/30 bg-gold/5 p-3 text-xs">
-            <p className="font-semibold text-navy">Demo Credentials:</p>
-            <p className="mt-1 text-muted-foreground">
-              Email: <code className="rounded bg-white px-1 py-0.5 text-navy">admin@murlidharoffset.com</code>
-            </p>
-            <p className="mt-0.5 text-muted-foreground">
-              Password: <code className="rounded bg-white px-1 py-0.5 text-navy">admin123</code>
-            </p>
-          </div>
         </form>
       </Card>
     </div>

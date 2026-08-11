@@ -1,7 +1,8 @@
 'use client'
 
 import * as React from 'react'
-import { Save, Loader2, Store, Mail, CreditCard, FileText, HelpCircle, Plus, Trash2 } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { Save, Loader2, Store, Mail, CreditCard, FileText, HelpCircle, Plus, Trash2, Shield, Lock, Eye, EyeOff } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,8 +15,18 @@ import { useAdminRedirect } from '@/components/admin/use-admin-redirect'
 import { toast as sonnerToast } from 'sonner'
 
 export default function AdminSettingsPage() {
+  return (
+    <React.Suspense fallback={<div className="flex min-h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-gold" /></div>}>
+      <AdminSettingsInner />
+    </React.Suspense>
+  )
+}
+
+function AdminSettingsInner() {
   const { admin, loading } = useAdmin()
   useAdminRedirect(admin, loading)
+  const searchParams = useSearchParams()
+  const defaultTab = searchParams.get('tab') || 'business'
   const [saving, setSaving] = React.useState(false)
   const [fetching, setFetching] = React.useState(true)
   const [form, setForm] = React.useState<any>({})
@@ -57,13 +68,14 @@ export default function AdminSettingsPage() {
         </Button>
       </div>
 
-      <Tabs defaultValue="business">
+      <Tabs defaultValue={defaultTab}>
         <TabsList className="mb-4">
           <TabsTrigger value="business"><Store className="mr-2 h-4 w-4" /> Business</TabsTrigger>
           <TabsTrigger value="email"><Mail className="mr-2 h-4 w-4" /> Email</TabsTrigger>
           <TabsTrigger value="payment"><CreditCard className="mr-2 h-4 w-4" /> Payment</TabsTrigger>
           <TabsTrigger value="faq"><HelpCircle className="mr-2 h-4 w-4" /> FAQ</TabsTrigger>
           <TabsTrigger value="seo"><FileText className="mr-2 h-4 w-4" /> SEO</TabsTrigger>
+          <TabsTrigger value="security"><Shield className="mr-2 h-4 w-4" /> Security</TabsTrigger>
         </TabsList>
 
         {/* Business info */}
@@ -245,6 +257,11 @@ export default function AdminSettingsPage() {
             </div>
           </Card>
         </TabsContent>
+
+        {/* Security */}
+        <TabsContent value="security">
+          <ChangePasswordCard />
+        </TabsContent>
       </Tabs>
 
       <div className="mt-6 flex justify-end">
@@ -373,5 +390,132 @@ function AnnouncementBarEditor({ value, onChange }: { value: string; onChange: (
         </div>
       )}
     </div>
+  )
+}
+
+// ─── Change Password Card ─────────────────────────────────────────────────────
+function ChangePasswordCard() {
+  const [currentPassword, setCurrentPassword] = React.useState('')
+  const [newPassword, setNewPassword] = React.useState('')
+  const [confirmPassword, setConfirmPassword] = React.useState('')
+  const [showCurrent, setShowCurrent] = React.useState(false)
+  const [showNew, setShowNew] = React.useState(false)
+  const [showConfirm, setShowConfirm] = React.useState(false)
+  const [saving, setSaving] = React.useState(false)
+
+  const handleChangePassword = async () => {
+    if (!currentPassword || !newPassword) {
+      sonnerToast.error('Please fill in current and new password')
+      return
+    }
+    if (newPassword.length < 4) {
+      sonnerToast.error('New password must be at least 4 characters')
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      sonnerToast.error('New password and confirm password do not match')
+      return
+    }
+    setSaving(true)
+    try {
+      const res = await fetch('/api/admin/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ currentPassword, newPassword, confirmPassword }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to change password')
+      sonnerToast.success('Password changed successfully!')
+      setCurrentPassword('')
+      setNewPassword('')
+      setConfirmPassword('')
+    } catch (err: any) {
+      sonnerToast.error(err.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <Card className="overflow-hidden">
+      <div className="border-b border-border bg-secondary/40 px-5 py-3">
+        <h3 className="font-display text-base font-bold text-navy">Change Admin Password</h3>
+        <p className="text-xs text-muted-foreground">Update your admin panel login password. You will need your current password to proceed.</p>
+      </div>
+      <div className="space-y-4 p-5">
+        {/* Current Password */}
+        <div>
+          <Label htmlFor="cp-current">Current Password</Label>
+          <div className="relative mt-1">
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="cp-current"
+              type={showCurrent ? 'text' : 'password'}
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="pl-10 pr-10 border-border"
+              placeholder="Enter current password"
+            />
+            <button type="button" onClick={() => setShowCurrent((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy" aria-label={showCurrent ? 'Hide' : 'Show'}>
+              {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+        </div>
+
+        {/* New Password */}
+        <div>
+          <Label htmlFor="cp-new">New Password</Label>
+          <div className="relative mt-1">
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="cp-new"
+              type={showNew ? 'text' : 'password'}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="pl-10 pr-10 border-border"
+              placeholder="Enter new password"
+            />
+            <button type="button" onClick={() => setShowNew((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy" aria-label={showNew ? 'Hide' : 'Show'}>
+              {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {newPassword.length > 0 && newPassword.length < 4 && (
+            <p className="mt-1 text-xs text-destructive">Password must be at least 4 characters</p>
+          )}
+        </div>
+
+        {/* Confirm Password */}
+        <div>
+          <Label htmlFor="cp-confirm">Confirm New Password</Label>
+          <div className="relative mt-1">
+            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              id="cp-confirm"
+              type={showConfirm ? 'text' : 'password'}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="pl-10 pr-10 border-border"
+              placeholder="Re-enter new password"
+            />
+            <button type="button" onClick={() => setShowConfirm((s) => !s)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy" aria-label={showConfirm ? 'Hide' : 'Show'}>
+              {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {confirmPassword.length > 0 && newPassword !== confirmPassword && (
+            <p className="mt-1 text-xs text-destructive">Passwords do not match</p>
+          )}
+        </div>
+
+        <Button
+          onClick={handleChangePassword}
+          className="bg-gold text-navy hover:bg-gold-deep hover:text-foreground"
+          disabled={saving || !currentPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword || newPassword.length < 4}
+        >
+          {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Shield className="mr-2 h-4 w-4" />}
+          Update Password
+        </Button>
+      </div>
+    </Card>
   )
 }
