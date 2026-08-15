@@ -47,7 +47,7 @@ function SidebarContent({
         <Link href="/admin/dashboard" className="flex items-center gap-3" onClick={onNavigate}>
           <MandalaLogo size={42} />
           <div>
-            <p className="font-display text-base font-bold text-foreground">Murlidhar Offset</p>
+            <p className="font-display text-base font-bold text-white">Murlidhar Offset</p>
             <p className="text-[10px] uppercase tracking-[0.2em] text-gold">Admin Panel</p>
           </div>
         </Link>
