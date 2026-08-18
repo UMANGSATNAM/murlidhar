@@ -3,7 +3,7 @@ import { db } from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
 import { slugify } from '@/lib/format'
 
-async function main() {
+export async function seedDatabase() {
   console.log('🌱 Seeding Murlidhar Offset database...')
 
   // ─── Admin ─────────────────────────────────────────────────────────────────
@@ -559,11 +559,14 @@ function buildBusinessCardVariants(): SeedVariant[] {
   return variants
 }
 
-main()
-  .catch((e) => {
-    console.error(e)
-    process.exit(1)
-  })
-  .finally(async () => {
-    await db.$disconnect()
-  })
+// Run directly when called from CLI: bun run src/lib/seed.ts
+if (typeof process !== 'undefined' && process.argv && process.argv[1]?.includes('seed')) {
+  seedDatabase()
+    .catch((e) => {
+      console.error(e)
+      process.exit(1)
+    })
+    .finally(async () => {
+      await db.$disconnect()
+    })
+}
