@@ -4,23 +4,36 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import crypto from 'crypto'
 
-const UPLOAD_ROOT = path.join(process.cwd(), 'public', 'uploads')
+const UPLOAD_ROOTS = [
+  path.join(process.cwd(), 'public', 'uploads'),
+  path.join(process.cwd(), 'uploads'),
+]
 
 export async function saveFile(buffer: Buffer, ext: string, prefix = 'file'): Promise<string> {
-  await fs.mkdir(UPLOAD_ROOT, { recursive: true })
   const name = `${prefix}-${Date.now()}-${crypto.randomBytes(6).toString('hex')}${ext}`
-  const fullPath = path.join(UPLOAD_ROOT, name)
-  await fs.writeFile(fullPath, buffer)
+  
+  for (const root of UPLOAD_ROOTS) {
+    try {
+      await fs.mkdir(root, { recursive: true })
+      const fullPath = path.join(root, name)
+      await fs.writeFile(fullPath, buffer)
+    } catch (e) {
+      console.warn('[storage:write_warning]', root, e)
+    }
+  }
+
   return `/uploads/${name}`
 }
 
 export async function deleteFile(urlPath: string) {
   if (!urlPath?.startsWith('/uploads/')) return
-  const fullPath = path.join(UPLOAD_ROOT, path.basename(urlPath))
-  try {
-    await fs.unlink(fullPath)
-  } catch {
-    /* ignore */
+  const filename = path.basename(urlPath)
+  for (const root of UPLOAD_ROOTS) {
+    try {
+      await fs.unlink(path.join(root, filename))
+    } catch {
+      /* ignore */
+    }
   }
 }
 
