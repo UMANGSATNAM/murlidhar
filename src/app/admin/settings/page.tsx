@@ -128,8 +128,11 @@ function AdminSettingsInner() {
         credentials: 'include',
         body: JSON.stringify({
           toEmail: target,
+          provider: form.emailProvider || 'smtp',
+          resendApiKey: form.resendApiKey,
+          brevoApiKey: form.brevoApiKey || form.smtpPass,
           smtpHost: form.smtpHost,
-          smtpPort: form.smtpPort ? parseInt(form.smtpPort, 10) : 587,
+          smtpPort: form.smtpPort ? parseInt(form.smtpPort, 10) : 465,
           smtpUser: form.smtpUser,
           smtpPass: form.smtpPass,
           smtpSecure: form.smtpSecure,
@@ -318,104 +321,222 @@ function AdminSettingsInner() {
                 </div>
               </div>
 
-              {/* SMTP Settings Box */}
+              {/* Email Delivery Method Selector */}
               <div className="rounded-lg border border-border bg-card p-4">
-                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
-                  <div>
-                    <h4 className="font-display text-sm font-bold text-navy">SMTP Server Configuration</h4>
-                    <p className="text-xs text-muted-foreground">Enter your email provider's outgoing SMTP credentials.</p>
-                  </div>
-                  {/* Quick Preset Buttons */}
-                  <div className="flex flex-wrap items-center gap-1.5 text-xs">
-                    <span className="text-xs font-semibold text-muted-foreground">Quick Presets:</span>
-                    <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('gmail')}>
-                      Gmail
-                    </Button>
-                    <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('hostinger')}>
-                      Hostinger
-                    </Button>
-                    <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('outlook')}>
-                      Outlook
-                    </Button>
-                    <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('brevo')}>
-                      Brevo
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
-                    <Label>SMTP Host</Label>
-                    <Input
-                      value={form.smtpHost || ''}
-                      onChange={(e) => update('smtpHost', e.target.value)}
-                      className="mt-1 border-border"
-                      placeholder="e.g. smtp.gmail.com or smtp.hostinger.com"
-                    />
-                  </div>
-                  <div>
-                    <Label>SMTP Port</Label>
-                    <Input
-                      type="number"
-                      value={form.smtpPort ?? 587}
-                      onChange={(e) => update('smtpPort', parseInt(e.target.value, 10) || 587)}
-                      className="mt-1 border-border"
-                      placeholder="587 or 465"
-                    />
-                  </div>
-                  <div>
-                    <Label>SMTP Username / Email</Label>
-                    <Input
-                      value={form.smtpUser || ''}
-                      onChange={(e) => update('smtpUser', e.target.value)}
-                      className="mt-1 border-border"
-                      placeholder="e.g. murlidharoffset84@gmail.com"
-                    />
-                  </div>
-                  <div>
-                    <Label>SMTP Password / App Password</Label>
-                    <div className="relative mt-1">
-                      <Input
-                        type={showSmtpPass ? 'text' : 'password'}
-                        value={form.smtpPass || ''}
-                        onChange={(e) => update('smtpPass', e.target.value)}
-                        className="pr-10 border-border"
-                        placeholder="••••••••••••••••"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowSmtpPass((s) => !s)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy"
-                        aria-label={showSmtpPass ? 'Hide' : 'Show'}
-                      >
-                        {showSmtpPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between rounded-md border border-border bg-secondary/30 p-3 sm:col-span-2">
-                    <div>
-                      <Label className="text-sm">Use SSL (Secure Connection)</Label>
-                      <p className="text-[11px] text-muted-foreground">Enable for Port 465 (SSL). Keep disabled for Port 587 (TLS/STARTTLS).</p>
-                    </div>
-                    <Switch checked={form.smtpSecure || false} onCheckedChange={(c) => update('smtpSecure', c)} />
-                  </div>
-                </div>
-
-                {/* Helpful Gmail Note */}
-                <div className="mt-4 rounded-md border border-blue-200 bg-blue-50/70 p-3 text-xs text-blue-800">
-                  <p className="font-semibold text-blue-900">💡 Tip for Gmail Users:</p>
-                  <p className="mt-1 leading-relaxed">
-                    Google requires a <strong>16-character App Password</strong> rather than your standard Gmail password.
-                    Go to <strong>Google Account → Security → 2-Step Verification → App Passwords</strong>, create a password for "Mail", and paste the 16 letters into the SMTP Password field above.
+                <div className="mb-3 border-b border-border pb-3">
+                  <h4 className="font-display text-sm font-bold text-navy">Email Delivery Method</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Choose how emails are sent from your server. For cloud hosting like Railway, HTTPS REST API (Brevo / Resend) is recommended because cloud providers block raw SMTP ports.
                   </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={(!form.emailProvider || form.emailProvider === 'brevo') ? 'default' : 'outline'}
+                      className={(!form.emailProvider || form.emailProvider === 'brevo') ? 'bg-navy text-gold hover:bg-navy/90 font-bold' : ''}
+                      onClick={() => update('emailProvider', 'brevo')}
+                    >
+                      ⚡ Brevo REST API (Cloud Recommended)
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={form.emailProvider === 'resend' ? 'default' : 'outline'}
+                      className={form.emailProvider === 'resend' ? 'bg-navy text-gold hover:bg-navy/90 font-bold' : ''}
+                      onClick={() => update('emailProvider', 'resend')}
+                    >
+                      🚀 Resend API (HTTPS)
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={form.emailProvider === 'smtp' ? 'default' : 'outline'}
+                      className={form.emailProvider === 'smtp' ? 'bg-navy text-gold hover:bg-navy/90 font-bold' : ''}
+                      onClick={() => update('emailProvider', 'smtp')}
+                    >
+                      📧 Gmail / Standard SMTP
+                    </Button>
+                  </div>
                 </div>
+
+                {/* 1. BREVO REST API CONFIG */}
+                {(!form.emailProvider || form.emailProvider === 'brevo') && (
+                  <div className="space-y-4">
+                    <div className="rounded-md border border-green-200 bg-green-50/80 p-3 text-xs text-green-900">
+                      <p className="font-bold flex items-center gap-1.5 text-green-950">
+                        <span>✓</span> 100% Reliable on Railway & Cloud Containers
+                      </p>
+                      <p className="mt-1 leading-relaxed">
+                        Brevo sends emails over HTTPS (Port 443), which is never blocked by cloud firewalls. Gives you <strong>300 free emails per day</strong> with 0 credit card needed.
+                      </p>
+                      <a
+                        href="https://app.brevo.com/settings/keys/api"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-1.5 font-bold text-green-700 underline hover:text-green-900"
+                      >
+                        👉 Click here to get your Free Brevo API Key (Takes 1 minute)
+                      </a>
+                    </div>
+                    <div>
+                      <Label>Brevo API Key (starts with xkeysib-)</Label>
+                      <div className="relative mt-1">
+                        <Input
+                          type={showSmtpPass ? 'text' : 'password'}
+                          value={form.brevoApiKey || form.smtpPass || ''}
+                          onChange={(e) => {
+                            update('brevoApiKey', e.target.value)
+                            update('smtpPass', e.target.value)
+                          }}
+                          className="pr-10 border-border font-mono text-xs"
+                          placeholder="xkeysib-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSmtpPass((s) => !s)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy"
+                        >
+                          {showSmtpPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. RESEND API CONFIG */}
+                {form.emailProvider === 'resend' && (
+                  <div className="space-y-4">
+                    <div className="rounded-md border border-purple-200 bg-purple-50/80 p-3 text-xs text-purple-900">
+                      <p className="font-bold flex items-center gap-1.5 text-purple-950">
+                        <span>🚀</span> High-Speed HTTPS Delivery via Resend
+                      </p>
+                      <p className="mt-1 leading-relaxed">
+                        Resend gives you <strong>3,000 free emails/month</strong> and sends instantly over HTTPS Port 443.
+                      </p>
+                      <a
+                        href="https://resend.com/api-keys"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-block mt-1.5 font-bold text-purple-700 underline hover:text-purple-900"
+                      >
+                        👉 Click here to get your Free Resend API Key
+                      </a>
+                    </div>
+                    <div>
+                      <Label>Resend API Key (starts with re_)</Label>
+                      <div className="relative mt-1">
+                        <Input
+                          type={showSmtpPass ? 'text' : 'password'}
+                          value={form.resendApiKey || ''}
+                          onChange={(e) => update('resendApiKey', e.target.value)}
+                          className="pr-10 border-border font-mono text-xs"
+                          placeholder="re_xxxxxxxxxxxxxxxxxxxx"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSmtpPass((s) => !s)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy"
+                        >
+                          {showSmtpPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 3. GMAIL / STANDARD SMTP CONFIG */}
+                {form.emailProvider === 'smtp' && (
+                  <div>
+                    <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+                      <div>
+                        <h5 className="font-semibold text-xs text-navy">SMTP Server Details</h5>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                        <span className="text-xs font-semibold text-muted-foreground">Presets:</span>
+                        <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('gmail')}>
+                          Gmail
+                        </Button>
+                        <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('hostinger')}>
+                          Hostinger
+                        </Button>
+                        <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('outlook')}>
+                          Outlook
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div>
+                        <Label>SMTP Host</Label>
+                        <Input
+                          value={form.smtpHost || ''}
+                          onChange={(e) => update('smtpHost', e.target.value)}
+                          className="mt-1 border-border"
+                          placeholder="e.g. smtp.gmail.com"
+                        />
+                      </div>
+                      <div>
+                        <Label>SMTP Port</Label>
+                        <Input
+                          type="number"
+                          value={form.smtpPort ?? 465}
+                          onChange={(e) => update('smtpPort', parseInt(e.target.value, 10) || 465)}
+                          className="mt-1 border-border"
+                          placeholder="465 or 587"
+                        />
+                      </div>
+                      <div>
+                        <Label>SMTP Username / Email</Label>
+                        <Input
+                          value={form.smtpUser || ''}
+                          onChange={(e) => update('smtpUser', e.target.value)}
+                          className="mt-1 border-border"
+                          placeholder="e.g. inhalorder@gmail.com"
+                        />
+                      </div>
+                      <div>
+                        <Label>SMTP Password / Google App Password</Label>
+                        <div className="relative mt-1">
+                          <Input
+                            type={showSmtpPass ? 'text' : 'password'}
+                            value={form.smtpPass || ''}
+                            onChange={(e) => update('smtpPass', e.target.value)}
+                            className="pr-10 border-border"
+                            placeholder="••••••••••••••••"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowSmtpPass((s) => !s)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy"
+                          >
+                            {showSmtpPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between rounded-md border border-border bg-secondary/30 p-3 sm:col-span-2">
+                        <div>
+                          <Label className="text-sm">Use SSL (Secure Connection)</Label>
+                          <p className="text-[11px] text-muted-foreground">Recommended enabled with Port 465.</p>
+                        </div>
+                        <Switch checked={form.smtpSecure ?? true} onCheckedChange={(c) => update('smtpSecure', c)} />
+                      </div>
+                    </div>
+
+                    <div className="mt-4 rounded-md border border-amber-200 bg-amber-50/80 p-3 text-xs text-amber-900">
+                      <p className="font-semibold text-amber-950">⚠️ Notice for Cloud Hosting (Railway):</p>
+                      <p className="mt-1 leading-relaxed">
+                        Cloud platforms block raw SMTP ports to prevent spam. If Gmail SMTP times out, switch to the <strong>⚡ Brevo REST API</strong> option above — it sends over HTTPS Port 443 with 100% success.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Test Email Section */}
               <div className="rounded-lg border border-gold/40 bg-gold/5 p-4">
                 <h4 className="font-display text-sm font-bold text-navy">✉️ Test Real Email Delivery</h4>
                 <p className="text-xs text-muted-foreground">
-                  Send a live test email right now to verify that your SMTP credentials and delivery connection work properly.
+                  Send a live test email right now to verify that your email configuration works properly.
                 </p>
                 <div className="mt-3 flex flex-col gap-2 sm:flex-row">
                   <Input

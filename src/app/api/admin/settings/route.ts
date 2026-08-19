@@ -77,7 +77,8 @@ export async function PUT(request: NextRequest) {
       instagram: body.instagram !== undefined ? (body.instagram ? String(body.instagram) : null) : undefined,
       facebook: body.facebook !== undefined ? (body.facebook ? String(body.facebook) : null) : undefined,
       
-      // Email config & SMTP
+      // Email config & SMTP / HTTP API
+      emailProvider: body.emailProvider !== undefined ? String(body.emailProvider) : undefined,
       emailFrom: body.emailFrom !== undefined ? (body.emailFrom ? String(body.emailFrom) : null) : undefined,
       adminNotifyEmail: body.adminNotifyEmail !== undefined ? (body.adminNotifyEmail ? String(body.adminNotifyEmail) : null) : undefined,
       emailEnabled: body.emailEnabled !== undefined ? Boolean(body.emailEnabled) : undefined,
@@ -86,6 +87,8 @@ export async function PUT(request: NextRequest) {
       smtpUser: body.smtpUser !== undefined ? (body.smtpUser ? String(body.smtpUser).trim() : null) : undefined,
       smtpPass: body.smtpPass !== undefined ? (body.smtpPass ? String(body.smtpPass).trim() : null) : undefined,
       smtpSecure: body.smtpSecure !== undefined ? Boolean(body.smtpSecure) : undefined,
+      resendApiKey: body.resendApiKey !== undefined ? (body.resendApiKey ? String(body.resendApiKey).trim() : null) : undefined,
+      brevoApiKey: body.brevoApiKey !== undefined ? (body.brevoApiKey ? String(body.brevoApiKey).trim() : null) : undefined,
       
       // Payment config
       razorpayKeyId: body.razorpayKeyId !== undefined ? (body.razorpayKeyId ? String(body.razorpayKeyId).trim() : null) : undefined,

@@ -11,6 +11,100 @@ export type SmtpConfig = {
 }
 
 /**
+ * Send email via Resend HTTP REST API (HTTPS Port 443 - 100% immune to cloud SMTP port blocks)
+ */
+export async function sendViaResend({
+  apiKey,
+  from,
+  to,
+  subject,
+  html,
+  replyTo,
+}: {
+  apiKey: string
+  from?: string
+  to: string | string[]
+  subject: string
+  html: string
+  replyTo?: string
+}) {
+  const recipients = Array.isArray(to) ? to : [to]
+  const sender = from || 'Murlidhar Offset <onboarding@resend.dev>'
+  
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey.trim()}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: sender,
+      to: recipients,
+      subject,
+      html,
+      reply_to: replyTo,
+    }),
+  })
+
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error(data.message || data.error || `Resend API error (${res.status})`)
+  }
+  return { ok: true, messageId: data.id }
+}
+
+/**
+ * Send email via Brevo HTTP REST API (HTTPS Port 443 - 100% immune to cloud SMTP port blocks)
+ */
+export async function sendViaBrevo({
+  apiKey,
+  fromEmail,
+  fromName,
+  to,
+  subject,
+  html,
+  replyTo,
+}: {
+  apiKey: string
+  fromEmail?: string
+  fromName?: string
+  to: string | string[]
+  subject: string
+  html: string
+  replyTo?: string
+}) {
+  const recipients = (Array.isArray(to) ? to : [to]).map((e) => ({ email: e.trim() }))
+  const senderEmail = fromEmail || 'orders@murlidharoffset.com'
+  const senderName = fromName || 'Murlidhar Offset'
+
+  const payload: any = {
+    sender: { name: senderName, email: senderEmail },
+    to: recipients,
+    subject,
+    htmlContent: html,
+  }
+  if (replyTo) {
+    payload.replyTo = { email: replyTo.trim() }
+  }
+
+  const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey.trim(),
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error(data.message || data.error || `Brevo API error (${res.status})`)
+  }
+  return { ok: true, messageId: data.messageId }
+}
+
+/**
  * Creates a Nodemailer transporter dynamically from SiteSettings or environment variables
  */
 export async function getTransporter(overrideConfig?: SmtpConfig) {
@@ -44,7 +138,6 @@ export async function getTransporter(overrideConfig?: SmtpConfig) {
   pass = pass.trim().replace(/\s+/g, '') // remove spaces from Google app passwords
 
   const isGmail = host.includes('gmail') || user.includes('@gmail.com')
-  // Cloud providers (Railway, AWS, GCP, etc.) block Port 587/25 outbound. Port 465 SSL is open.
   const finalPort = isGmail && (port === 587 || !port) && !secure ? 465 : (port || (secure ? 465 : 587))
   const finalSecure = isGmail && finalPort === 465 ? true : (secure ?? (finalPort === 465))
 
@@ -59,14 +152,14 @@ export async function getTransporter(overrideConfig?: SmtpConfig) {
     tls: {
       rejectUnauthorized: false,
     },
-    connectionTimeout: 12000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    connectionTimeout: 10000,
+    greetingTimeout: 8000,
+    socketTimeout: 12000,
   })
 }
 
 /**
- * Sends a real email via configured SMTP
+ * Sends a real email via configured provider (Resend API / Brevo API / SMTP)
  */
 export async function sendEmail({
   to,
@@ -92,6 +185,42 @@ export async function sendEmail({
       return { ok: true, skipped: true }
     }
 
+    const provider = settings?.emailProvider || (settings?.resendApiKey ? 'resend' : settings?.brevoApiKey ? 'brevo' : 'smtp')
+
+    // 1. Resend API
+    if (provider === 'resend' || (settings?.resendApiKey && !settings?.smtpHost)) {
+      const apiKey = settings?.resendApiKey || process.env.RESEND_API_KEY
+      if (apiKey) {
+        const result = await sendViaResend({
+          apiKey,
+          from: from || settings?.emailFrom || undefined,
+          to,
+          subject,
+          html,
+          replyTo: replyTo || settings?.email || undefined,
+        })
+        return { ok: true, messageId: result.messageId }
+      }
+    }
+
+    // 2. Brevo API
+    if (provider === 'brevo' || (settings?.brevoApiKey && !settings?.smtpHost) || settings?.smtpPass?.startsWith('xkeysib-')) {
+      const apiKey = settings?.brevoApiKey || (settings?.smtpPass?.startsWith('xkeysib-') ? settings.smtpPass : process.env.BREVO_API_KEY)
+      if (apiKey) {
+        const result = await sendViaBrevo({
+          apiKey,
+          fromEmail: settings?.smtpUser || settings?.email || 'inhalorder@gmail.com',
+          fromName: settings?.businessName || 'Murlidhar Offset',
+          to,
+          subject,
+          html,
+          replyTo: replyTo || settings?.email || undefined,
+        })
+        return { ok: true, messageId: result.messageId }
+      }
+    }
+
+    // 3. SMTP (Nodemailer)
     const transporter = await getTransporter()
     const senderFrom =
       from ||
@@ -101,11 +230,11 @@ export async function sendEmail({
       'Murlidhar Offset <orders@murlidharoffset.com>'
 
     if (!transporter) {
-      console.warn('[email:no_smtp_configured] No SMTP configuration found in Settings or ENV. Email logged only:', {
+      console.warn('[email:no_smtp_configured] No email configuration found in Settings or ENV. Email logged only:', {
         to,
         subject,
       })
-      return { ok: false, error: 'SMTP server is not configured in Admin Settings' }
+      return { ok: false, error: 'Email service is not configured in Admin Settings' }
     }
 
     const info = await transporter.sendMail({
@@ -126,10 +255,13 @@ export async function sendEmail({
 }
 
 /**
- * Test SMTP connection and send a sample verification email
+ * Test email connection and send a sample verification email
  */
 export async function testSmtpConnection({
   toEmail,
+  provider,
+  resendApiKey,
+  brevoApiKey,
   smtpHost,
   smtpPort,
   smtpUser,
@@ -138,20 +270,91 @@ export async function testSmtpConnection({
   emailFrom,
 }: {
   toEmail: string
-  smtpHost: string
-  smtpPort: number
-  smtpUser: string
-  smtpPass: string
-  smtpSecure: boolean
+  provider?: 'smtp' | 'resend' | 'brevo'
+  resendApiKey?: string
+  brevoApiKey?: string
+  smtpHost?: string
+  smtpPort?: number
+  smtpUser?: string
+  smtpPass?: string
+  smtpSecure?: boolean
   emailFrom?: string
 }) {
+  const cleanTo = (toEmail || '').trim()
+  if (!cleanTo) return { ok: false, error: 'Target email is required' }
+
+  const activeProvider = provider || (resendApiKey ? 'resend' : brevoApiKey || smtpPass?.startsWith('xkeysib-') ? 'brevo' : 'smtp')
+
+  // 1. Test Resend API
+  if (activeProvider === 'resend' && resendApiKey) {
+    try {
+      const res = await sendViaResend({
+        apiKey: resendApiKey,
+        from: emailFrom || 'Murlidhar Offset <onboarding@resend.dev>',
+        to: cleanTo,
+        subject: '✅ Murlidhar Offset — Resend API Test Successful',
+        html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;padding:24px;border:1px solid #e2e8f0;border-radius:8px">
+          <div style="background:#0f1b33;color:#ffffff;padding:20px;border-radius:6px;text-align:center">
+            <h1 style="margin:0;color:#eab308;font-size:24px">MURLIDHAR OFFSET</h1>
+            <p style="margin:4px 0 0;font-size:12px;color:#94a3b8">PRINTING & PACKAGING · UNJHA, GUJARAT</p>
+          </div>
+          <div style="padding:20px 0;text-align:center">
+            <div style="display:inline-block;background:#dcfce7;color:#15803d;padding:8px 16px;border-radius:20px;font-weight:bold;font-size:14px;margin-bottom:16px">
+              ✓ Resend HTTPS API Verified (100% Cloud Reliable)
+            </div>
+            <h2 style="color:#0f1b33;margin:0 0 10px">Email System Is Working 100% Real!</h2>
+            <p style="color:#475569;font-size:14px">
+              Your Resend API connection is verified. All order confirmations and alerts will be delivered instantly over HTTPS Port 443 without any SMTP firewall blocks.
+            </p>
+          </div>
+        </div>`,
+      })
+      return { ok: true, messageId: res.messageId }
+    } catch (e: any) {
+      return { ok: false, error: e?.message || 'Resend API test failed' }
+    }
+  }
+
+  // 2. Test Brevo API
+  if (activeProvider === 'brevo' && (brevoApiKey || smtpPass?.startsWith('xkeysib-'))) {
+    const key = brevoApiKey || (smtpPass?.startsWith('xkeysib-') ? smtpPass : '')
+    try {
+      const res = await sendViaBrevo({
+        apiKey: key,
+        fromEmail: smtpUser || 'inhalorder@gmail.com',
+        fromName: 'Murlidhar Offset',
+        to: cleanTo,
+        subject: '✅ Murlidhar Offset — Brevo API Test Successful',
+        html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;padding:24px;border:1px solid #e2e8f0;border-radius:8px">
+          <div style="background:#0f1b33;color:#ffffff;padding:20px;border-radius:6px;text-align:center">
+            <h1 style="margin:0;color:#eab308;font-size:24px">MURLIDHAR OFFSET</h1>
+            <p style="margin:4px 0 0;font-size:12px;color:#94a3b8">PRINTING & PACKAGING · UNJHA, GUJARAT</p>
+          </div>
+          <div style="padding:20px 0;text-align:center">
+            <div style="display:inline-block;background:#dcfce7;color:#15803d;padding:8px 16px;border-radius:20px;font-weight:bold;font-size:14px;margin-bottom:16px">
+              ✓ Brevo HTTPS API Verified (100% Cloud Reliable)
+            </div>
+            <h2 style="color:#0f1b33;margin:0 0 10px">Email System Is Working 100% Real!</h2>
+            <p style="color:#475569;font-size:14px">
+              Your Brevo API connection is verified. All order confirmations and alerts will be delivered instantly over HTTPS Port 443 without any SMTP firewall blocks.
+            </p>
+          </div>
+        </div>`,
+      })
+      return { ok: true, messageId: res.messageId }
+    } catch (e: any) {
+      return { ok: false, error: e?.message || 'Brevo API test failed' }
+    }
+  }
+
+  // 3. Test SMTP
   const cleanHost = (smtpHost || 'smtp.gmail.com').trim()
   const cleanUser = (smtpUser || '').trim()
-  const cleanPass = (smtpPass || '').trim().replace(/\s+/g, '') // remove spaces from Google app passwords
-  const cleanTo = (toEmail || '').trim()
+  const cleanPass = (smtpPass || '').trim().replace(/\s+/g, '')
   const isGmail = cleanHost.includes('gmail') || cleanUser.includes('@gmail.com')
 
-  // Try primary configured strategy
   const configsToTry = [
     {
       host: cleanHost,
@@ -160,7 +363,6 @@ export async function testSmtpConnection({
     },
   ]
 
-  // If Gmail on port 587, cloud hosting (Railway) often blocks port 587 outbound; add port 465 SSL fallback!
   if (isGmail && (smtpPort === 587 || !smtpSecure)) {
     configsToTry.push({
       host: 'smtp.gmail.com',
@@ -189,10 +391,8 @@ export async function testSmtpConnection({
         socketTimeout: 12000,
       })
 
-      // Step 1: Verify SMTP credentials & connection
       await transporter.verify()
 
-      // Step 2: Send test email
       const sender = emailFrom || `Murlidhar Offset <${cleanUser}>`
       const info = await transporter.sendMail({
         from: sender,
@@ -245,7 +445,10 @@ export async function testSmtpConnection({
     }
   }
 
-  return { ok: false, error: lastError }
+  return {
+    ok: false,
+    error: `${lastError}. (Note: If deploying on cloud hosts like Railway/DigitalOcean, SMTP ports 465/587 may be blocked. Use Brevo or Resend HTTPS API preset for 100% reliable cloud email delivery.)`,
+  }
 }
 
 /**

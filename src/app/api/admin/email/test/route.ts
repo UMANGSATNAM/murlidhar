@@ -11,39 +11,33 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
-    let { toEmail, smtpHost, smtpPort, smtpUser, smtpPass, smtpSecure, emailFrom } = body
+    let { toEmail, provider, resendApiKey, brevoApiKey, smtpHost, smtpPort, smtpUser, smtpPass, smtpSecure, emailFrom } = body
 
     // Fall back to stored settings if some fields are not provided in payload
-    if (!smtpHost || !smtpUser || !smtpPass) {
-      const stored = await db.siteSettings.findUnique({ where: { id: 'default' } })
-      if (stored) {
-        smtpHost = smtpHost || stored.smtpHost
-        smtpPort = smtpPort || stored.smtpPort || (stored.smtpSecure ? 465 : 587)
-        smtpUser = smtpUser || stored.smtpUser
-        smtpPass = smtpPass || stored.smtpPass
-        smtpSecure = smtpSecure !== undefined ? smtpSecure : (stored.smtpSecure ?? (smtpPort === 465))
-        emailFrom = emailFrom || stored.emailFrom
-      }
+    const stored = await db.siteSettings.findUnique({ where: { id: 'default' } })
+    if (stored) {
+      provider = provider || stored.emailProvider || 'smtp'
+      resendApiKey = resendApiKey || stored.resendApiKey || undefined
+      brevoApiKey = brevoApiKey || stored.brevoApiKey || undefined
+      smtpHost = smtpHost || stored.smtpHost || undefined
+      smtpPort = smtpPort || stored.smtpPort || (stored.smtpSecure ? 465 : 587)
+      smtpUser = smtpUser || stored.smtpUser || undefined
+      smtpPass = smtpPass || stored.smtpPass || undefined
+      smtpSecure = smtpSecure !== undefined ? smtpSecure : (stored.smtpSecure ?? (smtpPort === 465))
+      emailFrom = emailFrom || stored.emailFrom || undefined
     }
 
     if (!toEmail) {
       return Response.json({ error: 'Target email address is required for testing' }, { status: 400 })
     }
 
-    if (!smtpHost || !smtpUser || !smtpPass) {
-      return Response.json(
-        {
-          error:
-            'Please enter SMTP Host, Username/Email and Password/App Password before testing.',
-        },
-        { status: 400 }
-      )
-    }
-
     const result = await testSmtpConnection({
       toEmail,
+      provider,
+      resendApiKey,
+      brevoApiKey,
       smtpHost,
-      smtpPort: parseInt(smtpPort, 10) || 587,
+      smtpPort: typeof smtpPort === 'number' ? smtpPort : parseInt(smtpPort, 10) || 587,
       smtpUser,
       smtpPass,
       smtpSecure: Boolean(smtpSecure),
@@ -56,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     return Response.json({
       ok: true,
-      message: `Test email sent successfully to ${toEmail}! Please check inbox (and spam folder).`,
+      message: `Test email sent successfully to ${toEmail}! Please check your inbox (and spam folder).`,
       messageId: result.messageId,
     })
   } catch (err: any) {

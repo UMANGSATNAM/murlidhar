@@ -223,7 +223,8 @@ model SiteSettings {
   whatsapp        String?
   instagram       String?
   facebook        String?
-  // Email config & SMTP
+  // Email config & SMTP / HTTP API
+  emailProvider   String?  @default("smtp") // smtp | resend | brevo
   emailFrom       String?  @default("Murlidhar Offset <murlidharoffset84@gmail.com>")
   adminNotifyEmail String? @default("murlidharoffset84@gmail.com")
   emailEnabled    Boolean  @default(true)
@@ -232,6 +233,8 @@ model SiteSettings {
   smtpUser        String?
   smtpPass        String?
   smtpSecure      Boolean? @default(false)
+  resendApiKey    String?
+  brevoApiKey     String?
   // Payment config
   razorpayKeyId   String?
   razorpayKeySecret String?
