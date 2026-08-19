@@ -6,7 +6,7 @@ import Link from 'next/link'
 import {
   ArrowLeft, Loader2, Phone, Mail, MapPin, FileText, Download, Save,
   Package, MessageSquare, User, Calendar, IndianRupee, Lock, Award,
-  Clock, StickyNote, CheckCircle2,
+  Clock, StickyNote, CheckCircle2, Eye,
 } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
