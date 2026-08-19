@@ -188,6 +188,15 @@ function CheckoutContent() {
       return
     }
 
+    const orderItems = items.map((item) => ({
+      productId: item.productId,
+      productName: item.productName,
+      variantId: item.variantId || null,
+      variantLabel: item.variantLabel || null,
+      qty: item.qty,
+      unitPrice: item.unitPrice,
+    }))
+
     // ─── COMBINE ALL UPLOADED FILES (From Cart Items + Checkout Form) ──────
     const combinedFilesMap = new Map<string, { name: string; url: string; size: number; type?: string }>()
     // 1. Files uploaded directly on checkout page
