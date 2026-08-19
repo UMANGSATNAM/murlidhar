@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AdminShell, useAdmin } from '@/components/admin/admin-shell'
 import { useAdminRedirect } from '@/components/admin/use-admin-redirect'
-import { StatusBadge } from '@/app/admin/dashboard/page'
+import { StatusBadge } from '@/components/admin/status-badge'
 import { formatINR } from '@/lib/format'
 
 interface Order {

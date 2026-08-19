@@ -17,7 +17,7 @@ import { AdminShell, useAdmin } from '@/components/admin/admin-shell'
 import { useAdminRedirect } from '@/components/admin/use-admin-redirect'
 import { InvoiceDownloadButton } from '@/components/storefront/invoice-button'
 import { FilePreviewButton } from '@/components/admin/file-preview-button'
-import { StatusBadge } from '@/app/admin/dashboard/page'
+import { StatusBadge } from '@/components/admin/status-badge'
 import { formatINR } from '@/lib/format'
 import { toast as sonnerToast } from 'sonner'
 
