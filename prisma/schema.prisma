@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -223,9 +223,15 @@ model SiteSettings {
   whatsapp        String?
   instagram       String?
   facebook        String?
-  // Email config
-  emailFrom       String?
-  emailEnabled    Boolean  @default(false)
+  // Email config & SMTP
+  emailFrom       String?  @default("Murlidhar Offset <murlidharoffset84@gmail.com>")
+  adminNotifyEmail String? @default("murlidharoffset84@gmail.com")
+  emailEnabled    Boolean  @default(true)
+  smtpHost        String?
+  smtpPort        Int?     @default(587)
+  smtpUser        String?
+  smtpPass        String?
+  smtpSecure      Boolean? @default(false)
   // Payment config
   razorpayKeyId   String?
   razorpayKeySecret String?

@@ -202,48 +202,84 @@ export default function AdminOrderDetailPage() {
 
           {/* Uploaded files */}
           <Card className="overflow-hidden">
-            <div className="border-b border-border bg-secondary/40 px-5 py-3">
+            <div className="border-b border-border bg-secondary/40 px-5 py-3 flex items-center justify-between">
               <h3 className="flex items-center gap-2 font-display text-base font-bold text-navy">
-                <FileText className="h-4 w-4 text-gold" /> Uploaded Design Files ({order.files.length})
+                <FileText className="h-4 w-4 text-gold" /> Customer Uploaded Artwork & Images ({order.files.length})
               </h3>
+              {order.files.length > 0 && (
+                <span className="rounded-full bg-gold/20 px-2.5 py-0.5 text-xs font-bold text-navy">
+                  {order.files.length} Real File{order.files.length > 1 ? 's' : ''} Attached
+                </span>
+              )}
             </div>
             <div className="p-5">
               {order.files.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No files uploaded with this order.</p>
+                <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                  No files were uploaded with this order.
+                </div>
               ) : (
-                <ul className="space-y-3">
+                <ul className="grid gap-4 sm:grid-cols-1">
                   {order.files.map((f) => {
                     const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f.fileName)
                     const isPdf = /\.pdf$/i.test(f.fileName)
                     return (
-                      <li key={f.id} className="rounded-md border border-border bg-secondary/30 p-3">
-                        <div className="flex items-center justify-between gap-2">
+                      <li key={f.id} className="rounded-lg border border-border bg-secondary/20 p-4 shadow-sm transition hover:border-gold/50">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                           <div className="flex min-w-0 items-center gap-3">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-background text-foreground">
-                              <FileText className="h-4 w-4" />
-                            </div>
+                            {isImage ? (
+                              <a
+                                href={f.filePath}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-gold/40 bg-black/5 hover:opacity-90 transition group"
+                                title="Click to view full image in new tab"
+                              >
+                                <img
+                                  src={f.filePath}
+                                  alt={f.fileName}
+                                  className="h-full w-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                  <Eye className="h-4 w-4 text-white" />
+                                </div>
+                              </a>
+                            ) : (
+                              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-md bg-background text-foreground border border-border">
+                                <FileText className="h-7 w-7 text-gold" />
+                              </div>
+                            )}
                             <div className="min-w-0">
-                              <p className="truncate text-sm font-semibold text-navy">{f.fileName}</p>
+                              <p className="truncate text-sm font-bold text-navy">{f.fileName}</p>
                               <p className="text-xs text-muted-foreground">
-                                {(f.fileSize / 1024).toFixed(0)} KB · {f.fileType || (isImage ? 'image' : isPdf ? 'PDF' : 'file')}
+                                File Size: <span className="font-semibold text-navy">{(f.fileSize / 1024).toFixed(1)} KB</span> · Type: <span className="uppercase font-semibold text-gold-deep">{f.fileType || (isImage ? 'IMAGE' : isPdf ? 'PDF' : 'ARTWORK')}</span>
                               </p>
+                              <a
+                                href={f.filePath}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[11px] text-blue-600 hover:underline font-medium inline-block mt-0.5"
+                              >
+                                Open URL: {f.filePath}
+                              </a>
                             </div>
                           </div>
-                          <div className="flex shrink-0 gap-1">
+                          <div className="flex shrink-0 gap-2 w-full sm:w-auto justify-end">
                             {(isImage || isPdf) && (
                               <FilePreviewButton file={f} />
                             )}
                             <a
                               href={f.filePath}
                               download={f.fileName}
-                              className="inline-flex items-center gap-1.5 rounded-md bg-gold px-3 py-1.5 text-xs font-bold text-navy hover:bg-gold-deep hover:text-white"
+                              className="inline-flex items-center gap-1.5 rounded-md bg-gold px-3.5 py-1.5 text-xs font-bold text-navy hover:bg-gold-deep hover:text-white transition shadow-sm"
                             >
                               <Download className="h-3.5 w-3.5" /> Download
                             </a>
                           </div>
                         </div>
                         {/* Admin annotation per file */}
-                        <FileAnnotation fileId={f.id} initialNote={f.adminNote} orderId={order.id} />
+                        <div className="mt-3 pt-3 border-t border-border/60">
+                          <FileAnnotation fileId={f.id} initialNote={f.adminNote} orderId={order.id} />
+                        </div>
                       </li>
                     )
                   })}

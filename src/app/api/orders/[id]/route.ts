@@ -112,20 +112,22 @@ export async function PATCH(request: NextRequest) {
 
   // Send status update email if order status changed and customer email exists
   if (orderStatus && orderStatus !== existing.orderStatus && existing.email) {
-    const settings = await db.siteSettings.findUnique({ where: { id: 'default' } })
-    if (settings?.email) {
+    try {
+      const settings = await db.siteSettings.findUnique({ where: { id: 'default' } })
       const html = statusUpdateHtml({
         orderNumber: updated.orderNumber,
         customerName: updated.customerName,
         status: orderStatus,
         note: statusNote,
-        business: settings.businessName,
+        business: settings?.businessName || 'Murlidhar Offset',
       })
       await sendEmail({
         to: existing.email,
-        subject: `Order ${updated.orderNumber} — Status: ${orderStatus}`,
+        subject: `📦 Order #${updated.orderNumber} Status: ${orderStatus.toUpperCase()} (Murlidhar Offset)`,
         html,
       })
+    } catch (e) {
+      console.error('[email:status_update_error]', e)
     }
   }
 

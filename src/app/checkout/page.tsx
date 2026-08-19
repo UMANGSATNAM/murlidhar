@@ -159,6 +159,24 @@ function CheckoutContent() {
     }
   }
 
+  // Dynamically load Razorpay checkout script
+  const loadRazorpayScript = (): Promise<boolean> => {
+    return new Promise((resolve) => {
+      if (typeof window === 'undefined') return resolve(false)
+      if ((window as any).Razorpay) return resolve(true)
+      const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')
+      if (existingScript) {
+        return resolve(true)
+      }
+      const script = document.createElement('script')
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      script.async = true
+      script.onload = () => resolve(true)
+      script.onerror = () => resolve(false)
+      document.body.appendChild(script)
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.customerName || !form.phone) {
@@ -169,34 +187,171 @@ function CheckoutContent() {
       sonnerToast.error('Your cart is empty')
       return
     }
+
+    // ─── COMBINE ALL UPLOADED FILES (From Cart Items + Checkout Form) ──────
+    const combinedFilesMap = new Map<string, { name: string; url: string; size: number; type?: string }>()
+    // 1. Files uploaded directly on checkout page
+    files.forEach((f) => {
+      if (f.url) combinedFilesMap.set(f.url, f)
+    })
+    // 2. Files attached to individual cart items on product pages
+    items.forEach((item) => {
+      if (item.files && Array.isArray(item.files)) {
+        item.files.forEach((f: any) => {
+          if (f && f.url && !combinedFilesMap.has(f.url)) {
+            combinedFilesMap.set(f.url, {
+              name: f.name || `artwork-${item.productName}.jpg`,
+              url: f.url,
+              size: f.size || 0,
+              type: f.type || undefined,
+            })
+          }
+        })
+      }
+    })
+    const finalUploadedFiles = Array.from(combinedFilesMap.values())
+
+    // ─── ONLINE PAYMENT (RAZORPAY) FLOW ─────────────────────────────────────
+    if (paymentMethod === 'online') {
+      setSubmitting(true)
+      try {
+        // Step 1: Create Razorpay Order on server
+        const rzpRes = await fetch('/api/razorpay/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amount: total,
+            currency: 'INR',
+            customerName: form.customerName,
+            phone: form.phone,
+            email: form.email,
+          }),
+        })
+        const rzpData = await rzpRes.json()
+        if (!rzpRes.ok) {
+          throw new Error(rzpData.error || 'Failed to initialize Razorpay payment')
+        }
+
+        // Step 2: Ensure Razorpay JS script is loaded
+        const loaded = await loadRazorpayScript()
+        if (!loaded || !(window as any).Razorpay) {
+          throw new Error('Could not load Razorpay payment gateway. Please check your internet connection.')
+        }
+
+        // Step 3: Open Razorpay checkout modal
+        const options = {
+          key: rzpData.keyId,
+          amount: rzpData.amount,
+          currency: rzpData.currency || 'INR',
+          name: settings?.businessName || 'Murlidhar Offset',
+          description: `Order Payment (${items.length} item${items.length > 1 ? 's' : ''})`,
+          order_id: rzpData.orderId,
+          prefill: {
+            name: form.customerName,
+            email: form.email || '',
+            contact: form.phone,
+          },
+          theme: {
+            color: '#0f1b33',
+          },
+          modal: {
+            ondismiss: function () {
+              setSubmitting(false)
+              sonnerToast.info('Payment window closed. You can retry or choose Cash on Delivery.')
+            },
+          },
+          handler: async function (response: any) {
+            try {
+              setSubmitting(true)
+              sonnerToast.loading('Payment successful! Creating your order...')
+
+              // Step 4: Verify payment signature
+              const verifyRes = await fetch('/api/razorpay/verify-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              })
+              const verifyData = await verifyRes.json()
+              if (!verifyRes.ok) {
+                throw new Error(verifyData.error || 'Payment signature verification failed')
+              }
+
+              // Step 5: Save order in DB with paymentStatus: 'paid'
+              const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  ...form,
+                  remarks:
+                    remarks +
+                    `\n\n[ONLINE PAYMENT: Razorpay Paid ₹${total.toFixed(2)} | Payment ID: ${response.razorpay_payment_id} | Order ID: ${response.razorpay_order_id}]` +
+                    (bundleSavings > 0 ? `\n\n[BUNDLE DISCOUNT: ${appliedBundleNames.join(', ')} — Saved ₹${bundleSavings}]` : '') +
+                    (loyaltyDiscount > 0
+                      ? `\n\n[LOYALTY REDEMPTION: Applied ${loyaltyDiscount} points (₹${loyaltyDiscount} discount) from phone ${form.phone}]`
+                      : ''),
+                  items: orderItems,
+                  paymentMethod: 'online',
+                  paymentStatus: 'paid',
+                  paymentRef: response.razorpay_payment_id,
+                  files: finalUploadedFiles.map((f) => ({ name: f.name, url: f.url, size: f.size })),
+                }),
+              })
+              const data = await res.json()
+              if (!res.ok) throw new Error(data.error || 'Order creation failed')
+
+              sonnerToast.success('Payment verified & order placed successfully!')
+              setPlacedOrder({ orderNumber: data.order.orderNumber, total: data.order.total, fullOrder: data.order })
+              clear()
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            } catch (err: any) {
+              sonnerToast.error(err.message || 'Error processing payment completion')
+            } finally {
+              setSubmitting(false)
+            }
+          },
+        }
+
+        const rzp = new (window as any).Razorpay(options)
+        rzp.on('payment.failed', function (resp: any) {
+          setSubmitting(false)
+          sonnerToast.error(`Payment failed: ${resp.error?.description || 'Transaction was declined'}`)
+        })
+        rzp.open()
+        return
+      } catch (err: any) {
+        sonnerToast.error(err.message || 'Online payment initialization failed')
+        setSubmitting(false)
+        return
+      }
+    }
+
+    // ─── COD OR PAY AT SHOP FLOW ────────────────────────────────────────────
     setSubmitting(true)
     try {
-      // Aggregate per-item files & remarks from cart (we only have global ones here)
-      const orderItems = items.map((i) => ({
-        productId: i.productId,
-        productName: i.productName,
-        variantId: i.variantId,
-        variantLabel: i.variantLabel,
-        qty: i.qty,
-        unitPrice: i.unitPrice,
-      }))
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
-          remarks: remarks
-            + (bundleSavings > 0 ? `\n\n[BUNDLE DISCOUNT: ${appliedBundleNames.join(', ')} — Saved ₹${bundleSavings}]` : '')
-            + (loyaltyDiscount > 0
+          remarks:
+            remarks +
+            (bundleSavings > 0 ? `\n\n[BUNDLE DISCOUNT: ${appliedBundleNames.join(', ')} — Saved ₹${bundleSavings}]` : '') +
+            (loyaltyDiscount > 0
               ? `\n\n[LOYALTY REDEMPTION: Applied ${loyaltyDiscount} points (₹${loyaltyDiscount} discount) from phone ${form.phone}]`
               : ''),
           items: orderItems,
           paymentMethod,
-          files: files.map((f) => ({ name: f.name, url: f.url, size: f.size })),
+          paymentStatus: 'pending',
+          files: finalUploadedFiles.map((f) => ({ name: f.name, url: f.url, size: f.size })),
         }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Order failed')
+      sonnerToast.success('Order placed successfully!')
       setPlacedOrder({ orderNumber: data.order.orderNumber, total: data.order.total, fullOrder: data.order })
       clear()
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -209,6 +364,16 @@ function CheckoutContent() {
 
   // ─── Order Placed Confirmation ────────────────────────────────────────────
   if (placedOrder) {
+    const isPaid = placedOrder.fullOrder?.paymentStatus === 'paid'
+    const paymentMethodLabel =
+      placedOrder.fullOrder?.paymentMethod === 'online'
+        ? isPaid
+          ? 'Paid Online (Razorpay)'
+          : 'Online Payment (Pending)'
+        : placedOrder.fullOrder?.paymentMethod === 'cod'
+        ? 'Cash on Delivery'
+        : 'Pay at Shop'
+
     return (
       <div className="mx-auto max-w-2xl px-4 py-16">
         <Card className="card-premium overflow-hidden text-center">
@@ -216,38 +381,65 @@ function CheckoutContent() {
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gold/20">
               <CheckCircle2 className="h-12 w-12 text-gold" />
             </div>
-            <h1 className="font-display text-3xl font-bold text-foreground">Order Placed!</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Thank you for your order. We've received your request and will begin production shortly.</p>
+            <h1 className="font-display text-3xl font-bold text-foreground">Order Placed Successfully!</h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Thank you for your order. We've received your request and will begin production shortly.
+            </p>
           </div>
           <div className="p-6">
             <div className="rounded-lg border border-gold/30 bg-gold/5 p-4">
               <p className="text-xs uppercase tracking-wide text-muted-foreground">Your Order Number</p>
               <p className="font-display text-2xl font-bold text-navy">{placedOrder.orderNumber}</p>
             </div>
-            <div className="mt-4 flex justify-between border-b border-border pb-4">
-              <span className="text-sm text-muted-foreground">Order Total</span>
-              <span className="font-display text-xl font-bold text-navy">{formatINR(placedOrder.total)}</span>
+
+            <div className="mt-4 flex flex-col gap-2 rounded-lg bg-secondary/30 p-3 text-sm">
+              <div className="flex justify-between border-b border-border/50 pb-2">
+                <span className="text-muted-foreground">Order Total</span>
+                <span className="font-display text-lg font-bold text-navy">{formatINR(placedOrder.total)}</span>
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-muted-foreground">Payment Status</span>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                    isPaid
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-amber-100 text-amber-700'
+                  }`}
+                >
+                  {isPaid ? `✓ ${paymentMethodLabel}` : paymentMethodLabel}
+                </span>
+              </div>
+              {placedOrder.fullOrder?.paymentRef && (
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Payment Ref ID</span>
+                  <span className="font-mono">{placedOrder.fullOrder.paymentRef}</span>
+                </div>
+              )}
             </div>
+
             <div className="mt-4 rounded-lg bg-secondary/40 p-4 text-left text-sm">
               <p className="font-semibold text-navy">What happens next?</p>
               <ul className="mt-2 space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                  We'll review your order & uploaded files
+                  We'll review your order specifications & uploaded artwork
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                  Our team will call you to confirm details & payment
+                  Our Konica Minolta press team starts high-precision production
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                  You'll receive email updates at each stage
+                  You'll receive live confirmation & status update emails
                 </li>
               </ul>
             </div>
+
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
               <Button asChild className="flex-1 bg-background text-foreground hover:bg-secondary/30">
-                <Link href="/shop">Continue Shopping <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                <Link href="/shop">
+                  Continue Shopping <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
               </Button>
               <Button asChild variant="outline" className="flex-1 border-navy text-navy">
                 <Link href={`/track?o=${placedOrder.orderNumber}`}>
@@ -262,7 +454,11 @@ function CheckoutContent() {
               />
               <Button asChild variant="outline" className="flex-1 border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
                 <a
-                  href={`https://wa.me/919510737852?text=${encodeURIComponent(`Hi Murlidhar Offset, I just placed order *${placedOrder.orderNumber}* for ${formatINR(placedOrder.total)}. Please confirm receipt.`)}`}
+                  href={`https://wa.me/919510737852?text=${encodeURIComponent(
+                    `Hi Murlidhar Offset, I just placed order *${placedOrder.orderNumber}* for ${formatINR(
+                      placedOrder.total
+                    )} (${paymentMethodLabel}). Please confirm receipt.`
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

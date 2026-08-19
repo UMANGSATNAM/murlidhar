@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { generateOrderNumber } from '@/lib/format'
-import { sendEmail, orderConfirmationHtml } from '@/lib/email'
+import { sendEmail, orderConfirmationHtml, adminOrderNotificationHtml } from '@/lib/email'
 import { requireAdmin, unauthorized } from '@/lib/api-helpers'
 
 export const dynamic = 'force-dynamic'
@@ -21,6 +21,8 @@ export async function POST(request: NextRequest) {
       remarks,
       items,
       paymentMethod = 'cod',
+      paymentStatus = 'pending',
+      paymentRef = null,
       files = [],
     } = body
 
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     const subtotal = items.reduce((s: number, i: any) => s + i.qty * i.unitPrice, 0)
-    const shipping = 0 // free shipping for now
+    const shipping = 0 // free shipping
 
     // Apply bulk discount based on total quantity across all items
     const totalQty = items.reduce((s: number, i: any) => s + i.qty, 0)
@@ -69,7 +71,8 @@ export async function POST(request: NextRequest) {
         shipping,
         total,
         paymentMethod,
-        paymentStatus: paymentMethod === 'cod' ? 'pending' : paymentMethod === 'payatshop' ? 'pending' : 'pending',
+        paymentStatus: paymentMethod === 'online' && paymentStatus === 'paid' ? 'paid' : 'pending',
+        paymentRef: paymentRef || null,
         orderStatus: 'pending',
         items: {
           create: items.map((i: any) => ({
@@ -96,31 +99,89 @@ export async function POST(request: NextRequest) {
       include: { items: true, files: true },
     })
 
-    // Send confirmation email (best effort)
+    // Fetch settings for email triggers
     const settings = await db.siteSettings.findUnique({ where: { id: 'default' } })
-    if (settings?.email) {
-      const html = orderConfirmationHtml({
-        orderNumber: order.orderNumber,
-        customerName: order.customerName,
-        items: order.items.map((i) => ({
-          name: i.productName,
-          variant: i.variantInfo ?? undefined,
-          qty: i.qty,
-          total: i.total,
-        })),
-        total: order.total,
-        business: settings.businessName,
-      })
-      // Customer email
-      if (order.email) {
-        await sendEmail({ to: order.email, subject: `Order Confirmation — ${order.orderNumber}`, html })
+
+    // 1. Customer Confirmation Email
+    if (order.email) {
+      try {
+        const customerHtml = orderConfirmationHtml({
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          phone: order.phone,
+          email: order.email,
+          address: order.address,
+          city: order.city,
+          state: order.state,
+          pincode: order.pincode,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          paymentRef: order.paymentRef,
+          subtotal: order.subtotal,
+          discount: bulkDiscount,
+          shipping: order.shipping,
+          total: order.total,
+          items: order.items.map((i) => ({
+            productName: i.productName,
+            variantInfo: i.variantInfo,
+            qty: i.qty,
+            unitPrice: i.unitPrice,
+            total: i.total,
+          })),
+          businessName: settings?.businessName || 'Murlidhar Offset',
+        })
+
+        await sendEmail({
+          to: order.email,
+          subject: `✅ Order Confirmation — ${order.orderNumber} (Murlidhar Offset)`,
+          html: customerHtml,
+        })
+      } catch (e) {
+        console.error('[email:customer_confirmation_error]', e)
       }
-      // Notify business inbox
-      await sendEmail({
-        to: settings.email,
-        subject: `New Order ${order.orderNumber} — ${order.customerName}`,
-        html: `<p>New order received.</p>${html}`,
-      })
+    }
+
+    // 2. Admin New Order Alert Email (Sent to configured Admin email)
+    const adminTargetEmail = settings?.adminNotifyEmail || settings?.email || 'murlidharoffset84@gmail.com'
+    if (adminTargetEmail) {
+      try {
+        const adminHtml = adminOrderNotificationHtml({
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          phone: order.phone,
+          email: order.email,
+          address: order.address,
+          city: order.city,
+          state: order.state,
+          pincode: order.pincode,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          paymentRef: order.paymentRef,
+          remarks: order.remarks,
+          total: order.total,
+          items: order.items.map((i) => ({
+            productName: i.productName,
+            variantInfo: i.variantInfo,
+            qty: i.qty,
+            unitPrice: i.unitPrice,
+            total: i.total,
+          })),
+          files: order.files.map((f) => ({
+            fileName: f.fileName,
+            filePath: f.filePath,
+            fileSize: f.fileSize,
+          })),
+          siteUrl: process.env.NEXTAUTH_URL || '',
+        })
+
+        await sendEmail({
+          to: adminTargetEmail,
+          subject: `🚨 NEW ORDER #${order.orderNumber} - ₹${order.total.toFixed(2)} from ${order.customerName}`,
+          html: adminHtml,
+        })
+      } catch (e) {
+        console.error('[email:admin_notification_error]', e)
+      }
     }
 
     // Auto-deduct loyalty points if redemption was applied

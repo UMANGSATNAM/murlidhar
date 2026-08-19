@@ -31,10 +31,22 @@ function AdminSettingsInner() {
   const [fetching, setFetching] = React.useState(true)
   const [form, setForm] = React.useState<any>({})
 
+  // Email & Payment testing states
+  const [testEmail, setTestEmail] = React.useState('')
+  const [testingEmail, setTestingEmail] = React.useState(false)
+  const [showSmtpPass, setShowSmtpPass] = React.useState(false)
+  const [showRzpSecret, setShowRzpSecret] = React.useState(false)
+  const [testingRzp, setTestingRzp] = React.useState(false)
+
   React.useEffect(() => {
     fetch('/api/admin/settings', { credentials: 'include' })
       .then((r) => r.json())
-      .then((d) => setForm(d || {}))
+      .then((d) => {
+        setForm(d || {})
+        if (d?.adminNotifyEmail || d?.email) {
+          setTestEmail(d.adminNotifyEmail || d.email)
+        }
+      })
       .finally(() => setFetching(false))
   }, [])
 
@@ -56,6 +68,88 @@ function AdminSettingsInner() {
 
   const update = (key: string, value: any) => setForm((f: any) => ({ ...f, [key]: value }))
 
+  const applySmtpPreset = (preset: 'gmail' | 'hostinger' | 'outlook' | 'brevo') => {
+    if (preset === 'gmail') {
+      update('smtpHost', 'smtp.gmail.com')
+      update('smtpPort', 587)
+      update('smtpSecure', false)
+      sonnerToast.info('Applied Gmail SMTP preset (Port 587). Use a 16-character Google App Password!')
+    } else if (preset === 'hostinger') {
+      update('smtpHost', 'smtp.hostinger.com')
+      update('smtpPort', 465)
+      update('smtpSecure', true)
+      sonnerToast.info('Applied Hostinger SMTP preset (Port 465 SSL)')
+    } else if (preset === 'outlook') {
+      update('smtpHost', 'smtp.office365.com')
+      update('smtpPort', 587)
+      update('smtpSecure', false)
+      sonnerToast.info('Applied Outlook/Office 365 SMTP preset (Port 587)')
+    } else if (preset === 'brevo') {
+      update('smtpHost', 'smtp-relay.brevo.com')
+      update('smtpPort', 587)
+      update('smtpSecure', false)
+      sonnerToast.info('Applied Brevo (Sendinblue) SMTP preset')
+    }
+  }
+
+  const handleTestEmail = async () => {
+    const target = testEmail || form.adminNotifyEmail || form.email
+    if (!target) {
+      sonnerToast.error('Please enter a target email to send the test message to')
+      return
+    }
+    setTestingEmail(true)
+    try {
+      const res = await fetch('/api/admin/email/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          toEmail: target,
+          smtpHost: form.smtpHost,
+          smtpPort: form.smtpPort,
+          smtpUser: form.smtpUser,
+          smtpPass: form.smtpPass,
+          smtpSecure: form.smtpSecure,
+          emailFrom: form.emailFrom,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to send test email')
+      sonnerToast.success(data.message || 'Test email sent successfully! Please check your inbox.')
+    } catch (err: any) {
+      sonnerToast.error(err.message || 'Email test failed')
+    } finally {
+      setTestingEmail(false)
+    }
+  }
+
+  const handleTestRazorpay = async () => {
+    if (!form.razorpayKeyId || !form.razorpayKeySecret) {
+      sonnerToast.error('Please enter Razorpay Key ID and Key Secret first')
+      return
+    }
+    setTestingRzp(true)
+    try {
+      const res = await fetch('/api/admin/razorpay/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          razorpayKeyId: form.razorpayKeyId,
+          razorpayKeySecret: form.razorpayKeySecret,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Razorpay connection test failed')
+      sonnerToast.success(data.message || 'Razorpay credentials verified successfully!')
+    } catch (err: any) {
+      sonnerToast.error(err.message || 'Razorpay test failed')
+    } finally {
+      setTestingRzp(false)
+    }
+  }
+
   return (
     <AdminShell admin={admin}>
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -71,8 +165,8 @@ function AdminSettingsInner() {
       <Tabs defaultValue={defaultTab}>
         <TabsList className="mb-4">
           <TabsTrigger value="business"><Store className="mr-2 h-4 w-4" /> Business</TabsTrigger>
-          <TabsTrigger value="email"><Mail className="mr-2 h-4 w-4" /> Email</TabsTrigger>
-          <TabsTrigger value="payment"><CreditCard className="mr-2 h-4 w-4" /> Payment</TabsTrigger>
+          <TabsTrigger value="email"><Mail className="mr-2 h-4 w-4" /> Email & SMTP</TabsTrigger>
+          <TabsTrigger value="payment"><CreditCard className="mr-2 h-4 w-4" /> Payment (Razorpay)</TabsTrigger>
           <TabsTrigger value="faq"><HelpCircle className="mr-2 h-4 w-4" /> FAQ</TabsTrigger>
           <TabsTrigger value="seo"><FileText className="mr-2 h-4 w-4" /> SEO</TabsTrigger>
           <TabsTrigger value="security"><Shield className="mr-2 h-4 w-4" /> Security</TabsTrigger>
@@ -102,7 +196,7 @@ function AdminSettingsInner() {
                 <Input value={form.altPhone || ''} onChange={(e) => update('altPhone', e.target.value)} className="mt-1 border-border" />
               </div>
               <div className="sm:col-span-2">
-                <Label>Email</Label>
+                <Label>Public Shop Email</Label>
                 <Input value={form.email || ''} onChange={(e) => update('email', e.target.value)} className="mt-1 border-border" />
               </div>
               <div className="sm:col-span-2">
@@ -149,21 +243,172 @@ function AdminSettingsInner() {
         <TabsContent value="email">
           <Card className="overflow-hidden">
             <div className="border-b border-border bg-secondary/40 px-5 py-3">
-              <h3 className="font-display text-base font-bold text-navy">Email & Notifications</h3>
-              <p className="text-xs text-muted-foreground">Order confirmations and status updates are sent to customers automatically.</p>
+              <h3 className="font-display text-base font-bold text-navy">Real Email Notifications (SMTP)</h3>
+              <p className="text-xs text-muted-foreground">
+                Automatic customer order confirmations and instant admin order alerts sent through your real email provider.
+              </p>
             </div>
-            <div className="space-y-4 p-5">
-              <div className="flex items-center justify-between rounded-md border border-border p-3">
+            <div className="space-y-5 p-5">
+              {/* Enable toggle */}
+              <div className="flex items-center justify-between rounded-lg border border-border bg-secondary/20 p-4">
                 <div>
-                  <Label className="text-sm">Enable Email Notifications</Label>
-                  <p className="text-xs text-muted-foreground">Send order confirmations & status updates</p>
+                  <Label className="text-base font-semibold text-navy">Enable Real Email Notifications</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Sends live order confirmation emails to customers and new order notifications to your admin inbox.
+                  </p>
                 </div>
-                <Switch checked={form.emailEnabled || false} onCheckedChange={(c) => update('emailEnabled', c)} />
+                <Switch checked={form.emailEnabled ?? true} onCheckedChange={(c) => update('emailEnabled', c)} />
               </div>
-              <div>
-                <Label>Sender Email</Label>
-                <Input value={form.emailFrom || ''} onChange={(e) => update('emailFrom', e.target.value)} className="mt-1 border-border" placeholder="orders@murlidharoffset.com" />
-                <p className="mt-1 text-xs text-muted-foreground">New order notifications are also sent to: {form.email}</p>
+
+              {/* Admin Notification Email & From Display */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label>Admin Alert Email (Where YOU receive new orders) *</Label>
+                  <Input
+                    value={form.adminNotifyEmail || ''}
+                    onChange={(e) => update('adminNotifyEmail', e.target.value)}
+                    className="mt-1 border-border font-medium"
+                    placeholder="e.g. murlidharoffset84@gmail.com"
+                  />
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    Instant alerts will be delivered to this email every time a customer places an order.
+                  </p>
+                </div>
+                <div>
+                  <Label>Sender Name & Email (From Header)</Label>
+                  <Input
+                    value={form.emailFrom || ''}
+                    onChange={(e) => update('emailFrom', e.target.value)}
+                    className="mt-1 border-border"
+                    placeholder='e.g. Murlidhar Offset <murlidharoffset84@gmail.com>'
+                  />
+                  <p className="mt-1 text-[11px] text-muted-foreground">The display name customers see when they receive emails.</p>
+                </div>
+              </div>
+
+              {/* SMTP Settings Box */}
+              <div className="rounded-lg border border-border bg-card p-4">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
+                  <div>
+                    <h4 className="font-display text-sm font-bold text-navy">SMTP Server Configuration</h4>
+                    <p className="text-xs text-muted-foreground">Enter your email provider's outgoing SMTP credentials.</p>
+                  </div>
+                  {/* Quick Preset Buttons */}
+                  <div className="flex flex-wrap items-center gap-1.5 text-xs">
+                    <span className="text-xs font-semibold text-muted-foreground">Quick Presets:</span>
+                    <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('gmail')}>
+                      Gmail
+                    </Button>
+                    <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('hostinger')}>
+                      Hostinger
+                    </Button>
+                    <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('outlook')}>
+                      Outlook
+                    </Button>
+                    <Button type="button" size="sm" variant="outline" className="h-7 text-xs" onClick={() => applySmtpPreset('brevo')}>
+                      Brevo
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <Label>SMTP Host</Label>
+                    <Input
+                      value={form.smtpHost || ''}
+                      onChange={(e) => update('smtpHost', e.target.value)}
+                      className="mt-1 border-border"
+                      placeholder="e.g. smtp.gmail.com or smtp.hostinger.com"
+                    />
+                  </div>
+                  <div>
+                    <Label>SMTP Port</Label>
+                    <Input
+                      type="number"
+                      value={form.smtpPort ?? 587}
+                      onChange={(e) => update('smtpPort', parseInt(e.target.value, 10) || 587)}
+                      className="mt-1 border-border"
+                      placeholder="587 or 465"
+                    />
+                  </div>
+                  <div>
+                    <Label>SMTP Username / Email</Label>
+                    <Input
+                      value={form.smtpUser || ''}
+                      onChange={(e) => update('smtpUser', e.target.value)}
+                      className="mt-1 border-border"
+                      placeholder="e.g. murlidharoffset84@gmail.com"
+                    />
+                  </div>
+                  <div>
+                    <Label>SMTP Password / App Password</Label>
+                    <div className="relative mt-1">
+                      <Input
+                        type={showSmtpPass ? 'text' : 'password'}
+                        value={form.smtpPass || ''}
+                        onChange={(e) => update('smtpPass', e.target.value)}
+                        className="pr-10 border-border"
+                        placeholder="••••••••••••••••"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowSmtpPass((s) => !s)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy"
+                        aria-label={showSmtpPass ? 'Hide' : 'Show'}
+                      >
+                        {showSmtpPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between rounded-md border border-border bg-secondary/30 p-3 sm:col-span-2">
+                    <div>
+                      <Label className="text-sm">Use SSL (Secure Connection)</Label>
+                      <p className="text-[11px] text-muted-foreground">Enable for Port 465 (SSL). Keep disabled for Port 587 (TLS/STARTTLS).</p>
+                    </div>
+                    <Switch checked={form.smtpSecure || false} onCheckedChange={(c) => update('smtpSecure', c)} />
+                  </div>
+                </div>
+
+                {/* Helpful Gmail Note */}
+                <div className="mt-4 rounded-md border border-blue-200 bg-blue-50/70 p-3 text-xs text-blue-800">
+                  <p className="font-semibold text-blue-900">💡 Tip for Gmail Users:</p>
+                  <p className="mt-1 leading-relaxed">
+                    Google requires a <strong>16-character App Password</strong> rather than your standard Gmail password.
+                    Go to <strong>Google Account → Security → 2-Step Verification → App Passwords</strong>, create a password for "Mail", and paste the 16 letters into the SMTP Password field above.
+                  </p>
+                </div>
+              </div>
+
+              {/* Test Email Section */}
+              <div className="rounded-lg border border-gold/40 bg-gold/5 p-4">
+                <h4 className="font-display text-sm font-bold text-navy">✉️ Test Real Email Delivery</h4>
+                <p className="text-xs text-muted-foreground">
+                  Send a live test email right now to verify that your SMTP credentials and delivery connection work properly.
+                </p>
+                <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                  <Input
+                    value={testEmail}
+                    onChange={(e) => setTestEmail(e.target.value)}
+                    placeholder="Enter email address to send test to"
+                    className="flex-1 border-border bg-white"
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleTestEmail}
+                    disabled={testingEmail}
+                    className="bg-navy text-gold hover:bg-navy/90 shrink-0"
+                  >
+                    {testingEmail ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Testing Connection...
+                      </>
+                    ) : (
+                      <>
+                        <Mail className="mr-2 h-4 w-4" /> Send Test Email
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </Card>
@@ -173,47 +418,98 @@ function AdminSettingsInner() {
         <TabsContent value="payment">
           <Card className="overflow-hidden">
             <div className="border-b border-border bg-secondary/40 px-5 py-3">
-              <h3 className="font-display text-base font-bold text-navy">Payment Options</h3>
-              <p className="text-xs text-muted-foreground">Choose which payment methods appear at checkout.</p>
+              <h3 className="font-display text-base font-bold text-navy">Payment Options & Razorpay Gateway</h3>
+              <p className="text-xs text-muted-foreground">Choose payment methods and configure live Razorpay credentials.</p>
             </div>
             <div className="space-y-4 p-5">
               <div className="flex items-center justify-between rounded-md border border-border p-3">
                 <div>
-                  <Label className="text-sm">Online Payment (Razorpay)</Label>
-                  <p className="text-xs text-muted-foreground">UPI / Cards / Net Banking</p>
+                  <Label className="text-sm font-semibold text-navy">Online Payment (Razorpay)</Label>
+                  <p className="text-xs text-muted-foreground">UPI, QR Code, Credit/Debit Cards, Net Banking, Wallets</p>
                 </div>
                 <Switch checked={form.onlineEnabled ?? true} onCheckedChange={(c) => update('onlineEnabled', c)} />
               </div>
               <div className="flex items-center justify-between rounded-md border border-border p-3">
                 <div>
-                  <Label className="text-sm">Cash on Delivery</Label>
-                  <p className="text-xs text-muted-foreground">Pay in cash on delivery</p>
+                  <Label className="text-sm font-semibold text-navy">Cash on Delivery</Label>
+                  <p className="text-xs text-muted-foreground">Pay in cash when print order is delivered</p>
                 </div>
                 <Switch checked={form.codEnabled ?? true} onCheckedChange={(c) => update('codEnabled', c)} />
               </div>
               <div className="flex items-center justify-between rounded-md border border-border p-3">
                 <div>
-                  <Label className="text-sm">Pay at Shop</Label>
-                  <p className="text-xs text-muted-foreground">Pickup & pay at our shop</p>
+                  <Label className="text-sm font-semibold text-navy">Pay at Shop</Label>
+                  <p className="text-xs text-muted-foreground">Pick up and pay at our Unjha printing press</p>
                 </div>
                 <Switch checked={form.payAtShopEnabled ?? true} onCheckedChange={(c) => update('payAtShopEnabled', c)} />
               </div>
-              <div className="border-t border-border pt-4">
-                <h4 className="mb-3 font-display text-sm font-bold text-navy">Razorpay Configuration</h4>
+
+              {/* Razorpay Config */}
+              <div className="rounded-lg border border-border bg-card p-4">
+                <div className="mb-3 flex items-center justify-between border-b border-border pb-2">
+                  <div>
+                    <h4 className="font-display text-sm font-bold text-navy">Razorpay API Credentials</h4>
+                    <p className="text-xs text-muted-foreground">From Razorpay Dashboard → Settings → API Keys</p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleTestRazorpay}
+                    disabled={testingRzp || !form.razorpayKeyId || !form.razorpayKeySecret}
+                    className="border-navy text-navy text-xs"
+                  >
+                    {testingRzp ? (
+                      <>
+                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> Verifying...
+                      </>
+                    ) : (
+                      <>
+                        <Shield className="mr-1.5 h-3.5 w-3.5" /> Test Razorpay Keys
+                      </>
+                    )}
+                  </Button>
+                </div>
+
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <Label>Key ID</Label>
-                    <Input value={form.razorpayKeyId || ''} onChange={(e) => update('razorpayKeyId', e.target.value)} className="mt-1 border-border" placeholder="rzp_test_..." />
+                    <Label>Key ID *</Label>
+                    <Input
+                      value={form.razorpayKeyId || ''}
+                      onChange={(e) => update('razorpayKeyId', e.target.value)}
+                      className="mt-1 border-border font-mono text-sm"
+                      placeholder="rzp_test_... or rzp_live_..."
+                    />
                   </div>
                   <div>
-                    <Label>Key Secret</Label>
-                    <Input type="password" value={form.razorpayKeySecret || ''} onChange={(e) => update('razorpayKeySecret', e.target.value)} className="mt-1 border-border" placeholder="••••••••" />
+                    <Label>Key Secret *</Label>
+                    <div className="relative mt-1">
+                      <Input
+                        type={showRzpSecret ? 'text' : 'password'}
+                        value={form.razorpayKeySecret || ''}
+                        onChange={(e) => update('razorpayKeySecret', e.target.value)}
+                        className="pr-10 border-border font-mono text-sm"
+                        placeholder="••••••••••••••••"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowRzpSecret((s) => !s)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-navy"
+                        aria-label={showRzpSecret ? 'Hide' : 'Show'}
+                      >
+                        {showRzpSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
                   </div>
                   <div className="sm:col-span-2">
                     <Label>Mode</Label>
-                    <select value={form.razorpayMode || 'test'} onChange={(e) => update('razorpayMode', e.target.value)} className="mt-1 w-full rounded-md border border-border bg-white px-3 py-2 text-sm">
-                      <option value="test">Test Mode</option>
-                      <option value="live">Live Mode</option>
+                    <select
+                      value={form.razorpayMode || 'test'}
+                      onChange={(e) => update('razorpayMode', e.target.value)}
+                      className="mt-1 w-full rounded-md border border-border bg-white px-3 py-2 text-sm"
+                    >
+                      <option value="test">Test Mode (for testing without real money)</option>
+                      <option value="live">Live Mode (for accepting real customer payments)</option>
                     </select>
                   </div>
                 </div>

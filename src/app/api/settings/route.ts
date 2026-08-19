@@ -14,7 +14,7 @@ export async function GET() {
     }
   }
   if (!settings) return Response.json(null)
-  // Strip sensitive payment secrets for public consumption
-  const { razorpayKeySecret, ...publicSettings } = settings
+  // Strip sensitive payment and SMTP secrets for public consumption
+  const { razorpayKeySecret, smtpPass, ...publicSettings } = settings
   return Response.json(publicSettings)
 }

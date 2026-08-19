@@ -44,7 +44,11 @@ export async function seedDatabase() {
       codEnabled: true,
       onlineEnabled: true,
       payAtShopEnabled: true,
-      emailEnabled: false,
+      emailEnabled: true,
+      emailFrom: 'Murlidhar Offset <murlidharoffset84@gmail.com>',
+      adminNotifyEmail: 'murlidharoffset84@gmail.com',
+      smtpPort: 587,
+      smtpSecure: false,
       metaTitle: 'Murlidhar Offset — Quality Printing Press in Unjha, Gujarat',
       metaDescription:
         'Premium printing press in Unjha, Gujarat. Visiting cards, wedding cards (kankotri), letterheads, bill books, flex banners, brochures, packaging & more.',
