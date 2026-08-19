@@ -791,11 +791,6 @@ export function adminOrderNotificationHtml(opts: {
       </a>
     </div>
   </div>`
-}size:14px">
-        Go to Admin Panel →
-      </a>
-    </div>
-  </div>`
 }
 
 /**
