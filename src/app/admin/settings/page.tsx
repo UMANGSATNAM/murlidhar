@@ -40,12 +40,23 @@ function AdminSettingsInner() {
 
   React.useEffect(() => {
     fetch('/api/admin/settings', { credentials: 'include' })
-      .then((r) => r.json())
-      .then((d) => {
-        setForm(d || {})
-        if (d?.adminNotifyEmail || d?.email) {
-          setTestEmail(d.adminNotifyEmail || d.email)
+      .then(async (r) => {
+        try {
+          return await r.json()
+        } catch {
+          return null
         }
+      })
+      .then((d) => {
+        if (d) {
+          setForm(d || {})
+          if (d?.adminNotifyEmail || d?.email) {
+            setTestEmail(d.adminNotifyEmail || d.email)
+          }
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching settings:', err)
       })
       .finally(() => setFetching(false))
   }, [])
@@ -57,13 +68,24 @@ function AdminSettingsInner() {
     setSaving(true)
     try {
       const res = await fetch('/api/admin/settings', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(form),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error)
+      let data: any = {}
+      try {
+        data = await res.json()
+      } catch {
+        throw new Error(`Server error (${res.status}). Please check database connection.`)
+      }
+      if (!res.ok) throw new Error(data.error || 'Failed to save settings')
       sonnerToast.success('Settings saved — live on storefront')
-    } catch (err: any) { sonnerToast.error(err.message) } finally { setSaving(false) }
+    } catch (err: any) {
+      sonnerToast.error(err.message || 'Failed to save settings')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const update = (key: string, value: any) => setForm((f: any) => ({ ...f, [key]: value }))
@@ -107,14 +129,19 @@ function AdminSettingsInner() {
         body: JSON.stringify({
           toEmail: target,
           smtpHost: form.smtpHost,
-          smtpPort: form.smtpPort,
+          smtpPort: form.smtpPort ? parseInt(form.smtpPort, 10) : 587,
           smtpUser: form.smtpUser,
           smtpPass: form.smtpPass,
           smtpSecure: form.smtpSecure,
           emailFrom: form.emailFrom,
         }),
       })
-      const data = await res.json()
+      let data: any = {}
+      try {
+        data = await res.json()
+      } catch {
+        throw new Error(`Server error (${res.status}) while processing test email.`)
+      }
       if (!res.ok) throw new Error(data.error || 'Failed to send test email')
       sonnerToast.success(data.message || 'Test email sent successfully! Please check your inbox.')
     } catch (err: any) {
@@ -140,7 +167,12 @@ function AdminSettingsInner() {
           razorpayKeySecret: form.razorpayKeySecret,
         }),
       })
-      const data = await res.json()
+      let data: any = {}
+      try {
+        data = await res.json()
+      } catch {
+        throw new Error(`Server error (${res.status}) while testing Razorpay keys.`)
+      }
       if (!res.ok) throw new Error(data.error || 'Razorpay connection test failed')
       sonnerToast.success(data.message || 'Razorpay credentials verified successfully!')
     } catch (err: any) {
