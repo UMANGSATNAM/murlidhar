@@ -39,17 +39,29 @@ export async function getTransporter(overrideConfig?: SmtpConfig) {
     return null
   }
 
+  host = host.trim()
+  user = user.trim()
+  pass = pass.trim().replace(/\s+/g, '') // remove spaces from Google app passwords
+
+  const isGmail = host.includes('gmail') || user.includes('@gmail.com')
+  // Cloud providers (Railway, AWS, GCP, etc.) block Port 587/25 outbound. Port 465 SSL is open.
+  const finalPort = isGmail && (port === 587 || !port) && !secure ? 465 : (port || (secure ? 465 : 587))
+  const finalSecure = isGmail && finalPort === 465 ? true : (secure ?? (finalPort === 465))
+
   return nodemailer.createTransport({
     host,
-    port: port || (secure ? 465 : 587),
-    secure: secure ?? (port === 465),
+    port: finalPort,
+    secure: finalSecure,
     auth: {
       user,
       pass,
     },
     tls: {
-      rejectUnauthorized: false, // For maximum compatibility with various SMTP servers
+      rejectUnauthorized: false,
     },
+    connectionTimeout: 12000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   })
 }
 
@@ -133,73 +145,107 @@ export async function testSmtpConnection({
   smtpSecure: boolean
   emailFrom?: string
 }) {
-  try {
-    const transporter = nodemailer.createTransport({
-      host: smtpHost,
-      port: smtpPort,
+  const cleanHost = (smtpHost || 'smtp.gmail.com').trim()
+  const cleanUser = (smtpUser || '').trim()
+  const cleanPass = (smtpPass || '').trim().replace(/\s+/g, '') // remove spaces from Google app passwords
+  const cleanTo = (toEmail || '').trim()
+  const isGmail = cleanHost.includes('gmail') || cleanUser.includes('@gmail.com')
+
+  // Try primary configured strategy
+  const configsToTry = [
+    {
+      host: cleanHost,
+      port: smtpPort || (smtpSecure ? 465 : 587),
       secure: smtpSecure ?? (smtpPort === 465),
-      auth: {
-        user: smtpUser,
-        pass: smtpPass,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
+    },
+  ]
+
+  // If Gmail on port 587, cloud hosting (Railway) often blocks port 587 outbound; add port 465 SSL fallback!
+  if (isGmail && (smtpPort === 587 || !smtpSecure)) {
+    configsToTry.push({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
     })
-
-    // Step 1: Verify SMTP credentials & connection
-    await transporter.verify()
-
-    // Step 2: Send test email
-    const sender = emailFrom || `Murlidhar Offset <${smtpUser}>`
-    const info = await transporter.sendMail({
-      from: sender,
-      to: toEmail,
-      subject: '✅ Murlidhar Offset — Email Configuration Test Successful',
-      html: `
-      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;padding:24px;border:1px solid #e2e8f0;border-radius:8px">
-        <div style="background:#0f1b33;color:#ffffff;padding:20px;border-radius:6px;text-align:center">
-          <h1 style="margin:0;color:#eab308;font-size:24px;letter-spacing:1px">MURLIDHAR OFFSET</h1>
-          <p style="margin:4px 0 0;font-size:12px;letter-spacing:1px;color:#94a3b8">PRINTING & PACKAGING · UNJHA, GUJARAT</p>
-        </div>
-        <div style="padding:20px 0;text-align:center">
-          <div style="display:inline-block;background:#dcfce7;color:#15803d;padding:8px 16px;border-radius:20px;font-weight:bold;font-size:14px;margin-bottom:16px">
-            ✓ SMTP Connection Verified
-          </div>
-          <h2 style="color:#0f1b33;margin:0 0 10px">Email Settings Are Working 100% Real!</h2>
-          <p style="color:#475569;font-size:14px;line-height:1.5">
-            Your SMTP settings have been validated successfully. All future customer order confirmations and admin order notifications will be delivered instantly through this configuration.
-          </p>
-        </div>
-        <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;background:#f8fafc;border-radius:6px;overflow:hidden">
-          <tr>
-            <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#64748b;width:140px"><strong>SMTP Host:</strong></td>
-            <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#0f1b33">${smtpHost}</td>
-          </tr>
-          <tr>
-            <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#64748b"><strong>SMTP Port:</strong></td>
-            <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#0f1b33">${smtpPort} (${smtpSecure ? 'SSL' : 'TLS/STARTTLS'})</td>
-          </tr>
-          <tr>
-            <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#64748b"><strong>Username / From:</strong></td>
-            <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#0f1b33">${smtpUser}</td>
-          </tr>
-          <tr>
-            <td style="padding:10px 14px;color:#64748b"><strong>Tested At:</strong></td>
-            <td style="padding:10px 14px;color:#0f1b33">${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</td>
-          </tr>
-        </table>
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;text-align:center">
-          Murlidhar Offset · Shreeji Super Market, 7, Unjha, Gujarat 384170 · Phone: +91 9510737852
-        </div>
-      </div>
-      `,
-    })
-
-    return { ok: true, messageId: info.messageId }
-  } catch (err: any) {
-    return { ok: false, error: err?.message || 'SMTP connection failed' }
   }
+
+  let lastError = ''
+
+  for (const cfg of configsToTry) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: cfg.host,
+        port: cfg.port,
+        secure: cfg.secure,
+        auth: {
+          user: cleanUser,
+          pass: cleanPass,
+        },
+        tls: {
+          rejectUnauthorized: false,
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 8000,
+        socketTimeout: 12000,
+      })
+
+      // Step 1: Verify SMTP credentials & connection
+      await transporter.verify()
+
+      // Step 2: Send test email
+      const sender = emailFrom || `Murlidhar Offset <${cleanUser}>`
+      const info = await transporter.sendMail({
+        from: sender,
+        to: cleanTo,
+        subject: '✅ Murlidhar Offset — Email Configuration Test Successful',
+        html: `
+        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;padding:24px;border:1px solid #e2e8f0;border-radius:8px">
+          <div style="background:#0f1b33;color:#ffffff;padding:20px;border-radius:6px;text-align:center">
+            <h1 style="margin:0;color:#eab308;font-size:24px;letter-spacing:1px">MURLIDHAR OFFSET</h1>
+            <p style="margin:4px 0 0;font-size:12px;letter-spacing:1px;color:#94a3b8">PRINTING & PACKAGING · UNJHA, GUJARAT</p>
+          </div>
+          <div style="padding:20px 0;text-align:center">
+            <div style="display:inline-block;background:#dcfce7;color:#15803d;padding:8px 16px;border-radius:20px;font-weight:bold;font-size:14px;margin-bottom:16px">
+              ✓ SMTP Connection Verified
+            </div>
+            <h2 style="color:#0f1b33;margin:0 0 10px">Email Settings Are Working 100% Real!</h2>
+            <p style="color:#475569;font-size:14px;line-height:1.5">
+              Your SMTP settings have been validated successfully. All future customer order confirmations and admin order notifications will be delivered instantly through this configuration.
+            </p>
+          </div>
+          <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;background:#f8fafc;border-radius:6px;overflow:hidden">
+            <tr>
+              <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#64748b;width:140px"><strong>SMTP Host:</strong></td>
+              <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#0f1b33">${cfg.host}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#64748b"><strong>SMTP Port:</strong></td>
+              <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#0f1b33">${cfg.port} (${cfg.secure ? 'SSL' : 'TLS/STARTTLS'})</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#64748b"><strong>Username / From:</strong></td>
+              <td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;color:#0f1b33">${cleanUser}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px 14px;color:#64748b"><strong>Tested At:</strong></td>
+              <td style="padding:10px 14px;color:#0f1b33">${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</td>
+            </tr>
+          </table>
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;text-align:center">
+            Murlidhar Offset · Shreeji Super Market, 7, Unjha, Gujarat 384170 · Phone: +91 9510737852
+          </div>
+        </div>
+        `,
+      })
+
+      return { ok: true, messageId: info.messageId, portUsed: cfg.port }
+    } catch (err: any) {
+      lastError = err?.message || 'SMTP connection failed'
+      console.warn(`[email:test_attempt_failed] Port ${cfg.port}:`, lastError)
+    }
+  }
+
+  return { ok: false, error: lastError }
 }
 
 /**

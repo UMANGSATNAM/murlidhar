@@ -93,9 +93,9 @@ function AdminSettingsInner() {
   const applySmtpPreset = (preset: 'gmail' | 'hostinger' | 'outlook' | 'brevo') => {
     if (preset === 'gmail') {
       update('smtpHost', 'smtp.gmail.com')
-      update('smtpPort', 587)
-      update('smtpSecure', false)
-      sonnerToast.info('Applied Gmail SMTP preset (Port 587). Use a 16-character Google App Password!')
+      update('smtpPort', 465)
+      update('smtpSecure', true)
+      sonnerToast.info('Applied Gmail SMTP preset (Port 465 SSL). Use your 16-character Google App Password!')
     } else if (preset === 'hostinger') {
       update('smtpHost', 'smtp.hostinger.com')
       update('smtpPort', 465)
