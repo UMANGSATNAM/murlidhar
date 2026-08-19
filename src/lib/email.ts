@@ -452,6 +452,60 @@ export async function testSmtpConnection({
 }
 
 /**
+function renderFilesHtml(files?: { fileName: string; filePath: string; fileSize: number }[], siteUrl?: string) {
+  if (!files || files.length === 0) return ''
+  const baseUrl = (siteUrl || 'https://murlidhar-offset-production.up.railway.app').replace(/\/$/, '')
+  
+  const fileCards = files
+    .map((f) => {
+      const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f.fileName || f.filePath)
+      const fullUrl = f.filePath.startsWith('http')
+        ? f.filePath
+        : `${baseUrl}${f.filePath.startsWith('/') ? '' : '/'}${f.filePath}`
+      const kb = (f.fileSize / 1024).toFixed(1)
+
+      if (isImage) {
+        return `
+        <div style="margin-bottom:12px;padding:12px;background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;display:flex;align-items:center;gap:12px">
+          <div style="width:70px;height:70px;border-radius:6px;overflow:hidden;border:1px solid #e2e8f0;background:#f1f5f9;flex-shrink:0;text-align:center">
+            <img src="${fullUrl}" alt="${f.fileName}" style="width:100%;height:100%;object-fit:cover;display:block" />
+          </div>
+          <div style="flex:1;min-width:0">
+            <p style="margin:0 0 4px;font-weight:bold;color:#0f1b33;font-size:13px;word-break:break-all">${f.fileName}</p>
+            <p style="margin:0 0 6px;color:#64748b;font-size:11px">${kb} KB · Real Image Artwork</p>
+            <a href="${fullUrl}" target="_blank" style="display:inline-block;background:#0f1b33;color:#eab308;text-decoration:none;padding:5px 12px;border-radius:4px;font-weight:bold;font-size:11px">
+              🖼️ Open & Download Real Image
+            </a>
+          </div>
+        </div>`
+      }
+
+      return `
+      <div style="margin-bottom:12px;padding:12px;background:#ffffff;border:1px solid #cbd5e1;border-radius:8px;display:flex;align-items:center;gap:12px">
+        <div style="width:50px;height:50px;border-radius:6px;background:#0f1b33;color:#eab308;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:22px;flex-shrink:0">
+          📄
+        </div>
+        <div style="flex:1;min-width:0">
+          <p style="margin:0 0 4px;font-weight:bold;color:#0f1b33;font-size:13px;word-break:break-all">${f.fileName}</p>
+          <p style="margin:0 0 6px;color:#64748b;font-size:11px">${kb} KB · Customer Artwork File</p>
+          <a href="${fullUrl}" target="_blank" style="display:inline-block;background:#0f1b33;color:#ffffff;text-decoration:none;padding:5px 12px;border-radius:4px;font-weight:bold;font-size:11px">
+            📥 Download Real File
+          </a>
+        </div>
+      </div>`
+    })
+    .join('')
+
+  return `
+  <div style="margin-top:20px;background:#f8fafc;padding:16px;border-radius:8px;border:1px solid #e2e8f0">
+    <h3 style="margin:0 0 12px;color:#0f1b33;font-size:15px">
+      📎 Uploaded Customer Artwork & Files (${files.length})
+    </h3>
+    ${fileCards}
+  </div>`
+}
+
+/**
  * Customer Order Confirmation HTML Template
  */
 export function orderConfirmationHtml(opts: {
@@ -471,6 +525,8 @@ export function orderConfirmationHtml(opts: {
   shipping?: number
   total: number
   items: { productName: string; variantInfo?: string | null; qty: number; unitPrice: number; total: number }[]
+  files?: { fileName: string; filePath: string; fileSize: number }[]
+  siteUrl?: string
   businessName?: string
 }) {
   const business = opts.businessName || 'Murlidhar Offset'
@@ -495,6 +551,7 @@ export function orderConfirmationHtml(opts: {
     .join('')
 
   const fullAddress = [opts.address, opts.city, opts.state, opts.pincode].filter(Boolean).join(', ')
+  const filesHtml = renderFilesHtml(opts.files, opts.siteUrl)
 
   return `
   <div style="font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:620px;margin:0 auto;background:#f8fafc;padding:24px;border:1px solid #e2e8f0;border-radius:10px">
@@ -574,6 +631,8 @@ export function orderConfirmationHtml(opts: {
         </tfoot>
       </table>
 
+      ${filesHtml}
+
       <!-- Next Steps & Assistance -->
       <div style="margin-top:24px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px">
         <h4 style="margin:0 0 6px;color:#166534;font-size:14px">⚡ What Happens Next?</h4>
@@ -643,23 +702,8 @@ export function adminOrderNotificationHtml(opts: {
     )
     .join('')
 
-  const filesHtml =
-    opts.files && opts.files.length > 0
-      ? `<div style="margin-top:16px;background:#f8fafc;padding:12px;border-radius:6px;border:1px solid #e2e8f0">
-      <h4 style="margin:0 0 8px;color:#0f1b33;font-size:13px">📎 Uploaded Artwork Files (${opts.files.length}):</h4>
-      <ul style="margin:0;padding-left:20px;font-size:13px">
-        ${opts.files
-          .map(
-            (f) => `<li style="margin-bottom:4px">
-          <a href="${f.filePath.startsWith('http') ? f.filePath : `${opts.siteUrl || ''}${f.filePath}`}" target="_blank" style="color:#2563eb;font-weight:bold;text-decoration:underline">
-            ${f.fileName}
-          </a> <span style="color:#64748b;font-size:11px">(${(f.fileSize / 1024).toFixed(0)} KB)</span>
-        </li>`
-          )
-          .join('')}
-      </ul>
-    </div>`
-      : ''
+  const filesHtml = renderFilesHtml(opts.files, opts.siteUrl)
+  const baseUrl = (opts.siteUrl || 'https://murlidhar-offset-production.up.railway.app').replace(/\/$/, '')
 
   return `
   <div style="font-family:Arial,sans-serif;max-width:620px;margin:0 auto;background:#ffffff;padding:20px;border:2px solid #0f1b33;border-radius:8px">
@@ -681,7 +725,7 @@ export function adminOrderNotificationHtml(opts: {
           <td style="padding:4px 0;color:#64748b"><strong>Phone:</strong></td>
           <td style="padding:4px 0">
             <a href="tel:${opts.phone}" style="color:#2563eb;font-weight:bold;text-decoration:none">📞 ${opts.phone}</a>
-            <a href="https://wa.me/91${opts.phone.replace(/\\D/g, '')}" style="margin-left:10px;color:#16a34a;font-weight:bold;text-decoration:none">💬 WhatsApp</a>
+            <a href="https://wa.me/91${opts.phone.replace(/\D/g, '')}" style="margin-left:10px;color:#16a34a;font-weight:bold;text-decoration:none">💬 WhatsApp</a>
           </td>
         </tr>
         ${
@@ -742,7 +786,12 @@ export function adminOrderNotificationHtml(opts: {
     <!-- Admin CTA -->
     <div style="margin-top:20px;text-align:center;padding:12px;background:#f1f5f9;border-radius:6px">
       <p style="margin:0 0 10px;font-size:13px;color:#475569">Open your Admin Panel to view complete order history, update status or download invoice:</p>
-      <a href="/admin/orders" style="display:inline-block;background:#0f1b33;color:#eab308;text-decoration:none;padding:10px 24px;border-radius:6px;font-weight:bold;font-size:14px">
+      <a href="${baseUrl}/admin/orders" style="display:inline-block;background:#0f1b33;color:#eab308;text-decoration:none;padding:10px 24px;border-radius:6px;font-weight:bold;font-size:14px">
+        Go to Admin Panel →
+      </a>
+    </div>
+  </div>`
+}size:14px">
         Go to Admin Panel →
       </a>
     </div>

@@ -102,6 +102,19 @@ export async function POST(request: NextRequest) {
     // Fetch settings for email triggers
     const settings = await db.siteSettings.findUnique({ where: { id: 'default' } })
 
+    // Compute site base URL for email image & file download links
+    const hostHeader = request.headers.get('host')
+    const protocol = request.headers.get('x-forwarded-proto') || 'https'
+    const siteUrl =
+      process.env.NEXTAUTH_URL ||
+      (hostHeader ? `${protocol}://${hostHeader}` : 'https://murlidhar-offset-production.up.railway.app')
+
+    const orderFilesFormatted = order.files.map((f) => ({
+      fileName: f.fileName,
+      filePath: f.filePath,
+      fileSize: f.fileSize,
+    }))
+
     // 1. Customer Confirmation Email
     if (order.email) {
       try {
@@ -128,6 +141,8 @@ export async function POST(request: NextRequest) {
             unitPrice: i.unitPrice,
             total: i.total,
           })),
+          files: orderFilesFormatted,
+          siteUrl,
           businessName: settings?.businessName || 'Murlidhar Offset',
         })
 
@@ -166,12 +181,8 @@ export async function POST(request: NextRequest) {
             unitPrice: i.unitPrice,
             total: i.total,
           })),
-          files: order.files.map((f) => ({
-            fileName: f.fileName,
-            filePath: f.filePath,
-            fileSize: f.fileSize,
-          })),
-          siteUrl: process.env.NEXTAUTH_URL || '',
+          files: orderFilesFormatted,
+          siteUrl,
         })
 
         await sendEmail({
