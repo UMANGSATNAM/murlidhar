@@ -21,7 +21,6 @@ import {
   InsertThematicBreak,
   Separator,
 } from '@mdxeditor/editor'
-import '@mdxeditor/editor/style.css'
 
 export function MdxEditor({
   value,
