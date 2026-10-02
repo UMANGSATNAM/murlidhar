@@ -110,22 +110,43 @@ export async function PATCH(request: NextRequest) {
 
   const updated = await db.order.update({ where: { id }, data, include: { items: true, files: true } })
 
-  // Send status update email if order status changed and customer email exists
-  if (orderStatus && orderStatus !== existing.orderStatus && existing.email) {
+  const isStatusChanged = Boolean(orderStatus && orderStatus !== existing.orderStatus)
+  const isPaymentChanged = Boolean(paymentStatus && paymentStatus !== existing.paymentStatus)
+  const isNoteChanged = Boolean(statusNote !== undefined && statusNote !== existing.statusNote && statusNote?.trim())
+
+  // Send status update email if order status, payment status, or note changed
+  if (isStatusChanged || isPaymentChanged || isNoteChanged) {
     try {
       const settings = await db.siteSettings.findUnique({ where: { id: 'default' } })
+      const siteUrl = request.nextUrl?.origin || 'https://murlidharoffset.in'
       const html = statusUpdateHtml({
         orderNumber: updated.orderNumber,
         customerName: updated.customerName,
-        status: orderStatus,
-        note: statusNote,
+        status: updated.orderStatus,
+        paymentStatus: updated.paymentStatus,
+        note: updated.statusNote,
         business: settings?.businessName || 'Murlidhar Offset',
+        siteUrl,
       })
-      await sendEmail({
-        to: existing.email,
-        subject: `📦 Order #${updated.orderNumber} Status: ${orderStatus.toUpperCase()} (Murlidhar Offset)`,
-        html,
-      })
+
+      // 1. Send to Customer (if email is provided)
+      if (updated.email) {
+        await sendEmail({
+          to: updated.email,
+          subject: `📦 Order #${updated.orderNumber} Status: ${updated.orderStatus.toUpperCase()} (Murlidhar Offset)`,
+          html,
+        }).catch((e) => console.error('[email:customer_status_error]', e))
+      }
+
+      // 2. Send notification copy to Admin
+      const adminTargetEmail = settings?.adminNotifyEmail || settings?.email || 'murlidharoffset84@gmail.com'
+      if (adminTargetEmail) {
+        await sendEmail({
+          to: adminTargetEmail,
+          subject: `📢 [Order Update] #${updated.orderNumber} is now ${updated.orderStatus.toUpperCase()} (${updated.customerName})`,
+          html,
+        }).catch((e) => console.error('[email:admin_status_error]', e))
+      }
     } catch (e) {
       console.error('[email:status_update_error]', e)
     }

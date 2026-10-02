@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     const protocol = request.headers.get('x-forwarded-proto') || 'https'
     const siteUrl =
       process.env.NEXTAUTH_URL ||
-      (hostHeader ? `${protocol}://${hostHeader}` : 'https://murlidhar-offset-production.up.railway.app')
+      (hostHeader ? `${protocol}://${hostHeader}` : 'https://murlidharoffset.in')
 
     const orderFilesFormatted = order.files.map((f) => ({
       fileName: f.fileName,

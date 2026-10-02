@@ -179,8 +179,8 @@ function CheckoutContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.customerName || !form.phone) {
-      sonnerToast.error('Name and phone are required')
+    if (!form.customerName || !form.phone || !form.email) {
+      sonnerToast.error('Full Name, Phone Number, and Email Address are required')
       return
     }
     if (items.length === 0) {
@@ -538,8 +538,10 @@ function CheckoutContent() {
                   <Input id="phone" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-1 border-border" placeholder="9510737852" />
                 </div>
                 <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1 border-border" placeholder="you@example.com" />
+                  <Label htmlFor="email">
+                    Email Address <span className="text-red-500">*</span> <span className="text-[11px] font-normal text-muted-foreground">(For receipt & updates)</span>
+                  </Label>
+                  <Input id="email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="mt-1 border-border" placeholder="you@example.com" />
                 </div>
               </div>
             </Card>

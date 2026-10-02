@@ -452,6 +452,8 @@ export async function testSmtpConnection({
 }
 
 /**
+ * Render uploaded files HTML for emails
+ */
 function renderFilesHtml(files?: { fileName: string; filePath: string; fileSize: number }[], siteUrl?: string) {
   if (!files || files.length === 0) return ''
   const baseUrl = (siteUrl || 'https://murlidhar-offset-production.up.railway.app').replace(/\/$/, '')
@@ -800,14 +802,18 @@ export function statusUpdateHtml(opts: {
   orderNumber: string
   customerName: string
   status: string
+  paymentStatus?: string | null
   note?: string | null
   business?: string
+  siteUrl?: string | null
 }) {
   const business = opts.business || 'Murlidhar Offset'
+  const siteUrl = (opts.siteUrl || 'https://murlidharoffset.in').replace(/\/$/, '')
   const statusLabels: Record<string, { label: string; color: string; bg: string }> = {
+    pending: { label: 'PENDING CONFIRMATION', color: '#854d0e', bg: '#fef9c3' },
     production: { label: 'IN PRODUCTION', color: '#1e40af', bg: '#dbeafe' },
     ready: { label: 'READY FOR PICKUP / DISPATCH', color: '#15803d', bg: '#dcfce7' },
-    dispatched: { label: 'DISPATCHED', color: '#7e22ce', bg: '#f3e8ff' },
+    dispatched: { label: 'DISPATCHED / OUT FOR DELIVERY', color: '#7e22ce', bg: '#f3e8ff' },
     delivered: { label: 'DELIVERED', color: '#166534', bg: '#bbf7d0' },
     cancelled: { label: 'CANCELLED', color: '#991b1b', bg: '#fee2e2' },
   }
@@ -815,30 +821,40 @@ export function statusUpdateHtml(opts: {
   const badge = statusLabels[opts.status] || { label: opts.status.toUpperCase(), color: '#0f1b33', bg: '#e2e8f0' }
 
   return `
-  <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:24px;border:1px solid #e2e8f0;border-radius:8px">
-    <div style="background:#0f1b33;color:#ffffff;padding:20px;border-radius:6px;text-align:center">
+  <div style="font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:24px;border:1px solid #e2e8f0;border-radius:10px">
+    <div style="background:#0f1b33;color:#ffffff;padding:20px;border-radius:8px;text-align:center">
       <h1 style="margin:0;color:#eab308;font-size:24px;font-family:Georgia,serif">${business}</h1>
-      <p style="margin:4px 0 0;font-size:12px;letter-spacing:1px;color:#cbd5e1">ORDER STATUS UPDATE</p>
+      <p style="margin:4px 0 0;font-size:12px;letter-spacing:1px;color:#cbd5e1;text-transform:uppercase">Order Tracking & Status Update</p>
     </div>
-    <div style="background:#ffffff;padding:20px;border-radius:6px;margin-top:16px;border:1px solid #e2e8f0">
+    <div style="background:#ffffff;padding:24px;border-radius:8px;margin-top:16px;border:1px solid #e2e8f0">
       <p style="font-size:15px;color:#0f1b33;margin:0 0 12px">Dear <strong>${opts.customerName}</strong>,</p>
-      <p style="color:#475569;font-size:14px;margin:0 0 16px">Your order <strong>#${opts.orderNumber}</strong> status has been updated:</p>
-      <div style="text-align:center;margin:20px 0">
+      <p style="color:#475569;font-size:14px;margin:0 0 16px">The status of your order <strong>#${opts.orderNumber}</strong> has been updated:</p>
+      
+      <div style="text-align:center;margin:20px 0;padding:16px;background:#f8fafc;border-radius:8px">
         <span style="display:inline-block;background:${badge.bg};color:${badge.color};padding:10px 24px;border-radius:24px;font-weight:bold;font-size:14px;letter-spacing:1px">
           ${badge.label}
         </span>
+        ${opts.paymentStatus ? `<p style="margin:8px 0 0;font-size:12px;color:#64748b">Payment Status: <strong style="color:#0f1b33;text-transform:uppercase">${opts.paymentStatus}</strong></p>` : ''}
       </div>
+
       ${
         opts.note
-          ? `<div style="margin:16px 0;background:#f8fafc;border-left:4px solid #eab308;padding:12px">
-        <p style="margin:0;font-size:13px;color:#334155"><strong>Note from ${business}:</strong><br/>${opts.note}</p>
+          ? `<div style="margin:16px 0;background:#fffbeb;border-left:4px solid #eab308;padding:14px;border-radius:4px">
+        <p style="margin:0;font-size:13px;color:#78350f"><strong>📌 Update / Courier Note:</strong><br/>${opts.note}</p>
       </div>`
           : ''
       }
-      <p style="font-size:13px;color:#64748b;margin-top:20px">You can track your order status anytime on our website or reply directly to this email if you have any questions.</p>
+
+      <div style="margin-top:24px;text-align:center">
+        <a href="${siteUrl}/track?o=${opts.orderNumber}" style="display:inline-block;background:#0f1b33;color:#eab308;text-decoration:none;padding:12px 28px;border-radius:6px;font-weight:bold;font-size:14px">
+          📍 Track Your Live Order Online →
+        </a>
+      </div>
+
+      <p style="font-size:13px;color:#64748b;margin-top:24px;text-align:center">You can track your order status anytime or reply directly to this email if you need any assistance.</p>
     </div>
     <div style="margin-top:20px;text-align:center;font-size:12px;color:#94a3b8">
-      ${business} · Unjha, Gujarat · Phone: +91 9510737852
+      ${business} · Unjha, Gujarat · Phone: +91 9510737852 · <a href="${siteUrl}" style="color:#eab308;text-decoration:none">Visit Store</a>
     </div>
   </div>`
 }
