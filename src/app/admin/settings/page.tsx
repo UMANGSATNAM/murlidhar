@@ -244,7 +244,7 @@ function AdminSettingsInner() {
               </div>
               <div>
                 <Label>WhatsApp Number</Label>
-                <Input value={form.whatsapp || ''} onChange={(e) => update('whatsapp', e.target.value)} className="mt-1 border-border" placeholder="919510737852" />
+                <Input value={form.whatsapp || ''} onChange={(e) => update('whatsapp', e.target.value)} className="mt-1 border-border" placeholder="919510737582" />
               </div>
               <div>
                 <Label>Instagram URL</Label>

@@ -123,7 +123,7 @@ function MyOrdersContent() {
                 <Input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={searchType === 'phone' ? 'e.g. 9510737852' : 'e.g. you@example.com'}
+                  placeholder={searchType === 'phone' ? 'e.g. 9510737582' : 'e.g. you@example.com'}
                   className="pl-10 border-border text-base"
                   autoFocus
                 />
@@ -154,7 +154,12 @@ function MyOrdersContent() {
             </p>
             <div className="mt-4 rounded-md bg-secondary/40 p-3 text-xs text-muted-foreground">
               <p>Double-check your {searchType}, or try the other lookup method.</p>
-              <p className="mt-2">Need help? Call us at <a href="tel:9510737852" className="font-semibold text-gold-deep">9510737852</a>.</p>
+              <p className="mt-2">
+                Need help? Call us at{' '}
+                <a href="tel:9510737582" className="font-semibold text-gold-deep">9510737582</a>
+                {' or '}
+                <a href="tel:7016029127" className="font-semibold text-gold-deep">7016029127</a>.
+              </p>
             </div>
           </Card>
         )}

@@ -475,13 +475,17 @@ export default function HomePage() {
                 light
               />
               <div className="mt-6 grid gap-3">
-                <a href="tel:9510737852" className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-white/10">
+                <div className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-white/10">
                   <Phone className="h-5 w-5 text-gold" />
                   <div>
                     <p className="text-xs uppercase tracking-wide text-white/60">Call us</p>
-                    <p className="font-display text-lg font-bold text-white">9510737852 · 079160 29127</p>
+                    <p className="font-display text-lg font-bold text-white">
+                      <a href="tel:9510737582" className="hover:text-gold transition-colors">9510737582</a>
+                      <span className="mx-2 text-white/40">·</span>
+                      <a href="tel:7016029127" className="hover:text-gold transition-colors">7016029127</a>
+                    </p>
                   </div>
-                </a>
+                </div>
                 <a href="mailto:murlidharoffset84@gmail.com" className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/5 p-4 transition hover:border-gold/50 hover:bg-white/10">
                   <Mail className="h-5 w-5 text-gold" />
                   <div>

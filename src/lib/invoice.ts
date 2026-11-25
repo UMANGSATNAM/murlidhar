@@ -81,7 +81,9 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
   doc.setFontSize(8)
   doc.setTextColor(203, 213, 225) // Light grey
   const bizAddr = data.business?.address || 'Shreeji Super Market, Shop No. 7, Unjha, Gujarat 384170'
-  const bizContact = `Phone: +91 ${data.business?.phone || '9510737852'}  |  Email: ${data.business?.email || 'murlidharoffset84@gmail.com'}`
+  const primaryPhone = data.business?.phone || '9510737582'
+  const contactPhones = primaryPhone.includes('7016029127') ? `+91 ${primaryPhone}` : `+91 ${primaryPhone} / +91 7016029127`
+  const bizContact = `Phone: ${contactPhones}  |  Email: ${data.business?.email || 'murlidharoffset84@gmail.com'}`
   doc.text(bizAddr, margin, 72)
   doc.text(bizContact, margin, 85)
   if (data.business?.gstin) {
@@ -361,7 +363,7 @@ export function generateInvoicePDF(data: InvoiceData): jsPDF {
     doc.setFontSize(7.5)
     doc.setTextColor(21, 128, 61)
     doc.text('Printed on high-precision offset & digital production presses.', margin + 10, y + 34)
-    doc.text('For support or reorders, call +91 95107 37852.', margin + 10, y + 46)
+    doc.text('For support or reorders, call +91 95107 37582 / +91 70160 29127.', margin + 10, y + 46)
   }
 
   // Right Column: Financial Calculation Box

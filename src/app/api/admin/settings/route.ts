@@ -10,12 +10,12 @@ const DEFAULT_SETTINGS = {
   tagline: 'We Print Your Dreams on Paper',
   aboutText:
     'Murlidhar Offset is a family-run printing press in the heart of Unjha, Gujarat. For over three decades we have served businesses, families and institutions across North Gujarat with one promise — quality printing, delivered on time, at honest prices.\n\nEquipped with a Konica Minolta AccurioPrint C4065 digital press and a full suite of pre-press, post-press and finishing equipment, we handle everything from a single visiting card to large-volume commercial print runs. Our craft blends traditional Gujarati print sensibility with modern digital precision.',
-  phone: '9510737852',
-  altPhone: '079160 29127',
+  phone: '9510737582',
+  altPhone: '7016029127',
   email: 'murlidharoffset84@gmail.com',
   address: 'Shreeji Super Market, 7, Unjha, Gujarat 384170',
   hours: 'Open 24 hours',
-  whatsapp: '919510737852',
+  whatsapp: '919510737582',
   instagram: 'https://instagram.com',
   facebook: 'https://facebook.com',
   mapEmbedUrl: 'https://www.google.com/maps?q=Unjha,Gujarat,384170&output=embed',
@@ -44,6 +44,17 @@ export async function GET(request: NextRequest) {
       settings = await db.siteSettings.create({
         data: DEFAULT_SETTINGS,
       })
+    } else {
+      const staleUpdates: Record<string, string> = {}
+      if (settings.phone === '9510737852') staleUpdates.phone = '9510737582'
+      if (settings.altPhone === '079160 29127') staleUpdates.altPhone = '7016029127'
+      if (settings.whatsapp === '919510737852') staleUpdates.whatsapp = '919510737582'
+      if (Object.keys(staleUpdates).length > 0) {
+        settings = await db.siteSettings.update({
+          where: { id: 'default' },
+          data: staleUpdates,
+        })
+      }
     }
     return Response.json(settings)
   } catch (err: any) {

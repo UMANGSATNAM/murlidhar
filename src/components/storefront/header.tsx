@@ -59,7 +59,9 @@ export function Header() {
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-1.5">
           <div className="flex items-center gap-2">
             <Phone className="h-3 w-3 text-amber-400" />
-            <a href="tel:9510737852" className="hover:text-amber-300 transition-colors">9510737852</a>
+            <a href="tel:9510737582" className="hover:text-amber-300 transition-colors">9510737582</a>
+            <span className="text-white/40">·</span>
+            <a href="tel:7016029127" className="hover:text-amber-300 transition-colors">7016029127</a>
             <span className="hidden sm:inline text-white/40">·</span>
             <span className="hidden sm:inline">Open 24 hours · Unjha, Gujarat</span>
           </div>
@@ -225,12 +227,20 @@ export function Header() {
                       </Link>
                     </Button>
                   </div>
-                  <a
-                    href="tel:9510737852"
-                    className="mt-3 flex items-center justify-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-700"
-                  >
-                    <Phone className="h-4 w-4 text-accent" /> Call 9510737852
-                  </a>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <a
+                      href="tel:9510737582"
+                      className="flex items-center justify-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-2.5 text-xs font-semibold text-amber-700"
+                    >
+                      <Phone className="h-3.5 w-3.5 text-accent" /> 9510737582
+                    </a>
+                    <a
+                      href="tel:7016029127"
+                      className="flex items-center justify-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-2.5 text-xs font-semibold text-amber-700"
+                    >
+                      <Phone className="h-3.5 w-3.5 text-accent" /> 7016029127
+                    </a>
+                  </div>
                 </nav>
               </SheetContent>
             </Sheet>

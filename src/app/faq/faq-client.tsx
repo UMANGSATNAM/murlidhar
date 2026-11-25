@@ -117,10 +117,13 @@ export default function FAQClient({ faqs: initialFaqs }: { faqs: { q: string; a:
             <h3 className="font-display text-xl font-bold">Still have questions?</h3>
             <p className="mt-1 text-sm text-muted-foreground">Our team is available 24 hours to help you.</p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
-              <a href="tel:9510737852" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-gold-soft">
-                <Phone className="h-4 w-4" /> Call 9510737852
+              <a href="tel:9510737582" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-gold-soft">
+                <Phone className="h-4 w-4" /> Call 9510737582
               </a>
-              <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-cream/10">
+              <a href="tel:7016029127" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-gold-soft">
+                <Phone className="h-4 w-4" /> Call 7016029127
+              </a>
+              <a href="https://wa.me/919510737582" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-cream/10">
                 <MessageCircle className="h-4 w-4" /> WhatsApp
               </a>
               <Button asChild variant="outline" className="border-gold/50 text-gold hover:bg-gold hover:text-navy">

@@ -44,9 +44,9 @@ export function Footer() {
             <p className="font-display text-2xl font-bold text-white">Ready to print something great?</p>
             <p className="mt-1 text-sm text-white/60">Talk to our team today — we reply within minutes during business hours.</p>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex flex-wrap justify-center gap-2 sm:justify-end">
             <a
-              href="https://wa.me/919510737852"
+              href="https://wa.me/919510737582"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-amber-600 shadow-lg"
@@ -54,10 +54,16 @@ export function Footer() {
               <MessageCircle className="h-4 w-4" /> WhatsApp Us
             </a>
             <a
-              href="tel:9510737852"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+              href="tel:9510737582"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
             >
-              <Phone className="h-4 w-4" /> 9510737852
+              <Phone className="h-4 w-4" /> 9510737582
+            </a>
+            <a
+              href="tel:7016029127"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
+            >
+              <Phone className="h-4 w-4" /> 7016029127
             </a>
           </div>
         </div>
@@ -80,7 +86,7 @@ export function Footer() {
             Family-run printing press serving Unjha & North Gujarat since decades. Quality printing, lasting impression — we print your dreams on paper.
           </p>
           <div className="mt-4 flex gap-2">
-            <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-amber-500 hover:text-navy transition">
+            <a href="https://wa.me/919510737582" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-amber-500 hover:text-navy transition">
               <MessageCircle className="h-4 w-4" />
             </a>
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 hover:bg-amber-500 hover:text-navy transition">
@@ -130,9 +136,11 @@ export function Footer() {
             </li>
             <li className="flex gap-2.5">
               <Phone className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
-              <a href="tel:9510737852" className="hover:text-amber-300">9510737852</a>
-              <span className="text-white/40">·</span>
-              <span>079160 29127</span>
+              <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+                <a href="tel:9510737582" className="hover:text-amber-300">9510737582</a>
+                <span className="text-white/40">·</span>
+                <a href="tel:7016029127" className="hover:text-amber-300">7016029127</a>
+              </div>
             </li>
             <li className="flex gap-2.5">
               <Mail className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />

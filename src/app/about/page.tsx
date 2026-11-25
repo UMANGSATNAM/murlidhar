@@ -146,9 +146,9 @@ export default function AboutPage() {
                 <Phone className="mt-0.5 h-5 w-5 text-gold" />
                 <div>
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">Call us</p>
-                  <a href="tel:9510737852" className="font-display text-base font-bold text-foreground hover:text-teal">9510737852</a>
+                  <a href="tel:9510737582" className="font-display text-base font-bold text-foreground hover:text-teal">9510737582</a>
                   <span className="text-muted-foreground"> · </span>
-                  <span className="text-sm text-muted-foreground">079160 29127</span>
+                  <a href="tel:7016029127" className="font-display text-base font-bold text-foreground hover:text-teal">7016029127</a>
                 </div>
               </div>
               <div className="flex items-start gap-3 rounded-lg border border-white/15 bg-white/5 p-4">

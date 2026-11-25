@@ -463,7 +463,7 @@ function CheckoutContent() {
               />
               <Button asChild variant="outline" className="flex-1 border-green-600 text-green-700 hover:bg-green-600 hover:text-white">
                 <a
-                  href={`https://wa.me/919510737852?text=${encodeURIComponent(
+                  href={`https://wa.me/919510737582?text=${encodeURIComponent(
                     `Hi Murlidhar Offset, I just placed order *${placedOrder.orderNumber}* for ${formatINR(
                       placedOrder.total
                     )} (${paymentMethodLabel}). Please confirm receipt.`
@@ -535,7 +535,7 @@ function CheckoutContent() {
                 </div>
                 <div>
                   <Label htmlFor="phone">Phone Number *</Label>
-                  <Input id="phone" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-1 border-border" placeholder="9510737852" />
+                  <Input id="phone" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-1 border-border" placeholder="9510737582" />
                 </div>
                 <div>
                   <Label htmlFor="email">
@@ -785,8 +785,11 @@ function CheckoutContent() {
 
             <div className="mt-4 space-y-2 rounded-xl border border-border bg-white p-4 text-xs">
               <p className="font-bold text-navy">Need help with your order?</p>
-              <a href="tel:9510737852" className="flex items-center gap-2 text-muted-foreground hover:text-navy">
-                <Phone className="h-3.5 w-3.5 text-gold" /> 9510737852
+              <a href="tel:9510737582" className="flex items-center gap-2 text-muted-foreground hover:text-navy">
+                <Phone className="h-3.5 w-3.5 text-gold" /> 9510737582
+              </a>
+              <a href="tel:7016029127" className="flex items-center gap-2 text-muted-foreground hover:text-navy">
+                <Phone className="h-3.5 w-3.5 text-gold" /> 7016029127
               </a>
               <a href="mailto:murlidharoffset84@gmail.com" className="flex items-center gap-2 text-muted-foreground hover:text-navy">
                 <Mail className="h-3.5 w-3.5 text-gold" /> murlidharoffset84@gmail.com

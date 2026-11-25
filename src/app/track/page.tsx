@@ -173,7 +173,12 @@ function TrackContent() {
             <p className="mt-1 text-sm text-muted-foreground">{error}</p>
             <div className="mt-4 rounded-md bg-secondary/40 p-3 text-xs text-muted-foreground">
               <p>Double-check your order number — it should look like <code className="rounded bg-white px-1.5 py-0.5 text-navy">MO260716-5687</code>.</p>
-              <p className="mt-2">Need help? Call us at <a href="tel:9510737852" className="font-semibold text-gold-deep">9510737852</a>.</p>
+              <p className="mt-2">
+                Need help? Call us at{' '}
+                <a href="tel:9510737582" className="font-semibold text-gold-deep">9510737582</a>
+                {' or '}
+                <a href="tel:7016029127" className="font-semibold text-gold-deep">7016029127</a>.
+              </p>
             </div>
           </Card>
         )}
@@ -407,10 +412,13 @@ function TrackContent() {
               <h3 className="font-display text-xl font-bold">Need help with your order?</h3>
               <p className="mt-1 text-sm text-muted-foreground">Our team is available 24 hours — call us anytime.</p>
               <div className="mt-4 flex flex-wrap justify-center gap-2">
-                <a href="tel:9510737852" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-gold-soft">
-                  <Phone className="h-4 w-4" /> Call 9510737852
+                <a href="tel:9510737582" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-gold-soft">
+                  <Phone className="h-4 w-4" /> Call 9510737582
                 </a>
-                <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-cream/10">
+                <a href="tel:7016029127" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:bg-gold-soft">
+                  <Phone className="h-4 w-4" /> Call 7016029127
+                </a>
+                <a href="https://wa.me/919510737582" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-md border border-cream/30 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-cream/10">
                   <MessageCircle className="h-4 w-4" /> WhatsApp
                 </a>
                 <InvoiceDownloadButton

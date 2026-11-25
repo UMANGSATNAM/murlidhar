@@ -125,7 +125,7 @@ function LoyaltyContent() {
                 <Input
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="e.g. 9510737852"
+                  placeholder="e.g. 9510737582"
                   className="pl-10 border-border text-base"
                   autoFocus
                 />

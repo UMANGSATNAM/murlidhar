@@ -69,13 +69,13 @@ export default function ContactPage() {
           <div className="space-y-4">
             <Card className="overflow-hidden">
               <div className="grid grid-cols-1 sm:grid-cols-2">
-                <a href="tel:9510737852" className="flex flex-col items-center gap-2 border-b border-r border-border p-6 text-center transition hover:bg-secondary/40 sm:border-b-0">
+                <div className="flex flex-col items-center gap-2 border-b border-r border-border p-6 text-center transition hover:bg-secondary/40 sm:border-b-0">
                   <Phone className="h-8 w-8 text-gold" />
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">Call us</p>
-                  <p className="font-display text-base font-bold text-navy">9510737852</p>
-                  <p className="text-xs text-muted-foreground">079160 29127</p>
-                </a>
-                <a href="https://wa.me/919510737852" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 border-b border-border p-6 text-center transition hover:bg-secondary/40 sm:border-b-0">
+                  <a href="tel:9510737582" className="font-display text-base font-bold text-navy hover:text-gold-deep">9510737582</a>
+                  <a href="tel:7016029127" className="font-display text-base font-bold text-navy hover:text-gold-deep">7016029127</a>
+                </div>
+                <a href="https://wa.me/919510737582" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 border-b border-border p-6 text-center transition hover:bg-secondary/40 sm:border-b-0">
                   <MessageCircle className="h-8 w-8 text-gold" />
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">WhatsApp</p>
                   <p className="font-display text-base font-bold text-navy">Chat with us</p>
@@ -144,7 +144,7 @@ export default function ContactPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <Label htmlFor="c-phone">Phone *</Label>
-                    <Input id="c-phone" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-1 border-border" placeholder="9510737852" />
+                    <Input id="c-phone" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="mt-1 border-border" placeholder="9510737582" />
                   </div>
                   <div>
                     <Label htmlFor="c-email">Email</Label>

@@ -30,14 +30,19 @@ export function FloatingWhatsApp() {
               Hi! 👋 Need help with visiting cards, wedding cards, brochures or any printing? Send us a message on WhatsApp and we'll assist you right away.
             </p>
             <a
-              href="https://wa.me/919510737852?text=Hi%20Murlidhar%20Offset,%20I%20have%20a%20question%20about%20your%20printing%20services"
+              href="https://wa.me/919510737582?text=Hi%20Murlidhar%20Offset,%20I%20have%20a%20question%20about%20your%20printing%20services"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-3 flex w-full items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-green-700"
             >
               <MessageCircle className="h-4 w-4" /> Start Chat
             </a>
-            <p className="mt-2 text-center text-[10px] text-muted-foreground">Or call <a href="tel:9510737852" className="font-semibold text-navy">9510737852</a></p>
+            <p className="mt-2 text-center text-[10px] text-muted-foreground">
+              Or call{' '}
+              <a href="tel:9510737582" className="font-semibold text-navy">9510737582</a>
+              {' / '}
+              <a href="tel:7016029127" className="font-semibold text-navy">7016029127</a>
+            </p>
           </div>
         </div>
       )}

@@ -432,7 +432,7 @@ export async function testSmtpConnection({
             </tr>
           </table>
           <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:12px;color:#94a3b8;text-align:center">
-            Murlidhar Offset · Shreeji Super Market, 7, Unjha, Gujarat 384170 · Phone: +91 9510737852
+            Murlidhar Offset · Shreeji Super Market, 7, Unjha, Gujarat 384170 · Phone: +91 9510737582 / +91 7016029127
           </div>
         </div>
         `,
@@ -646,11 +646,14 @@ export function orderConfirmationHtml(opts: {
       </div>
 
       <div style="margin-top:20px;text-align:center">
-        <a href="https://wa.me/919510737852?text=Hello%20Murlidhar%20Offset,%20regarding%20my%20order%20${encodeURIComponent(opts.orderNumber)}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-weight:bold;font-size:13px;margin:4px">
+        <a href="https://wa.me/919510737582?text=Hello%20Murlidhar%20Offset,%20regarding%20my%20order%20${encodeURIComponent(opts.orderNumber)}" style="display:inline-block;background:#16a34a;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-weight:bold;font-size:13px;margin:4px">
           💬 Chat on WhatsApp
         </a>
-        <a href="tel:9510737852" style="display:inline-block;background:#0f1b33;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-weight:bold;font-size:13px;margin:4px">
-          📞 Call: 9510737852
+        <a href="tel:9510737582" style="display:inline-block;background:#0f1b33;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-weight:bold;font-size:13px;margin:4px">
+          📞 Call: 9510737582
+        </a>
+        <a href="tel:7016029127" style="display:inline-block;background:#0f1b33;color:#ffffff;text-decoration:none;padding:10px 20px;border-radius:6px;font-weight:bold;font-size:13px;margin:4px">
+          📞 Call: 7016029127
         </a>
       </div>
     </div>
@@ -658,7 +661,7 @@ export function orderConfirmationHtml(opts: {
     <!-- Footer -->
     <div style="margin-top:20px;text-align:center;font-size:12px;color:#94a3b8">
       Murlidhar Offset · Shreeji Super Market, 7, Unjha, Gujarat 384170<br/>
-      Email: murlidharoffset84@gmail.com · Phone: +91 9510737852
+      Email: murlidharoffset84@gmail.com · Phone: +91 9510737582 / +91 7016029127
     </div>
   </div>`
 }
@@ -854,7 +857,7 @@ export function statusUpdateHtml(opts: {
       <p style="font-size:13px;color:#64748b;margin-top:24px;text-align:center">You can track your order status anytime or reply directly to this email if you need any assistance.</p>
     </div>
     <div style="margin-top:20px;text-align:center;font-size:12px;color:#94a3b8">
-      ${business} · Unjha, Gujarat · Phone: +91 9510737852 · <a href="${siteUrl}" style="color:#eab308;text-decoration:none">Visit Store</a>
+      ${business} · Unjha, Gujarat · Phone: +91 9510737582 / +91 7016029127 · <a href="${siteUrl}" style="color:#eab308;text-decoration:none">Visit Store</a>
     </div>
   </div>`
 }

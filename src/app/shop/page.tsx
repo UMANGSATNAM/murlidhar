@@ -398,9 +398,14 @@ function FilterPanel({
       <div className="rounded-xl border border-border bg-cream p-5 shadow-sm">
         <p className="font-display text-base font-bold text-navy">Need help choosing?</p>
         <p className="mt-1 text-xs text-muted-foreground">Our team will guide you to the right product for your need.</p>
-        <Button asChild size="sm" className="mt-4 w-full rounded-lg bg-amber-500 text-white hover:bg-amber-600">
-          <a href="tel:9510737852">Call 9510737852</a>
-        </Button>
+        <div className="mt-4 flex flex-col gap-2">
+          <Button asChild size="sm" className="w-full rounded-lg bg-amber-500 text-white hover:bg-amber-600">
+            <a href="tel:9510737582">Call 9510737582</a>
+          </Button>
+          <Button asChild size="sm" variant="outline" className="w-full rounded-lg border-amber-500 text-amber-700 hover:bg-amber-50">
+            <a href="tel:7016029127">Call 7016029127</a>
+          </Button>
+        </div>
       </div>
     </div>
   )

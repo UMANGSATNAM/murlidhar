@@ -214,8 +214,8 @@ model SiteSettings {
   businessName    String   @default("Murlidhar Offset")
   tagline         String   @default("We Print Your Dreams on Paper")
   aboutText       String?
-  phone           String   @default("9510737852")
-  altPhone        String?
+  phone           String   @default("9510737582")
+  altPhone        String?  @default("7016029127")
   email           String   @default("murlidharoffset84@gmail.com")
   address         String   @default("Shreeji Super Market, 7, Unjha, Gujarat 384170")
   hours           String   @default("Open 24 hours")

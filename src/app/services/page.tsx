@@ -130,7 +130,10 @@ export default function ServicesPage() {
               <Link href="/shop">Browse Shop <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-gold/50 text-gold hover:bg-gold hover:text-navy">
-              <a href="tel:9510737852">Call 9510737852</a>
+              <a href="tel:9510737582">Call 9510737582</a>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-gold/50 text-gold hover:bg-gold hover:text-navy">
+              <a href="tel:7016029127">Call 7016029127</a>
             </Button>
           </div>
         </div>
